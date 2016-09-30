@@ -8,13 +8,27 @@ import java.awt.*;
 public class TextBox {
     private int width;
     private int height;
-    private Point startPoint;
+    private int startX;
+    private int startY;
     private String text;
 
     public TextBox(Point startPoint, Point endPoint){
-        this.startPoint = startPoint;
-        this.width = (int)(endPoint.getX()-startPoint.getX());
-        this.height = (int)(endPoint.getY()-startPoint.getY());
+        this.startX = (int) startPoint.getX();
+        this.startY = (int) startPoint.getY();
+        if((int)endPoint.getX()< startX){
+            this.width = startX-(int)endPoint.getX();
+            startX = (int)endPoint.getX();
+        }
+        else{
+            this.width = (int)endPoint.getX()-startX;
+        }
+        if((int)endPoint.getY()<startY){
+            this.height = startY-(int)endPoint.getY();
+            startY = (int)endPoint.getY();
+        }
+        else{
+            this.height = (int)endPoint.getY()-startY;
+        }
     }
 
 
@@ -24,6 +38,8 @@ public class TextBox {
 
     public void draw(Graphics g){
         g.setColor(Color.yellow);
-        g.drawRect((int)startPoint.getX(), (int)startPoint.getY(), width, height);
+        g.fillRect(startX, startY, width, height);
+        g.setColor(Color.black);
+        g.drawRect(startX, startY, width, height);
     }
 }

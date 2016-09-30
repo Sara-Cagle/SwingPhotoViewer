@@ -92,7 +92,7 @@ public class PhotoComponent extends JComponent implements IMessageListener{
      * @param g the Graphics object
      */
     public void drawFlipped(Graphics g){
-        g.setColor(Color.cyan);
+        g.setColor(Color.white);
         g.fillRect(0,0,image.getWidth(),image.getHeight());
         for(LineStroke line: lines){
             line.draw(g);
