@@ -34,7 +34,8 @@ public class PhotoComponent extends JComponent implements IMessageListener{
     private boolean flipped;
     private BufferedImage image;
     private AnnotationMode mode;
-    private ArrayList<DrawingLine> lines;
+    private ArrayList<LineStroke> lines;
+    private ArrayList<TextBox> textBoxes;
     private PhotoMouseAdapter mouseAdapter;
 
     /**
@@ -53,6 +54,7 @@ public class PhotoComponent extends JComponent implements IMessageListener{
         addMouseListener(mouseAdapter);
         addMouseMotionListener(mouseAdapter);
         lines = new ArrayList<>();
+        textBoxes = new ArrayList<>();
         //this.setPreferredSize(new Dimension(640,480));
         //this.setSize(new Dimension(640,480));
     }
@@ -92,9 +94,13 @@ public class PhotoComponent extends JComponent implements IMessageListener{
     public void drawFlipped(Graphics g){
         g.setColor(Color.cyan);
         g.fillRect(0,0,image.getWidth(),image.getHeight());
-        for(DrawingLine line: lines){
+        for(LineStroke line: lines){
             line.draw(g);
         }
+        for(TextBox textBox: textBoxes){
+            textBox.draw(g);
+        }
+        //draw textboxes
 
     }
 
@@ -141,6 +147,7 @@ public class PhotoComponent extends JComponent implements IMessageListener{
      */
     public void clearState(){
         lines = new ArrayList<>();
+        textBoxes = new ArrayList<>();
         flipped = false;
     }
 
@@ -173,7 +180,6 @@ public class PhotoComponent extends JComponent implements IMessageListener{
             case "annotation_mode_message":
                 AnnotationModeMessage annotationMode = (AnnotationModeMessage) m;
                 mode = annotationMode.mode;
-                System.out.println("got the mode! "+ annotationMode.mode);
             default:
                 break;
         }
@@ -185,7 +191,11 @@ public class PhotoComponent extends JComponent implements IMessageListener{
      * Makes use of mouseDragged for drawing, as well as mouseClicked for double click, and mouseRelease to finish lines.
      */
     private class PhotoMouseAdapter extends MouseAdapter{
-        private DrawingLine currentLine;
+        private LineStroke currentLine;
+        private TextBox currentTextBox;
+        private Point startCorner;
+        private Point endCorner;
+        private int currentTextBoxIndex;
 
         public void mouseClicked(MouseEvent e) {
             if(e.getClickCount() == 2 && PhotoComponent.this.isPointInImage(e.getPoint())){
@@ -195,8 +205,19 @@ public class PhotoComponent extends JComponent implements IMessageListener{
         }
 
         public void mousePressed(MouseEvent e){
-            currentLine = new DrawingLine(Color.black);
-            PhotoComponent.this.lines.add(currentLine);
+            if(flipped){
+                if(mode == AnnotationMode.Drawing){
+                    currentLine = new LineStroke(Color.black);
+                    PhotoComponent.this.lines.add(currentLine);
+                }
+                else{
+                    startCorner = e.getPoint();
+                    currentTextBox = new TextBox(startCorner, startCorner);
+                    PhotoComponent.this.textBoxes.add(currentTextBox);
+                    currentTextBoxIndex = PhotoComponent.this.textBoxes.indexOf(currentTextBox);
+                }
+            }
+
         }
 
         public void mouseDragged(MouseEvent e){
@@ -206,6 +227,13 @@ public class PhotoComponent extends JComponent implements IMessageListener{
                     repaint();
                 }
                 else{
+                    endCorner = e.getPoint();
+                    PhotoComponent.this.textBoxes.set(currentTextBoxIndex, new TextBox(startCorner, endCorner));
+                    currentTextBox = PhotoComponent.this.textBoxes.get(currentTextBoxIndex); //in case i need to use this elsewhere
+                    repaint();
+
+
+
                     //text
                 }
             }
@@ -213,6 +241,12 @@ public class PhotoComponent extends JComponent implements IMessageListener{
 
         public void mouseReleased(MouseEvent e){
             currentLine = null;
+            if(flipped){
+
+            }
+            else{
+                endCorner = e.getPoint();
+            }
         }
 
     }
