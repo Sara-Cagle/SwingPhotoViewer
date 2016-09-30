@@ -2,5 +2,5 @@
 *.pdf
 *.zip
 out
-./**/META-INF
+src/META-INF
 Cagle
