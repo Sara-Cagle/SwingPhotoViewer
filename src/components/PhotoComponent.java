@@ -97,10 +97,9 @@ public class PhotoComponent extends JComponent implements IMessageListener{
         for(LineStroke line: lines){
             line.draw(g);
         }
-        for(TextBox textBox: textBoxes){
+        for(TextBox textBox: textBoxes){ //textboxes will always be on top
             textBox.draw(g);
         }
-        //draw textboxes
 
     }
 
@@ -226,7 +225,7 @@ public class PhotoComponent extends JComponent implements IMessageListener{
                     this.currentLine.addPoint(e.getPoint());
                     repaint();
                 }
-                else{
+                else if(mode == AnnotationMode.Text && PhotoComponent.this.isPointInImage(e.getPoint())){
                     endCorner = e.getPoint();
                     PhotoComponent.this.textBoxes.set(currentTextBoxIndex, new TextBox(startCorner, endCorner));
                     currentTextBox = PhotoComponent.this.textBoxes.get(currentTextBoxIndex); //in case i need to use this elsewhere
@@ -241,11 +240,12 @@ public class PhotoComponent extends JComponent implements IMessageListener{
 
         public void mouseReleased(MouseEvent e){
             currentLine = null;
+            currentTextBox = null; //for now
             if(flipped){
 
             }
             else{
-                endCorner = e.getPoint();
+
             }
         }
 
