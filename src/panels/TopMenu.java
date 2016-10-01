@@ -1,6 +1,7 @@
 package panels;
 
 import bus.Bus;
+import bus.messages.DeleteImageMessage;
 import bus.messages.StatusMessage;
 import bus.messages.ImageMessage;
 
@@ -64,6 +65,7 @@ public class TopMenu extends JMenuBar{
         deleteItem = new JMenuItem("Delete");
         deleteItem.addActionListener(e -> {
             Bus.getInstance().sendMessage(new StatusMessage("Deleting photo..."));
+            Bus.getInstance().sendMessage(new DeleteImageMessage());
         });
 
         exitItem = new JMenuItem("Exit");

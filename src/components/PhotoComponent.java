@@ -32,6 +32,7 @@ import java.util.ArrayList;
 public class PhotoComponent extends JComponent implements IMessageListener{
 
     private boolean flipped;
+    private boolean photoUploaded;
     private BufferedImage image;
     private AnnotationMode mode;
     private ArrayList<LineStroke> lines;
@@ -49,6 +50,7 @@ public class PhotoComponent extends JComponent implements IMessageListener{
     public PhotoComponent(){
         super();
         flipped = false;
+        photoUploaded = false;
         Bus.getInstance().registerListener(this);
         mouseAdapter = new PhotoMouseAdapter();
         addMouseListener(mouseAdapter);
@@ -170,12 +172,21 @@ public class PhotoComponent extends JComponent implements IMessageListener{
                     this.setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
                     //this.setSize(new Dimension(image.getWidth(), image.getHeight()));
                     Bus.getInstance().sendMessage(new StatusMessage("Ready"));
+                    photoUploaded = true;
                     clearState();
                     repaint();
                 }
                 catch(IOException e){
                     //handle it
                 }
+                break;
+            case "delete_image_message":
+                photoUploaded = false;
+                image = null;
+                //need some default size to reset to, isn't reset until new image uploaded
+                Bus.getInstance().sendMessage(new StatusMessage("Ready"));
+                clearState();
+                repaint();
                 break;
             case "annotation_mode_message":
                 AnnotationModeMessage annotationMode = (AnnotationModeMessage) m;
