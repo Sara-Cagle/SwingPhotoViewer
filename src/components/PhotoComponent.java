@@ -53,6 +53,7 @@ public class PhotoComponent extends JComponent implements IMessageListener{
         mouseAdapter = new PhotoMouseAdapter();
         addMouseListener(mouseAdapter);
         addMouseMotionListener(mouseAdapter);
+        mode = AnnotationMode.Text;
         lines = new ArrayList<>();
         textBoxes = new ArrayList<>();
         //this.setPreferredSize(new Dimension(640,480));
@@ -204,12 +205,13 @@ public class PhotoComponent extends JComponent implements IMessageListener{
         }
 
         public void mousePressed(MouseEvent e){
+            currentTextBoxIndex = -1;
             if(flipped){
                 if(mode == AnnotationMode.Drawing){
                     currentLine = new LineStroke(Color.black);
                     PhotoComponent.this.lines.add(currentLine);
                 }
-                else{
+                else if(mode == AnnotationMode.Text && PhotoComponent.this.isPointInImage(e.getPoint())){
                     startCorner = e.getPoint();
                     currentTextBox = new TextBox(startCorner, startCorner);
                     PhotoComponent.this.textBoxes.add(currentTextBox);
@@ -225,7 +227,7 @@ public class PhotoComponent extends JComponent implements IMessageListener{
                     this.currentLine.addPoint(e.getPoint());
                     repaint();
                 }
-                else if(mode == AnnotationMode.Text && PhotoComponent.this.isPointInImage(e.getPoint())){
+                else if(mode == AnnotationMode.Text && currentTextBoxIndex>-1 && PhotoComponent.this.isPointInImage(e.getPoint())){
                     endCorner = e.getPoint();
                     PhotoComponent.this.textBoxes.set(currentTextBoxIndex, new TextBox(startCorner, endCorner));
                     currentTextBox = PhotoComponent.this.textBoxes.get(currentTextBoxIndex); //in case i need to use this elsewhere
