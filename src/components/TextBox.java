@@ -8,7 +8,16 @@ import java.text.AttributedString;
 import java.util.ArrayList;
 
 /**
- * Created by saracagle on 9/30/16.
+ * TextBox
+ *
+ * Class responsible for TextBoxes drawn on the screen
+ * when the app is in Text Annotation Mode.
+ * TextBoxes are rectangular boxes drawn by the user
+ * that can be filled with text. Word wrapping is implemented,
+ * and TextBoxes grow vertically when the text is too long.
+ *
+ * @Author Sara Cagle
+ * @Date 9/30/16.
  */
 public class TextBox {
     private int width;
@@ -132,7 +141,7 @@ public class TextBox {
                 continue;
             }
             currWidth+=metrics.charWidth(currString.charAt(i));
-            if(currWidth >= width-5) {
+            if(currWidth >= width-5) { //-5 is for right hand side padding
                 if( prevSpace > -1) {
                     listOfStrings.set(currLine, currString.substring(0, prevSpace));
                     listOfStrings.add(currString.substring(prevSpace+1));
@@ -175,7 +184,7 @@ public class TextBox {
         g.drawRect(startX, startY, width, height);
         int currY = startY+(metrics.getAscent()+metrics.getDescent()+metrics.getLeading());
         for(String s: strings){
-            g.drawString(s, startX+5, currY);
+            g.drawString(s, startX+5, currY); //+5 is for left hand side padding
             currY += (metrics.getAscent()+metrics.getDescent()+metrics.getLeading());
         }
 

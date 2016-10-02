@@ -29,7 +29,8 @@ import java.util.ArrayList;
  * such as "flipping", drawing, and creating text.
  * Listens for messages on the bus to hear states from other parts of the app.
  *
- * Created by saracagle on 9/28/16.
+ * @Author Sara Cagle
+ * @Date 09/28/16
  */
 public class PhotoComponent extends JComponent implements IMessageListener, KeyListener {
 
@@ -137,12 +138,6 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
         revalidate();
     }
 
-    public void typeInBox(){
-        if(inFocusTextBox != null && mode == AnnotationMode.Text){
-
-        }
-    }
-
     /**
      * isPointInImage
      *
@@ -168,7 +163,6 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
         textBoxes = new ArrayList<>();
         flipped = false;
     }
-
 
     /**
      * receiveMessage
@@ -213,25 +207,31 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
         }
     }
 
-    /** Handle the key typed event from the text field. */
-    public void keyTyped(KeyEvent e) {
-        if(e.getKeyChar() != '\b'){
-            inFocusTextBox.addChar(e.getKeyChar());
-        }
-    }
+    /*
+     * Key events -------------------------------------------------------------------------------
+     * ------------------------------------------------------------------------------------------
+     */
 
-    /** Handle the key-pressed event from the text field. */
-    public void keyPressed(KeyEvent e) {
+    public void keyTyped(KeyEvent e){}
+
+    public void keyPressed(KeyEvent e){
         if(e.getKeyCode()==KeyEvent.VK_BACK_SPACE){ //can't be done in keyTyped because that's only for input keys
             inFocusTextBox.removeChar();
+        }
+        if(e.getKeyChar() != '\b'){
+            inFocusTextBox.addChar(e.getKeyChar());
         }
         repaint();
     }
 
-    /** Handle the key-released event from the text field. */
-    public void keyReleased(KeyEvent e) {
 
-    }
+    public void keyReleased(KeyEvent e){}
+
+    /*
+     * ------------------------------------------------------------------------------------------
+     * ------------------------------------------------------------------------------------------
+     */
+
 
     /**
      * Internal class of MouseAdapter created for the PhotoComponent.
@@ -243,7 +243,6 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
         private TextBox currentTextBox;
         private Point startCorner;
         private Point endCorner;
-        private TextBox inFocusTextBox;
 
         public void mouseClicked(MouseEvent e) {
             if(e.getClickCount() == 2 && PhotoComponent.this.isPointInImage(e.getPoint())){
@@ -265,7 +264,6 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
                     PhotoComponent.this.textBoxes.add(currentTextBox);
                 }
             }
-
         }
 
         public void mouseDragged(MouseEvent e){
@@ -278,10 +276,6 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
                     endCorner = e.getPoint();
                     currentTextBox.setDimensions(startCorner, endCorner);
                     repaint();
-
-
-
-                    //text
                 }
             }
         }
@@ -289,7 +283,7 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
         public void mouseReleased(MouseEvent e){
             currentLine = null;
             PhotoComponent.this.inFocusTextBox = currentTextBox;
-            currentTextBox = null; //for now
+            currentTextBox = null;
         }
 
     }
