@@ -17,11 +17,29 @@ public class TextBox {
     private int startY;
     private ArrayList<Character> text;
 
+    /**
+     * TextBox
+     *
+     * Contructor for the TextBox.
+     * Sets the box's dimensions and instantiates
+     * the text ArrayList for the box's message.
+     *
+     * @param startPoint the point the user began drawing from
+     * @param endPoint the point the user ended their drawing
+     */
     public TextBox(Point startPoint, Point endPoint){
         setDimensions(startPoint, endPoint);
         text = new ArrayList<>();
     }
 
+    /**
+     * setDimensions
+     *
+     * Sets the dimension of the TextBox being drawn.
+     *
+     * @param startPoint the point the user began drawing from
+     * @param endPoint the point the user ended their drawing
+     */
     public void setDimensions(Point startPoint, Point endPoint){
         this.startX = (int) startPoint.getX();
         this.startY = (int) startPoint.getY();
@@ -42,14 +60,35 @@ public class TextBox {
     }
 
 
+    /**
+     * addChar
+     *
+     * Adds a character into the text ArrayList.
+     * Designed to be used when a user types on the keyboard.
+     *
+     * @param c the character in question
+     */
     public void addChar(char c){
         text.add(c);
     }
 
+    /**
+     * removeChar
+     *
+     * Deletes a character out of the text ArrayList.
+     * Designed to be used with hitting the backspace button.
+     */
     public void removeChar(){
         text.remove(text.size()-1);
     }
 
+    /**
+     * getString
+     *
+     * Takes the input text one character at a time and builds a String.
+     *
+     * @return text as a String
+     */
     private String getString(){
         StringBuilder builder = new StringBuilder();
         for(char c: text){
@@ -58,6 +97,20 @@ public class TextBox {
         return builder.toString();
     }
 
+    /**
+     * splitStrings
+     *
+     * Takes in a string being typed into the textbox.
+     * Watches for width of the string. If the string grows
+     * too big, it needs to be split and brought onto a newline.
+     * If the string has a space, we break on the space.
+     * If the string doesn't have a space, we break on the letter
+     * that no longer fits on the line.
+     *
+     * @param metrics the FontMetrics object used to check for character width
+     * @param str the string being typed in
+     * @return an array of strings, each entry is a substring broken to fit the width
+     */
     private String[] splitStrings(FontMetrics metrics, String str) {
         ArrayList<String> listOfStrings = new ArrayList<>();
         listOfStrings.add(str);
@@ -79,11 +132,10 @@ public class TextBox {
                 continue;
             }
             currWidth+=metrics.charWidth(currString.charAt(i));
-            if(currWidth >= width) {
+            if(currWidth >= width-5) {
                 if( prevSpace > -1) {
                     listOfStrings.set(currLine, currString.substring(0, prevSpace));
                     listOfStrings.add(currString.substring(prevSpace+1));
-
                 }
                 else {
                     listOfStrings.set(currLine, currString.substring(0, i));
@@ -98,21 +150,33 @@ public class TextBox {
         return listOfStrings.toArray(new String[listOfStrings.size()]);
     }
 
+    /**
+     * draw
+     *
+     * Draws all of the information to the screen.
+     * Takes in the splitStrings array from splitting the text.
+     * Calculates height so the box will grow vertically if
+     * it's too small for the text.
+     * Draws the TextBox and its text inside of it.
+     *
+     * @param g the Graphics object
+     */
     public void draw(Graphics g){
         Graphics2D g2 = (Graphics2D) g;
         FontMetrics metrics = g2.getFontMetrics(g2.getFont());
         String[] strings= splitStrings(metrics, getString());
-        if( metrics.getHeight()*strings.length > height){
-            height = metrics.getHeight()*strings.length;
+
+        if( (metrics.getAscent()+metrics.getDescent()+metrics.getLeading())*strings.length > height){
+            height = (metrics.getAscent()+metrics.getDescent()+metrics.getLeading())*strings.length;
         }
         g.setColor(Color.yellow);
         g.fillRect(startX, startY, width, height);
         g.setColor(Color.black);
         g.drawRect(startX, startY, width, height);
-        int currY = startY+metrics.getHeight();
+        int currY = startY+(metrics.getAscent()+metrics.getDescent()+metrics.getLeading());
         for(String s: strings){
-            g.drawString(s, startX, currY);
-            currY += metrics.getHeight();
+            g.drawString(s, startX+5, currY);
+            currY += (metrics.getAscent()+metrics.getDescent()+metrics.getLeading());
         }
 
     }
