@@ -34,8 +34,9 @@ import java.util.ArrayList;
  */
 public class PhotoComponent extends JComponent implements IMessageListener, KeyListener {
 
+    private final int DEFAULTWIDTH = 400;
+    private final int DEFAULTHEIGHT = 400;
     private boolean flipped;
-    private boolean photoUploaded;
     private BufferedImage image;
     private AnnotationMode mode;
     private ArrayList<LineStroke> lines;
@@ -55,7 +56,6 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
         super();
         this.setFocusable(true);
         flipped = false;
-        photoUploaded = false;
         Bus.getInstance().registerListener(this);
         mouseAdapter = new PhotoMouseAdapter();
         addMouseListener(mouseAdapter);
@@ -64,8 +64,8 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
         mode = AnnotationMode.Text;
         lines = new ArrayList<>();
         textBoxes = new ArrayList<>();
-        //this.setPreferredSize(new Dimension(640,480));
-        //this.setSize(new Dimension(640,480));
+        this.setPreferredSize(new Dimension(DEFAULTWIDTH,DEFAULTHEIGHT));
+        this.setSize(new Dimension(DEFAULTWIDTH,DEFAULTHEIGHT));
     }
 
     /**
@@ -162,6 +162,8 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
         lines = new ArrayList<>();
         textBoxes = new ArrayList<>();
         flipped = false;
+        this.setPreferredSize(new Dimension(DEFAULTWIDTH,DEFAULTHEIGHT));
+        this.setSize(new Dimension(DEFAULTWIDTH,DEFAULTHEIGHT));
     }
 
     /**
@@ -179,11 +181,10 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
                 ImageMessage imageMessage = (ImageMessage) m;
                 try{
                     image = ImageIO.read(imageMessage.file);
-                    this.setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
-                    //this.setSize(new Dimension(image.getWidth(), image.getHeight()));
-                    Bus.getInstance().sendMessage(new StatusMessage("Ready"));
-                    photoUploaded = true;
                     clearState();
+                    this.setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
+                    this.setSize(new Dimension(image.getWidth(), image.getHeight()));
+                    Bus.getInstance().sendMessage(new StatusMessage("Ready"));
                     repaint();
                 }
                 catch(IOException e){
@@ -191,9 +192,7 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
                 }
                 break;
             case "delete_image_message":
-                photoUploaded = false;
                 image = null;
-                //need some default size to reset to, isn't reset until new image uploaded
                 Bus.getInstance().sendMessage(new StatusMessage("Ready"));
                 clearState();
                 repaint();

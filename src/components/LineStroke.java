@@ -11,7 +11,8 @@ import java.util.List;
  * The lines that users can draw on the back of photos.
  * Consists of a collection of points and a color.
  *
- * Created by saracagle on 9/29/16.
+ * @author Sara Cagle
+ * @date 9/29/16.
  */
 public class LineStroke {
     private List<Point> pointList;
