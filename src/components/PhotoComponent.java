@@ -36,6 +36,8 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
 
     private final int DEFAULTWIDTH = 400;
     private final int DEFAULTHEIGHT = 400;
+    private int imageX;
+    private int imageY;
     private boolean flipped;
     private BufferedImage image;
     private AnnotationMode mode;
@@ -43,6 +45,7 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
     private ArrayList<TextBox> textBoxes;
     private PhotoMouseAdapter mouseAdapter;
     private TextBox inFocusTextBox;
+
 
     /**
      * PhotoComponent constructor
@@ -92,8 +95,8 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
     public void drawImage(Graphics g){
         int currScreenHeight = this.getHeight();
         int currScreenWidth = this.getWidth();
-        int imageY = 0;
-        int imageX = 0;
+        imageY = 0;
+        imageX = 0;
         if(image != null) { //centers the image
             if (image.getHeight() < currScreenHeight) {
                 int diff = currScreenHeight - image.getHeight();
@@ -118,7 +121,7 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
      */
     public void drawFlipped(Graphics g){
         g.setColor(Color.white);
-        g.fillRect(0,0,image.getWidth(),image.getHeight());
+        g.fillRect(imageX,imageY,image.getWidth(),image.getHeight());
         for(LineStroke line: lines){
             line.draw(g);
         }
@@ -164,7 +167,7 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
      * @return boolean that says if the point is inside the image or not
      */
     public boolean isPointInImage(Point p){
-        return p.x>0 && p.y>0 && p.x<image.getWidth() && p.y<image.getHeight();
+        return p.x>imageX && p.y>imageY && p.x<imageX+image.getWidth() && p.y<imageY+image.getHeight();
     }
 
     /**
@@ -288,9 +291,11 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
                     repaint();
                 }
                 else if(mode == AnnotationMode.Text && PhotoComponent.this.isPointInImage(e.getPoint())){
-                    endCorner = e.getPoint();
-                    currentTextBox.setDimensions(startCorner, endCorner);
-                    repaint();
+                    if(startCorner != null){ //catches dragging the mouse from out of image INTO image
+                        endCorner = e.getPoint();
+                        currentTextBox.setDimensions(startCorner, endCorner);
+                        repaint();
+                    }
                 }
             }
         }
@@ -299,6 +304,8 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
             currentLine = null;
             PhotoComponent.this.inFocusTextBox = currentTextBox;
             currentTextBox = null;
+            startCorner = null;
+            endCorner = null;
         }
 
     }
