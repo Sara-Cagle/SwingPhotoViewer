@@ -90,7 +90,23 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
      * @param g the Graphics object
      */
     public void drawImage(Graphics g){
-        g.drawImage(image, 0, 0, null); //center this
+        int currScreenHeight = this.getHeight();
+        int currScreenWidth = this.getWidth();
+        int imageY = 0;
+        int imageX = 0;
+        if(image != null) { //centers the image
+            if (image.getHeight() < currScreenHeight) {
+                int diff = currScreenHeight - image.getHeight();
+                diff = diff / 2;
+                imageY += diff;
+            }
+            if (image.getWidth() < currScreenWidth) {
+                int diff = currScreenWidth - image.getWidth();
+                diff = diff / 2;
+                imageX += diff;
+            }
+        }
+        g.drawImage(image, imageX, imageY, null);
     }
 
     /**
