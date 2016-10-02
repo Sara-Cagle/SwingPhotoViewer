@@ -11,6 +11,8 @@ import constants.AnnotationMode;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -29,7 +31,7 @@ import java.util.ArrayList;
  *
  * Created by saracagle on 9/28/16.
  */
-public class PhotoComponent extends JComponent implements IMessageListener{
+public class PhotoComponent extends JComponent implements IMessageListener, KeyListener {
 
     private boolean flipped;
     private boolean photoUploaded;
@@ -38,6 +40,7 @@ public class PhotoComponent extends JComponent implements IMessageListener{
     private ArrayList<LineStroke> lines;
     private ArrayList<TextBox> textBoxes;
     private PhotoMouseAdapter mouseAdapter;
+    private TextBox inFocusTextBox;
 
     /**
      * PhotoComponent constructor
@@ -49,12 +52,14 @@ public class PhotoComponent extends JComponent implements IMessageListener{
      */
     public PhotoComponent(){
         super();
+        this.setFocusable(true);
         flipped = false;
         photoUploaded = false;
         Bus.getInstance().registerListener(this);
         mouseAdapter = new PhotoMouseAdapter();
         addMouseListener(mouseAdapter);
         addMouseMotionListener(mouseAdapter);
+        this.addKeyListener(this);
         mode = AnnotationMode.Text;
         lines = new ArrayList<>();
         textBoxes = new ArrayList<>();
@@ -127,6 +132,12 @@ public class PhotoComponent extends JComponent implements IMessageListener{
         revalidate();
     }
 
+    public void typeInBox(){
+        if(inFocusTextBox != null && mode == AnnotationMode.Text){
+
+        }
+    }
+
     /**
      * isPointInImage
      *
@@ -196,6 +207,26 @@ public class PhotoComponent extends JComponent implements IMessageListener{
         }
     }
 
+    /** Handle the key typed event from the text field. */
+    public void keyTyped(KeyEvent e) {
+        if(e.getKeyChar() != '\b'){
+            inFocusTextBox.addChar(e.getKeyChar());
+        }
+    }
+
+    /** Handle the key-pressed event from the text field. */
+    public void keyPressed(KeyEvent e) {
+        if(e.getKeyCode()==KeyEvent.VK_BACK_SPACE){ //can't be done in keyTyped because thats only for input keys
+            inFocusTextBox.removeChar();
+        }
+        repaint();
+    }
+
+    /** Handle the key-released event from the text field. */
+    public void keyReleased(KeyEvent e) {
+
+    }
+
     /**
      * Internal class of MouseAdapter created for the PhotoComponent.
      * Handles mouse information for drawing on the backs of photos.
@@ -206,9 +237,10 @@ public class PhotoComponent extends JComponent implements IMessageListener{
         private TextBox currentTextBox;
         private Point startCorner;
         private Point endCorner;
-        private int currentTextBoxIndex;
+        private TextBox inFocusTextBox;
 
         public void mouseClicked(MouseEvent e) {
+            PhotoComponent.this.requestFocusInWindow();
             if(e.getClickCount() == 2 && PhotoComponent.this.isPointInImage(e.getPoint())){
                 flipped = !flipped;
                 repaint();
@@ -216,7 +248,6 @@ public class PhotoComponent extends JComponent implements IMessageListener{
         }
 
         public void mousePressed(MouseEvent e){
-            currentTextBoxIndex = -1;
             if(flipped){
                 if(mode == AnnotationMode.Drawing){
                     currentLine = new LineStroke(Color.black);
@@ -226,7 +257,6 @@ public class PhotoComponent extends JComponent implements IMessageListener{
                     startCorner = e.getPoint();
                     currentTextBox = new TextBox(startCorner, startCorner);
                     PhotoComponent.this.textBoxes.add(currentTextBox);
-                    currentTextBoxIndex = PhotoComponent.this.textBoxes.indexOf(currentTextBox);
                 }
             }
 
@@ -238,10 +268,9 @@ public class PhotoComponent extends JComponent implements IMessageListener{
                     this.currentLine.addPoint(e.getPoint());
                     repaint();
                 }
-                else if(mode == AnnotationMode.Text && currentTextBoxIndex>-1 && PhotoComponent.this.isPointInImage(e.getPoint())){
+                else if(mode == AnnotationMode.Text && PhotoComponent.this.isPointInImage(e.getPoint())){
                     endCorner = e.getPoint();
-                    PhotoComponent.this.textBoxes.set(currentTextBoxIndex, new TextBox(startCorner, endCorner));
-                    currentTextBox = PhotoComponent.this.textBoxes.get(currentTextBoxIndex); //in case i need to use this elsewhere
+                    currentTextBox.setDimensions(startCorner, endCorner);
                     repaint();
 
 
@@ -253,13 +282,8 @@ public class PhotoComponent extends JComponent implements IMessageListener{
 
         public void mouseReleased(MouseEvent e){
             currentLine = null;
+            PhotoComponent.this.inFocusTextBox = currentTextBox;
             currentTextBox = null; //for now
-            if(flipped){
-
-            }
-            else{
-
-            }
         }
 
     }
