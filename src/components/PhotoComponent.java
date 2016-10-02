@@ -122,6 +122,11 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
      */
     public void paintComponent(Graphics g){
         super.paintComponent(g);
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
         drawBackground(g);
         if(!flipped){
             drawImage(g);
@@ -202,6 +207,7 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
             case "annotation_mode_message":
                 AnnotationModeMessage annotationMode = (AnnotationModeMessage) m;
                 mode = annotationMode.mode;
+                break;
             default:
                 break;
         }
@@ -216,7 +222,7 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
 
     /** Handle the key-pressed event from the text field. */
     public void keyPressed(KeyEvent e) {
-        if(e.getKeyCode()==KeyEvent.VK_BACK_SPACE){ //can't be done in keyTyped because thats only for input keys
+        if(e.getKeyCode()==KeyEvent.VK_BACK_SPACE){ //can't be done in keyTyped because that's only for input keys
             inFocusTextBox.removeChar();
         }
         repaint();
@@ -240,7 +246,6 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
         private TextBox inFocusTextBox;
 
         public void mouseClicked(MouseEvent e) {
-            PhotoComponent.this.requestFocusInWindow();
             if(e.getClickCount() == 2 && PhotoComponent.this.isPointInImage(e.getPoint())){
                 flipped = !flipped;
                 repaint();
@@ -248,6 +253,7 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
         }
 
         public void mousePressed(MouseEvent e){
+            PhotoComponent.this.requestFocusInWindow();
             if(flipped){
                 if(mode == AnnotationMode.Drawing){
                     currentLine = new LineStroke(Color.black);
