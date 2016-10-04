@@ -184,7 +184,7 @@ public class TextBox {
         g.drawRect(startX, startY, width, height);
         int currY = startY+(metrics.getAscent()+metrics.getDescent()+metrics.getLeading());
         for(String s: strings){
-            g.drawString(s, startX+5, currY); //+5 is for left hand side padding
+            g.drawString(s, startX+5, currY-3); //+5 is for left hand side padding, -3 for bottom edge padding (top is automatic)
             currY += (metrics.getAscent()+metrics.getDescent()+metrics.getLeading());
         }
 
