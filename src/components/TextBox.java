@@ -25,6 +25,7 @@ public class TextBox {
     private int startX;
     private int startY;
     private ArrayList<Character> text;
+    private Color color;
 
     /**
      * TextBox
@@ -36,8 +37,9 @@ public class TextBox {
      * @param startPoint the point the user began drawing from
      * @param endPoint the point the user ended their drawing
      */
-    public TextBox(Point startPoint, Point endPoint){
+    public TextBox(Point startPoint, Point endPoint, Color color){
         setDimensions(startPoint, endPoint);
+        this.color = color;
         text = new ArrayList<>();
     }
 
@@ -178,7 +180,7 @@ public class TextBox {
         if( (metrics.getAscent()+metrics.getDescent()+metrics.getLeading())*strings.length > height){
             height = (metrics.getAscent()+metrics.getDescent()+metrics.getLeading())*strings.length;
         }
-        g.setColor(Color.yellow);
+        g.setColor(color);
         g.fillRect(startX, startY, width, height);
         g.setColor(Color.black);
         g.drawRect(startX, startY, width, height);

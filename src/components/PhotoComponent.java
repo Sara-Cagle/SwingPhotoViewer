@@ -2,11 +2,9 @@ package components;
 
 import bus.Bus;
 import bus.IMessageListener;
-import bus.messages.AnnotationModeMessage;
-import bus.messages.Message;
-import bus.messages.ImageMessage;
-import bus.messages.StatusMessage;
+import bus.messages.*;
 import constants.AnnotationMode;
+import constants.Colors;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -45,6 +43,8 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
     private ArrayList<TextBox> textBoxes;
     private PhotoMouseAdapter mouseAdapter;
     private TextBox inFocusTextBox;
+    private Color boxColor;
+    private Color lineColor;
 
 
     /**
@@ -67,6 +67,8 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
         mode = AnnotationMode.Text;
         lines = new ArrayList<>();
         textBoxes = new ArrayList<>();
+        this.boxColor = Color.yellow;
+        this.lineColor = Color.black;
         this.setPreferredSize(new Dimension(DEFAULTWIDTH,DEFAULTHEIGHT));
         this.setSize(new Dimension(DEFAULTWIDTH,DEFAULTHEIGHT));
     }
@@ -216,6 +218,15 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
                 clearState();
                 repaint();
                 break;
+            case "change_color_message":
+                ChangeColorMessage changeColorMessage = (ChangeColorMessage) m;
+                if(changeColorMessage.objectType == Colors.Line){
+                    lineColor = changeColorMessage.color;
+                }
+                else{
+                    boxColor = changeColorMessage.color;
+                }
+                break;
             case "annotation_mode_message":
                 AnnotationModeMessage annotationMode = (AnnotationModeMessage) m;
                 mode = annotationMode.mode;
@@ -273,12 +284,12 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
             PhotoComponent.this.requestFocusInWindow();
             if(flipped){
                 if(mode == AnnotationMode.Drawing){
-                    currentLine = new LineStroke(Color.black);
+                    currentLine = new LineStroke(PhotoComponent.this.lineColor);
                     PhotoComponent.this.lines.add(currentLine);
                 }
                 else if(mode == AnnotationMode.Text && PhotoComponent.this.isPointInImage(e.getPoint())){
                     startCorner = e.getPoint();
-                    currentTextBox = new TextBox(startCorner, startCorner);
+                    currentTextBox = new TextBox(startCorner, startCorner, PhotoComponent.this.boxColor);
                     PhotoComponent.this.textBoxes.add(currentTextBox);
                 }
             }
