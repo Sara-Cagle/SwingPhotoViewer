@@ -33,7 +33,7 @@ public class LeftToolPanel extends JPanel{
         tagPanel = new TagPanel();
         annotationPanel = new AnnotationPanel();
         paginationPanel = new PaginationPanel();
-        colorPanel = new ColorPanel(Color.black, Color.yellow);
+        colorPanel = new ColorPanel();
         centerPanel.add(tagPanel);
         centerPanel.add(annotationPanel);
         centerPanel.add(colorPanel);

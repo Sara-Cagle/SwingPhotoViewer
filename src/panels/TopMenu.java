@@ -47,7 +47,6 @@ public class TopMenu extends JMenuBar{
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.showOpenDialog(fileChooser);
             File file = fileChooser.getSelectedFile();
-            System.out.println(file);
             //pick only images here
             /*
              public boolean accept(File f) {
