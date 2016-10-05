@@ -253,7 +253,6 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
         repaint();
     }
 
-
     public void keyReleased(KeyEvent e){}
 
     /*

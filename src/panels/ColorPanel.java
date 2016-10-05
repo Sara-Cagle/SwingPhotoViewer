@@ -59,10 +59,11 @@ public class ColorPanel extends JPanel  implements IMessageListener{
         lineColorPanel.setBackground(lineColor);
         boxColorPanel = new JPanel();
         boxColorPanel.setBackground(boxColor);
-        this.add(lineColorButton);
-        this.add(lineColorPanel);
         this.add(boxColorButton);
         this.add(boxColorPanel);
+        this.add(lineColorButton);
+        this.add(lineColorPanel);
+
         Bus.getInstance().registerListener(this);
 
     }
