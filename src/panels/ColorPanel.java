@@ -22,6 +22,8 @@ public class ColorPanel extends JPanel  implements IMessageListener{
     JPanel lineColorPanel;
     JPanel boxColorPanel;
     Color newColor;
+    Color lineColor;
+    Color boxColor;
 
 
     public ColorPanel(Color lineColor, Color boxColor){
@@ -32,24 +34,23 @@ public class ColorPanel extends JPanel  implements IMessageListener{
         title.setTitleJustification(TitledBorder.CENTER);
         this.setBorder(title);
         newColor = null;
-        //cleanUpColorSwatches();
-
+        lineColor = Color.black;
+        boxColor = Color.yellow;
 
         // set up the color button
         lineColorButton = new JButton("Select Pen Color");
         lineColorButton.addActionListener((e -> {
             colorChooser = new JColorChooser();
-            //cleanUpColorSwatches();
-            newColor = JColorChooser.showDialog(this, "Choose a color", Color.black);
+            newColor = JColorChooser.showDialog(this, "Choose a color", this.getLineColor());
             if (newColor != null) {
                 Bus.getInstance().sendMessage(new ChangeColorMessage(newColor, Colors.Line));
             }
         }));
         boxColorButton = new JButton("Select Textbox Color");
+       // final Color currentBoxColor = boxColor;
         boxColorButton.addActionListener((e -> {
-            newColor = JColorChooser.showDialog(this, "Choose a color", Color.yellow);
+            newColor = JColorChooser.showDialog(this, "Choose a color", this.getBoxColor());
             if (newColor != null) {
-                System.out.println("Got the new color "+newColor);
                 Bus.getInstance().sendMessage(new ChangeColorMessage(newColor, Colors.Box));
             }
         }));
@@ -68,15 +69,25 @@ public class ColorPanel extends JPanel  implements IMessageListener{
 
     }
 
+    public Color getLineColor(){
+        return lineColor;
+    }
+
+    public Color getBoxColor(){
+        return boxColor;
+    }
+
     public void receiveMessage(Message m) {
         switch(m.type()) {
             case "change_color_message":
                 ChangeColorMessage colorMessage = (ChangeColorMessage) m;
                 if(colorMessage.objectType == Colors.Line){
                     this.lineColorPanel.setBackground(colorMessage.color);
+                    lineColor = colorMessage.color;
                 }
                 else {
                     this.boxColorPanel.setBackground(colorMessage.color);
+                    boxColor = colorMessage.color;
                 }
                 break;
             default:
