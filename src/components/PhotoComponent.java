@@ -32,8 +32,8 @@ import java.util.ArrayList;
  */
 public class PhotoComponent extends JComponent implements IMessageListener, KeyListener {
 
-    private final int DEFAULTWIDTH = 400;
-    private final int DEFAULTHEIGHT = 400;
+    private final int DEFAULTWIDTH = 300;
+    private final int DEFAULTHEIGHT = 300;
     private int imageX;
     private int imageY;
     private boolean flipped;
