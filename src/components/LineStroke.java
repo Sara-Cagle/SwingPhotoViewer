@@ -1,35 +1,34 @@
 package components;
 
-import java.awt.Point;
-import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 
 /**
- * DrawingLine
+ * LineStroke
  *
  * The lines that users can draw on the back of photos.
  * Consists of a collection of points and a color.
  *
- * Created by saracagle on 9/29/16.
+ * @author Sara Cagle
+ * @date 9/29/16.
  */
-public class DrawingLine {
+public class LineStroke {
     private List<Point> pointList;
     private Color color;
 
-    public DrawingLine(List<Point> pointList, Color color){
+    public LineStroke(List<Point> pointList, Color color){
         this.pointList = pointList;
         this.color = color;
     }
 
     /**
-     * DrawingLine constructor
+     * LineStroke constructor
      *
      * @param color the color of the line
      */
-    public DrawingLine(Color color){
+    public LineStroke(Color color){
         this.pointList = new ArrayList<>();
         this.color = color;
     }

@@ -15,8 +15,10 @@ import java.awt.*;
 public class LeftToolPanel extends JPanel{
     private AnnotationPanel annotationPanel;
     private PaginationPanel paginationPanel;
+    private ColorPanel colorPanel;
     private TagPanel tagPanel;
     private JPanel centerPanel;
+
 
     /**
      * LeftToolPanel constructor
@@ -31,8 +33,10 @@ public class LeftToolPanel extends JPanel{
         tagPanel = new TagPanel();
         annotationPanel = new AnnotationPanel();
         paginationPanel = new PaginationPanel();
+        colorPanel = new ColorPanel();
         centerPanel.add(tagPanel);
         centerPanel.add(annotationPanel);
+        centerPanel.add(colorPanel);
         this.add(centerPanel, BorderLayout.CENTER);
         this.add(paginationPanel, BorderLayout.PAGE_END);
     }

@@ -2,15 +2,15 @@ package components;
 
 import bus.Bus;
 import bus.IMessageListener;
-import bus.messages.AnnotationModeMessage;
-import bus.messages.Message;
-import bus.messages.ImageMessage;
-import bus.messages.StatusMessage;
+import bus.messages.*;
 import constants.AnnotationMode;
+import constants.Colors;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -27,15 +27,25 @@ import java.util.ArrayList;
  * such as "flipping", drawing, and creating text.
  * Listens for messages on the bus to hear states from other parts of the app.
  *
- * Created by saracagle on 9/28/16.
+ * @Author Sara Cagle
+ * @Date 09/28/16
  */
-public class PhotoComponent extends JComponent implements IMessageListener{
+public class PhotoComponent extends JComponent implements IMessageListener, KeyListener {
 
+    private final int DEFAULTWIDTH = 300;
+    private final int DEFAULTHEIGHT = 300;
+    private int imageX;
+    private int imageY;
     private boolean flipped;
     private BufferedImage image;
     private AnnotationMode mode;
-    private ArrayList<DrawingLine> lines;
+    private ArrayList<LineStroke> lines;
+    private ArrayList<TextBox> textBoxes;
     private PhotoMouseAdapter mouseAdapter;
+    private TextBox inFocusTextBox;
+    private Color boxColor;
+    private Color lineColor;
+
 
     /**
      * PhotoComponent constructor
@@ -47,14 +57,20 @@ public class PhotoComponent extends JComponent implements IMessageListener{
      */
     public PhotoComponent(){
         super();
+        this.setFocusable(true);
         flipped = false;
         Bus.getInstance().registerListener(this);
         mouseAdapter = new PhotoMouseAdapter();
         addMouseListener(mouseAdapter);
         addMouseMotionListener(mouseAdapter);
+        this.addKeyListener(this);
+        mode = AnnotationMode.Text;
         lines = new ArrayList<>();
-        //this.setPreferredSize(new Dimension(640,480));
-        //this.setSize(new Dimension(640,480));
+        textBoxes = new ArrayList<>();
+        this.boxColor = Color.yellow;
+        this.lineColor = Color.black;
+        this.setPreferredSize(new Dimension(DEFAULTWIDTH,DEFAULTHEIGHT));
+        this.setSize(new Dimension(DEFAULTWIDTH,DEFAULTHEIGHT));
     }
 
     /**
@@ -79,7 +95,23 @@ public class PhotoComponent extends JComponent implements IMessageListener{
      * @param g the Graphics object
      */
     public void drawImage(Graphics g){
-        g.drawImage(image, 0, 0, null); //center this
+        int currScreenHeight = this.getHeight();
+        int currScreenWidth = this.getWidth();
+        imageY = 0;
+        imageX = 0;
+        if(image != null) { //centers the image
+            if (image.getHeight() < currScreenHeight) {
+                int diff = currScreenHeight - image.getHeight();
+                diff = diff / 2;
+                imageY += diff;
+            }
+            if (image.getWidth() < currScreenWidth) {
+                int diff = currScreenWidth - image.getWidth();
+                diff = diff / 2;
+                imageX += diff;
+            }
+        }
+        g.drawImage(image, imageX, imageY, null);
     }
 
     /**
@@ -90,10 +122,13 @@ public class PhotoComponent extends JComponent implements IMessageListener{
      * @param g the Graphics object
      */
     public void drawFlipped(Graphics g){
-        g.setColor(Color.cyan);
-        g.fillRect(0,0,image.getWidth(),image.getHeight());
-        for(DrawingLine line: lines){
+        g.setColor(Color.white);
+        g.fillRect(imageX,imageY,image.getWidth(),image.getHeight());
+        for(LineStroke line: lines){
             line.draw(g);
+        }
+        for(TextBox textBox: textBoxes){ //textboxes will always be on top
+            textBox.draw(g);
         }
 
     }
@@ -109,6 +144,11 @@ public class PhotoComponent extends JComponent implements IMessageListener{
      */
     public void paintComponent(Graphics g){
         super.paintComponent(g);
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
         drawBackground(g);
         if(!flipped){
             drawImage(g);
@@ -129,7 +169,7 @@ public class PhotoComponent extends JComponent implements IMessageListener{
      * @return boolean that says if the point is inside the image or not
      */
     public boolean isPointInImage(Point p){
-        return p.x>0 && p.y>0 && p.x<image.getWidth() && p.y<image.getHeight();
+        return p.x>imageX && p.y>imageY && p.x<imageX+image.getWidth() && p.y<imageY+image.getHeight();
     }
 
     /**
@@ -141,9 +181,11 @@ public class PhotoComponent extends JComponent implements IMessageListener{
      */
     public void clearState(){
         lines = new ArrayList<>();
+        textBoxes = new ArrayList<>();
         flipped = false;
+        this.setPreferredSize(new Dimension(DEFAULTWIDTH,DEFAULTHEIGHT));
+        this.setSize(new Dimension(DEFAULTWIDTH,DEFAULTHEIGHT));
     }
-
 
     /**
      * receiveMessage
@@ -160,24 +202,64 @@ public class PhotoComponent extends JComponent implements IMessageListener{
                 ImageMessage imageMessage = (ImageMessage) m;
                 try{
                     image = ImageIO.read(imageMessage.file);
-                    this.setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
-                    //this.setSize(new Dimension(image.getWidth(), image.getHeight()));
-                    Bus.getInstance().sendMessage(new StatusMessage("Ready"));
                     clearState();
+                    this.setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
+                    this.setSize(new Dimension(image.getWidth(), image.getHeight()));
+                    Bus.getInstance().sendMessage(new StatusMessage("Ready"));
                     repaint();
                 }
                 catch(IOException e){
                     //handle it
                 }
                 break;
+            case "delete_image_message":
+                image = null;
+                Bus.getInstance().sendMessage(new StatusMessage("Ready"));
+                clearState();
+                repaint();
+                break;
+            case "change_color_message":
+                ChangeColorMessage changeColorMessage = (ChangeColorMessage) m;
+                if(changeColorMessage.objectType == Colors.Line){
+                    lineColor = changeColorMessage.color;
+                }
+                else{
+                    boxColor = changeColorMessage.color;
+                }
+                break;
             case "annotation_mode_message":
                 AnnotationModeMessage annotationMode = (AnnotationModeMessage) m;
                 mode = annotationMode.mode;
-                System.out.println("got the mode! "+ annotationMode.mode);
+                break;
             default:
                 break;
         }
     }
+
+    /*
+     * Key events -------------------------------------------------------------------------------
+     * ------------------------------------------------------------------------------------------
+     */
+
+    public void keyTyped(KeyEvent e){}
+
+    public void keyPressed(KeyEvent e){
+        if(e.getKeyCode()==KeyEvent.VK_BACK_SPACE){ //can't be done in keyTyped because that's only for input keys
+            inFocusTextBox.removeChar();
+        }
+        if(e.getKeyChar() != '\b'){
+            inFocusTextBox.addChar(e.getKeyChar());
+        }
+        repaint();
+    }
+
+    public void keyReleased(KeyEvent e){}
+
+    /*
+     * ------------------------------------------------------------------------------------------
+     * ------------------------------------------------------------------------------------------
+     */
+
 
     /**
      * Internal class of MouseAdapter created for the PhotoComponent.
@@ -185,7 +267,10 @@ public class PhotoComponent extends JComponent implements IMessageListener{
      * Makes use of mouseDragged for drawing, as well as mouseClicked for double click, and mouseRelease to finish lines.
      */
     private class PhotoMouseAdapter extends MouseAdapter{
-        private DrawingLine currentLine;
+        private LineStroke currentLine;
+        private TextBox currentTextBox;
+        private Point startCorner;
+        private Point endCorner;
 
         public void mouseClicked(MouseEvent e) {
             if(e.getClickCount() == 2 && PhotoComponent.this.isPointInImage(e.getPoint())){
@@ -195,8 +280,18 @@ public class PhotoComponent extends JComponent implements IMessageListener{
         }
 
         public void mousePressed(MouseEvent e){
-            currentLine = new DrawingLine(Color.black);
-            PhotoComponent.this.lines.add(currentLine);
+            PhotoComponent.this.requestFocusInWindow();
+            if(flipped){
+                if(mode == AnnotationMode.Drawing){
+                    currentLine = new LineStroke(PhotoComponent.this.lineColor);
+                    PhotoComponent.this.lines.add(currentLine);
+                }
+                else if(mode == AnnotationMode.Text && PhotoComponent.this.isPointInImage(e.getPoint())){
+                    startCorner = e.getPoint();
+                    currentTextBox = new TextBox(startCorner, startCorner, PhotoComponent.this.boxColor);
+                    PhotoComponent.this.textBoxes.add(currentTextBox);
+                }
+            }
         }
 
         public void mouseDragged(MouseEvent e){
@@ -205,14 +300,22 @@ public class PhotoComponent extends JComponent implements IMessageListener{
                     this.currentLine.addPoint(e.getPoint());
                     repaint();
                 }
-                else{
-                    //text
+                else if(mode == AnnotationMode.Text && PhotoComponent.this.isPointInImage(e.getPoint())){
+                    if(startCorner != null){ //catches dragging the mouse from out of image INTO image
+                        endCorner = e.getPoint();
+                        currentTextBox.setDimensions(startCorner, endCorner);
+                        repaint();
+                    }
                 }
             }
         }
 
         public void mouseReleased(MouseEvent e){
             currentLine = null;
+            PhotoComponent.this.inFocusTextBox = currentTextBox;
+            currentTextBox = null;
+            startCorner = null;
+            endCorner = null;
         }
 
     }

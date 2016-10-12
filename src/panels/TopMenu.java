@@ -1,6 +1,7 @@
 package panels;
 
 import bus.Bus;
+import bus.messages.DeleteImageMessage;
 import bus.messages.StatusMessage;
 import bus.messages.ImageMessage;
 
@@ -46,24 +47,20 @@ public class TopMenu extends JMenuBar{
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.showOpenDialog(fileChooser);
             File file = fileChooser.getSelectedFile();
-            System.out.println(file);
-            //pick only images here
-            /*
-             public boolean accept(File f) {
-       if (f.isDirectory()) {
-           return true;
-       } else {
-           String filename = f.getName().toLowerCase();
-           return filename.endsWith(".jpg") || filename.endsWith(".jpeg") ;
-       }
-   }
-             */
-            Bus.getInstance().sendMessage(new ImageMessage(file));
+            if(isImage(file)){
+                Bus.getInstance().sendMessage(new ImageMessage(file));
+            }
+            else{
+                System.out.println("The file selected was not an image.");
+                Bus.getInstance().sendMessage(new StatusMessage("File was not an image | Ready"));
+            }
+
         });
 
         deleteItem = new JMenuItem("Delete");
         deleteItem.addActionListener(e -> {
             Bus.getInstance().sendMessage(new StatusMessage("Deleting photo..."));
+            Bus.getInstance().sendMessage(new DeleteImageMessage());
         });
 
         exitItem = new JMenuItem("Exit");
@@ -102,5 +99,11 @@ public class TopMenu extends JMenuBar{
         view.add(gridViewRadioItem);
         view.add(splitViewRadioItem);
         this.add(view);
+    }
+
+    private boolean isImage(File file){
+        String fileName = file.getName().toLowerCase();
+        return fileName.endsWith(".jpg") || fileName.endsWith(".jpeg")
+            || fileName.endsWith(".gif") || fileName.endsWith(".png");
     }
 }
