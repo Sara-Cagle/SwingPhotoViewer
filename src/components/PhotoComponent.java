@@ -34,13 +34,11 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
 
     private final int DEFAULTWIDTH = 300;
     private final int DEFAULTHEIGHT = 300;
+    private Photo photo;
     private int imageX;
     private int imageY;
     private boolean flipped;
-    private BufferedImage image;
     private AnnotationMode mode;
-    private ArrayList<LineStroke> lines;
-    private ArrayList<TextBox> textBoxes;
     private PhotoMouseAdapter mouseAdapter;
     private TextBox inFocusTextBox;
     private Color boxColor;
@@ -55,10 +53,10 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
      * Prepares collections of lines to be drawn.
      * Waits for images to be uploaded.
      */
-    public PhotoComponent(){
+    public PhotoComponent(Photo photo){
         super();
         this.setFocusable(true);
-
+        this.photo = photo;
         flipped = false;
         Bus.getInstance().registerListener(this);
         mouseAdapter = new PhotoMouseAdapter();
@@ -66,12 +64,15 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
         addMouseMotionListener(mouseAdapter);
         this.addKeyListener(this);
         mode = AnnotationMode.Text;
-        lines = new ArrayList<>();
-        textBoxes = new ArrayList<>();
         this.boxColor = Color.yellow;
         this.lineColor = Color.black;
         this.setPreferredSize(new Dimension(DEFAULTWIDTH,DEFAULTHEIGHT));
         this.setSize(new Dimension(DEFAULTWIDTH,DEFAULTHEIGHT));
+        if(photo != null && photo.getImage() != null){
+            BufferedImage image = photo.getImage();
+            this.setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
+            this.setSize(new Dimension(image.getWidth(), image.getHeight()));
+        }
     }
 
     /**
@@ -100,7 +101,8 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
         int currScreenWidth = this.getWidth();
         imageY = 0;
         imageX = 0;
-        if(image != null) { //centers the image
+        if(photo != null && photo.getImage() != null) { //centers the image
+            BufferedImage image = photo.getImage();
             if (image.getHeight() < currScreenHeight) {
                 int diff = currScreenHeight - image.getHeight();
                 diff = diff / 2;
@@ -111,8 +113,9 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
                 diff = diff / 2;
                 imageX += diff;
             }
+            g.drawImage(image, imageX, imageY, null);
         }
-        g.drawImage(image, imageX, imageY, null);
+
     }
 
     /**
@@ -123,12 +126,13 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
      * @param g the Graphics object
      */
     public void drawFlipped(Graphics g){
+        BufferedImage image = photo.getImage();
         g.setColor(Color.white);
         g.fillRect(imageX,imageY,image.getWidth(),image.getHeight());
-        for(LineStroke line: lines){
+        for(LineStroke line: photo.getLines()){
             line.draw(g);
         }
-        for(TextBox textBox: textBoxes){ //textboxes will always be on top
+        for(TextBox textBox: photo.getTextBoxes()){ //textboxes will always be on top
             textBox.draw(g);
         }
 
@@ -170,6 +174,7 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
      * @return boolean that says if the point is inside the image or not
      */
     public boolean isPointInImage(Point p){
+        BufferedImage image = photo.getImage();
         return p.x>imageX && p.y>imageY && p.x<imageX+image.getWidth() && p.y<imageY+image.getHeight();
     }
 
@@ -181,8 +186,8 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
      * Will clear the back of the image and reset the flipped bool.
      */
     public void clearState(){
-        lines = new ArrayList<>();
-        textBoxes = new ArrayList<>();
+        //lines = new ArrayList<>();
+        //textBoxes = new ArrayList<>();
         flipped = false;
         this.setPreferredSize(new Dimension(DEFAULTWIDTH,DEFAULTHEIGHT));
         this.setSize(new Dimension(DEFAULTWIDTH,DEFAULTHEIGHT));
@@ -199,7 +204,7 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
      */
     public void receiveMessage(Message m){
         switch(m.type()){
-            case "image_message":
+            /*case "image_message":
                 ImageMessage imageMessage = (ImageMessage) m;
                 try{
                     image = ImageIO.read(imageMessage.file);
@@ -212,13 +217,13 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
                 catch(IOException e){
                     //handle it
                 }
-                break;
-            case "delete_image_message":
+                break;*/
+            /*case "delete_image_message":
                 image = null;
                 Bus.getInstance().sendMessage(new StatusMessage("Ready"));
                 clearState();
                 repaint();
-                break;
+                break;*/
             case "change_color_message":
                 ChangeColorMessage changeColorMessage = (ChangeColorMessage) m;
                 if(changeColorMessage.objectType == Colors.Line){
@@ -285,12 +290,12 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
             if(flipped){
                 if(mode == AnnotationMode.Drawing){
                     currentLine = new LineStroke(PhotoComponent.this.lineColor);
-                    PhotoComponent.this.lines.add(currentLine);
+                    PhotoComponent.this.photo.addLine(currentLine);
                 }
                 else if(mode == AnnotationMode.Text && PhotoComponent.this.isPointInImage(e.getPoint())){
                     startCorner = e.getPoint();
                     currentTextBox = new TextBox(startCorner, startCorner, PhotoComponent.this.boxColor);
-                    PhotoComponent.this.textBoxes.add(currentTextBox);
+                    PhotoComponent.this.photo.addTextBox(currentTextBox);
                 }
             }
         }

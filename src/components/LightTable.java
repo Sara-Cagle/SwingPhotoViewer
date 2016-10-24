@@ -17,11 +17,11 @@ import java.util.ArrayList;
 /**
  * Created by saracagle on 10/23/16.
  */
-public class LightTable extends JPanel implements IMessageListener{
+public class LightTable extends JPanel implements IMessageListener, IThumbnailListener{
     private ArrayList<Photo> photos;
-    private Photo currentPhoto;
     private ArrayList<ThumbnailComponent> thumbnails;
     private ViewMode mode;
+    private Photo currentPhoto;
 
     public LightTable(){
         this.setLayout(new BorderLayout());
@@ -64,9 +64,30 @@ public class LightTable extends JPanel implements IMessageListener{
     }
 
 
-
     public void drawSplitMode(){
+        PhotoComponent photoComponent = new PhotoComponent(currentPhoto);
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.getViewport().add(photoComponent);
 
+        JPanel thumbnailPanel = new JPanel();
+        thumbnailPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        for (ThumbnailComponent thumbnailComponent : thumbnails) {
+            thumbnailPanel.add(thumbnailComponent);
+        }
+        this.add(scrollPane, BorderLayout.CENTER);
+        this.add(thumbnailPanel, BorderLayout.SOUTH);
+    }
+
+    @Override
+    public void onThumbnailClick(ThumbnailComponent thumbnail) {
+        System.out.println("Single click");
+    }
+
+    @Override
+    public void onThumbnailDoubleClick(ThumbnailComponent thumbnail) {
+        System.out.println("Double click");
+        currentPhoto = thumbnail.getPhoto();
+        updateView();
     }
 
     @Override
@@ -77,8 +98,9 @@ public class LightTable extends JPanel implements IMessageListener{
                 try {
                     BufferedImage image = ImageIO.read(imageMessage.file);
                     Photo photo = new Photo(image);
+                    currentPhoto = photo;
                     this.photos.add(photo);
-                    this.thumbnails.add(new ThumbnailComponent(photo));
+                    this.thumbnails.add(new ThumbnailComponent(photo, this));
                     Bus.getInstance().sendMessage(new StatusMessage("Ready"));
                     updateView();
                 }
@@ -97,4 +119,6 @@ public class LightTable extends JPanel implements IMessageListener{
                 break;
         }
     }
+
+
 }

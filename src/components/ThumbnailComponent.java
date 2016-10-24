@@ -2,6 +2,8 @@ package components;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
 /**
@@ -9,10 +11,28 @@ import java.awt.image.BufferedImage;
  */
 public class ThumbnailComponent extends JComponent {
     private Photo photo;
+    private IThumbnailListener listener;
 
-    public ThumbnailComponent(Photo photo) {
+    public ThumbnailComponent(Photo photo, IThumbnailListener listener) {
         this.photo = photo;
+        this.listener = listener;
         this.setPreferredSize(new Dimension(200, 200));
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(e.getClickCount() == 2){
+                    ThumbnailComponent.this.listener.onThumbnailDoubleClick(ThumbnailComponent.this);
+                }
+                else if(e.getClickCount()==1){ //unsure if need this
+                    ThumbnailComponent.this.listener.onThumbnailClick(ThumbnailComponent.this);
+                }
+                super.mouseClicked(e);
+            }
+        });
+    }
+
+    public Photo getPhoto(){
+        return photo;
     }
 
     @Override
