@@ -58,6 +58,7 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
     public PhotoComponent(){
         super();
         this.setFocusable(true);
+
         flipped = false;
         Bus.getInstance().registerListener(this);
         mouseAdapter = new PhotoMouseAdapter();

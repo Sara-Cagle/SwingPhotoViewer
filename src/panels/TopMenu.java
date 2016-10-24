@@ -4,6 +4,8 @@ import bus.Bus;
 import bus.messages.DeleteImageMessage;
 import bus.messages.StatusMessage;
 import bus.messages.ImageMessage;
+import bus.messages.ViewModeMessage;
+import constants.ViewMode;
 
 import javax.swing.*;
 import java.io.File;
@@ -80,16 +82,19 @@ public class TopMenu extends JMenuBar{
         photoViewRadioItem = new JRadioButtonMenuItem("Photo View", true);
         photoViewRadioItem.addActionListener(e -> {
             Bus.getInstance().sendMessage(new StatusMessage(photoViewRadioItem.getText()+" activated"));
+            Bus.getInstance().sendMessage(new ViewModeMessage(ViewMode.Photo));
         });
 
         gridViewRadioItem = new JRadioButtonMenuItem("Grid View");
         gridViewRadioItem.addActionListener(e -> {
             Bus.getInstance().sendMessage(new StatusMessage(gridViewRadioItem.getText()+" activated"));
+            Bus.getInstance().sendMessage(new ViewModeMessage(ViewMode.Grid));
         });
 
         splitViewRadioItem = new JRadioButtonMenuItem("Split View");
         splitViewRadioItem.addActionListener(e -> {
             Bus.getInstance().sendMessage(new StatusMessage(splitViewRadioItem.getText()+" activated."));
+            Bus.getInstance().sendMessage(new ViewModeMessage(ViewMode.Split));
         });
 
         viewRadioButtonGroup.add(photoViewRadioItem);

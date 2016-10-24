@@ -2,6 +2,8 @@ package panels;
 
 import java.awt.*;
 import javax.swing.*;
+
+import components.LightTable;
 import components.PhotoComponent;
 
 /**
@@ -15,6 +17,7 @@ import components.PhotoComponent;
  */
 public class ContentPanel extends JPanel{
     private JComponent photoComponent;
+    private JComponent lightTable;
     private JScrollPane scrollPane;
 
     /**
@@ -23,9 +26,8 @@ public class ContentPanel extends JPanel{
     public ContentPanel(){
         super();
         this.setLayout(new BorderLayout()); //need to set border layout in order to have full scrollability
-        photoComponent = new PhotoComponent(); //this will determine the size (greater than minimum)
-        scrollPane = new JScrollPane();
-        scrollPane.getViewport().add(photoComponent);
-        this.add(scrollPane, BorderLayout.CENTER);
+        //photoComponent = new PhotoComponent(); //this will determine the size (greater than minimum)
+        lightTable = new LightTable();
+        this.add(lightTable, BorderLayout.CENTER);
     }
 }
