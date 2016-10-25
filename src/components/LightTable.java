@@ -166,6 +166,18 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
                 Bus.getInstance().sendMessage(new StatusMessage("Ready"));
                 updateView();
                 break;
+            case "move_right_message":
+                if(photos.indexOf(currentPhoto)+1 < photos.size()){
+                    currentPhoto = photos.get(photos.indexOf(currentPhoto)+1);
+                    updateView();
+                }
+                break;
+            case "move_left_message":
+                if(photos.indexOf(currentPhoto)-1 > -1){
+                    currentPhoto = photos.get(photos.indexOf(currentPhoto)-1);
+                    updateView();
+                }
+                break;
         }
     }
 
