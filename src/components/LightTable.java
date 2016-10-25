@@ -19,15 +19,13 @@ import java.util.ArrayList;
  */
 public class LightTable extends JPanel implements IMessageListener, IThumbnailListener{
     private ArrayList<Photo> photos;
-    private ArrayList<ThumbnailComponent> thumbnails;
     private ViewMode mode;
     private Photo currentPhoto;
 
     public LightTable(){
         this.setLayout(new BorderLayout());
-        this.photos = new ArrayList<Photo>();
+        this.photos = new ArrayList<>();
         this.currentPhoto = null;
-        this.thumbnails = new ArrayList<ThumbnailComponent>();
         Bus.getInstance().registerListener(this);
         mode = ViewMode.Photo;
         updateView();
@@ -161,9 +159,12 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
                 mode = modeMessage.mode;
                 System.out.println("Mode set to: "+mode);
                 updateView();
+                break;
             case "delete_image_message":
+                photos.remove(currentPhoto);
+                currentPhoto = null;
                 Bus.getInstance().sendMessage(new StatusMessage("Ready"));
-                repaint();
+                updateView();
                 break;
         }
     }
