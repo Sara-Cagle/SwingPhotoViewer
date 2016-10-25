@@ -22,7 +22,7 @@ import java.util.ArrayList;
  * PhotoComponent
  *
  * PhotoComponent is a JComponent responsible for the image
- * you see in the canvas area upon image uploads.
+ * you see in the canvas.
  * Handles drawing the image and interacting with it via mouse events
  * such as "flipping", drawing, and creating text.
  * Listens for messages on the bus to hear states from other parts of the app.
@@ -52,6 +52,8 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
      * Sets up special mouseAdapters to prepare for drawing and text.
      * Prepares collections of lines to be drawn.
      * Waits for images to be uploaded.
+     *
+     * @param photo, the Photo object it's drawing on
      */
     public PhotoComponent(Photo photo){
         super();
@@ -179,51 +181,15 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
     }
 
     /**
-     * clearState
-     *
-     * Resets the state of an image that's been uploaded.
-     * Should be called whenever an image is uploaded.
-     * Will clear the back of the image and reset the flipped bool.
-     */
-    public void clearState(){
-        //lines = new ArrayList<>();
-        //textBoxes = new ArrayList<>();
-        flipped = false;
-        this.setPreferredSize(new Dimension(DEFAULTWIDTH,DEFAULTHEIGHT));
-        this.setSize(new Dimension(DEFAULTWIDTH,DEFAULTHEIGHT));
-    }
-
-    /**
      * receiveMessage
      *
      * Receives a message of a file that will be passed in from the Bus.
-     * If the message is an ImageMessage, then the file will be checked if it's an image.
-     * If it's an image, then it'll be given to the component to display.
+     * Listens for the annotation mode and the colors.
      *
      * @param m, a Message received from the bus.
      */
     public void receiveMessage(Message m){
         switch(m.type()){
-            /*case "image_message":
-                ImageMessage imageMessage = (ImageMessage) m;
-                try{
-                    image = ImageIO.read(imageMessage.file);
-                    clearState();
-                    this.setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
-                    this.setSize(new Dimension(image.getWidth(), image.getHeight()));
-                    Bus.getInstance().sendMessage(new StatusMessage("Ready"));
-                    repaint();
-                }
-                catch(IOException e){
-                    //handle it
-                }
-                break;*/
-            /*case "delete_image_message":
-                image = null;
-                Bus.getInstance().sendMessage(new StatusMessage("Ready"));
-                clearState();
-                repaint();
-                break;*/
             case "change_color_message":
                 ChangeColorMessage changeColorMessage = (ChangeColorMessage) m;
                 if(changeColorMessage.objectType == Colors.Line){

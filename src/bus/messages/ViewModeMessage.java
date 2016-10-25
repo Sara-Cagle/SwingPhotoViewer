@@ -3,7 +3,9 @@ package bus.messages;
 import constants.ViewMode;
 
 /**
- * Created by saracagle on 10/23/16.
+ *
+ * @Author Sara Cagle
+ * @Date 10/23/2016.
  */
 public class ViewModeMessage extends Message{
 
@@ -21,7 +23,7 @@ public class ViewModeMessage extends Message{
     /**
      * type
      *
-     * @return the type of the message, "status_message"
+     * @return the type of the message, "view_mode_message"
      */
     public String type() {
         return "view_mode_message";

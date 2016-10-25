@@ -7,22 +7,28 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
 /**
- * Created by saracagle on 10/23/16.
+ * Thumbnail
+ *
+ * Thumbnail extends JComponent, is a smaller, scaled down version of a Photo.
+ *
+ *
+ * @Author Sara Cagle
+ * @Date 10/23/2016
  */
-public class ThumbnailComponent extends JComponent {
+public class Thumbnail extends JComponent {
     private Photo photo;
     private IThumbnailListener listener;
     private boolean selected;
-    private final double SCALEX = 0.5;
-    private final double SCALEY = 0.5;
+    private final double SCALEX = 0.2;
+    private final double SCALEY = 0.2;
 
-    public ThumbnailComponent(Photo photo, boolean selected, IThumbnailListener listener) {
+    public Thumbnail(Photo photo, boolean selected, IThumbnailListener listener) {
         this.photo = photo;
         this.selected = selected;
         this.listener = listener;
         if(photoExists()) {
             BufferedImage image = photo.getImage();
-            //this.setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
+            //this.setPreferredSize(new Dimension(image.getWidth(), image.getHeight())); //this will mess up the split view grid
             this.setPreferredSize(new Dimension(200, 200));
         }
         else { //shouldn't ever hit this
@@ -31,10 +37,10 @@ public class ThumbnailComponent extends JComponent {
         this.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 if(e.getClickCount() == 2){ //change to photo mode
-                    ThumbnailComponent.this.listener.onThumbnailDoubleClick(ThumbnailComponent.this);
+                    Thumbnail.this.listener.onThumbnailDoubleClick(Thumbnail.this);
                 }
                 else if(e.getClickCount()==1){ //unsure if need this //highlight photo
-                    ThumbnailComponent.this.listener.onThumbnailClick(ThumbnailComponent.this);
+                    Thumbnail.this.listener.onThumbnailClick(Thumbnail.this);
                 }
                 super.mouseClicked(e);
             }
@@ -44,7 +50,7 @@ public class ThumbnailComponent extends JComponent {
     /**
      * photoExists
      *
-     * Does a sanity check to ensure the photo hosted in ThumbnailComponent exists.
+     * Does a sanity check to ensure the photo hosted in Thumbnail exists.
      *
      * @return boolean, the photo exists or does not
      */
@@ -55,7 +61,7 @@ public class ThumbnailComponent extends JComponent {
     /**
      * getPhoto
      *
-     * Gets the photo held by ThumbnailComponent.
+     * Gets the photo held by Thumbnail.
      *
      * @return photo
      */

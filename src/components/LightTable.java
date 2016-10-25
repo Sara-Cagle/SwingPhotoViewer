@@ -3,25 +3,35 @@ package components;
 import bus.Bus;
 import bus.IMessageListener;
 import bus.messages.*;
-import constants.Colors;
 import constants.ViewMode;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * Created by saracagle on 10/23/16.
+ * LightTable
+ *
+ * The main component of the app that displays photos based on their modes.
+ * Users can select thumbnails and annotate images, navigating between modes.
+ *
+ * @Author Sara Cagle
+ * @Date 10/23/2016
  */
 public class LightTable extends JPanel implements IMessageListener, IThumbnailListener{
     private ArrayList<Photo> photos;
     private ViewMode mode;
     private Photo currentPhoto;
 
+    /**
+     * LightTable constructor
+     *
+     * Sits in the ContentPanel, displays the photos based on the current view mode.
+     * Has a current photo.
+     */
     public LightTable(){
         this.setLayout(new BorderLayout());
         this.photos = new ArrayList<>();
@@ -31,6 +41,11 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
         updateView();
     }
 
+    /**
+     * updateView
+     *
+     * The updateView method draws the appropriate view based on the mode.
+     */
     public void updateView() {
         this.removeAll(); //clear the component
         switch(mode){
@@ -71,7 +86,7 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
         JPanel thumbnailPanel = new JPanel();
         thumbnailPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         for (Photo photo : photos) {
-            thumbnailPanel.add(new ThumbnailComponent(photo, photo==currentPhoto, this));
+            thumbnailPanel.add(new Thumbnail(photo, photo==currentPhoto, this));
         }
         this.add(thumbnailPanel, BorderLayout.CENTER);
     }
@@ -89,23 +104,21 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
         PhotoComponent photoComponent = new PhotoComponent(currentPhoto);
         JScrollPane photoComponentScrollPane = new JScrollPane();
         photoComponentScrollPane.getViewport().add(photoComponent);
-
-
-
         JPanel innerThumbnailPanel = new JPanel(); //thumbnails actually go in here, this size determines the scroller
-        innerThumbnailPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 0));
-
+        //innerThumbnailPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        innerThumbnailPanel.setLayout(new GridLayout(1, 100, 5, 5));
+       // innerThumbnailPanel.setMaximumSize(new Dimension(100000000, 150)); //this doesn't work
+        //innerThumbnailPanel.setMinimumSize(new Dimension(1, 150));
         for (Photo photo : photos) {
-            innerThumbnailPanel.add(new ThumbnailComponent(photo, photo==currentPhoto, this));
+            innerThumbnailPanel.add(new Thumbnail(photo, photo==currentPhoto, this));
         }
-        JScrollPane thumbnailScrollPane = new JScrollPane(innerThumbnailPanel); //parent of the inner table
 
+        JScrollPane thumbnailScrollPane = new JScrollPane(innerThumbnailPanel); //parent of the inner table
         thumbnailScrollPane.getViewport().add(innerThumbnailPanel);
+
         this.add(photoComponentScrollPane, BorderLayout.CENTER);
         this.add(thumbnailScrollPane, BorderLayout.SOUTH);
     }
-
-
 
     /**
      * onThumbnailClick
@@ -115,7 +128,7 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
      *
      * @param thumbnail the thumbnail in question
      */
-    public void onThumbnailClick(ThumbnailComponent thumbnail) {
+    public void onThumbnailClick(Thumbnail thumbnail) {
         System.out.println("Single click");
         currentPhoto = thumbnail.getPhoto();
         updateView();
@@ -129,14 +142,21 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
      *
      * @param thumbnail the thumbnail in question
      */
-    public void onThumbnailDoubleClick(ThumbnailComponent thumbnail) {
+    public void onThumbnailDoubleClick(Thumbnail thumbnail) {
         System.out.println("Double click");
         currentPhoto = thumbnail.getPhoto();
         Bus.getInstance().sendMessage(new ViewModeMessage(ViewMode.Photo));
-
     }
 
-    @Override
+    /**
+     * receiveMessage
+     *
+     * Receives a message of a file that will be passed in from the Bus.
+     * If the message is an ImageMessage, then the file will turned into a Photo object.
+     * Other messages indicate deletion, view mode, and pagination.
+     *
+     * @param m, a Message received from the bus.
+     */
     public void receiveMessage(Message m) {
         switch(m.type()) {
             case "image_message":
@@ -146,7 +166,6 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
                     Photo photo = new Photo(image);
                     currentPhoto = photo;
                     this.photos.add(photo);
-                    //this.thumbnails.add(new ThumbnailComponent(photo, this));
                     Bus.getInstance().sendMessage(new StatusMessage("Ready"));
                     updateView();
                 }
@@ -161,7 +180,22 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
                 updateView();
                 break;
             case "delete_image_message":
-                photos.remove(currentPhoto);
+                int currIndex = photos.indexOf(currentPhoto);
+                if(currIndex+1 < photos.size() ){ //currentPhoto is not the end
+                    photos.remove(currentPhoto);
+                    currentPhoto = photos.get(currIndex);
+                    Bus.getInstance().sendMessage(new StatusMessage("Ready"));
+                    updateView();
+                    break;
+                }
+                if(currIndex-1 >= 0){ //currentPhoto is not the beginning
+                    photos.remove(currentPhoto);
+                    currentPhoto = photos.get(currIndex-1);
+                    Bus.getInstance().sendMessage(new StatusMessage("Ready"));
+                    updateView();
+                    break;
+                }
+                photos.remove(currentPhoto); //currentPhoto is the only photo
                 currentPhoto = null;
                 Bus.getInstance().sendMessage(new StatusMessage("Ready"));
                 updateView();

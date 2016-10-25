@@ -3,15 +3,10 @@ package panels;
 import bus.Bus;
 import bus.IMessageListener;
 import bus.messages.*;
-import components.Photo;
-import components.ThumbnailComponent;
 import constants.ViewMode;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 
 
 /**
@@ -111,12 +106,29 @@ public class TopMenu extends JMenuBar implements IMessageListener{
         this.add(view);
     }
 
+    /**
+     * isImage
+     *
+     * Checks if the imported document is an image.
+     * Only accept jpg, jpeg, gif, png
+     *
+     * @param file the uploaded file
+     * @return boolean, it's am image or not
+     */
     private boolean isImage(File file){
         String fileName = file.getName().toLowerCase();
         return fileName.endsWith(".jpg") || fileName.endsWith(".jpeg")
             || fileName.endsWith(".gif") || fileName.endsWith(".png");
     }
 
+    /**
+     * receiveMessage
+     *
+     * Receives a message passed in from the Bus.
+     * Listening for the mode change. Only can be changed to Photo mode.
+     *
+     * @param m, a Message received from the bus.
+     */
     public void receiveMessage(Message m) {
         switch(m.type()) {
             case "view_mode_message":

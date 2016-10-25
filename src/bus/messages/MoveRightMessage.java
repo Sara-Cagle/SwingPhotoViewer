@@ -1,7 +1,12 @@
 package bus.messages;
 
 /**
- * Created by saracagle on 10/24/16.
+ * MoveRightMessage
+ *
+ * A message to indicate to the system we're moving "right" or forward in the images.
+ *
+ * @Author Sara Cagle
+ * @Date 10/24/2016.
  */
 public class MoveRightMessage extends Message {
 
