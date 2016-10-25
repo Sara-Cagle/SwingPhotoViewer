@@ -1,14 +1,17 @@
 package panels;
 
 import bus.Bus;
-import bus.messages.DeleteImageMessage;
-import bus.messages.StatusMessage;
-import bus.messages.ImageMessage;
-import bus.messages.ViewModeMessage;
+import bus.IMessageListener;
+import bus.messages.*;
+import components.Photo;
+import components.ThumbnailComponent;
 import constants.ViewMode;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 
 
 /**
@@ -20,7 +23,7 @@ import java.io.File;
  * @Author Sara Cagle
  * @Data 9/13/2016
  */
-public class TopMenu extends JMenuBar{
+public class TopMenu extends JMenuBar implements IMessageListener{
 
     private JMenu file;
     private JMenuItem importItem;
@@ -40,6 +43,8 @@ public class TopMenu extends JMenuBar{
      */
     public TopMenu(){
         super();
+
+        Bus.getInstance().registerListener(this);
 
         file = new JMenu("File");
 
@@ -110,5 +115,16 @@ public class TopMenu extends JMenuBar{
         String fileName = file.getName().toLowerCase();
         return fileName.endsWith(".jpg") || fileName.endsWith(".jpeg")
             || fileName.endsWith(".gif") || fileName.endsWith(".png");
+    }
+
+    public void receiveMessage(Message m) {
+        switch(m.type()) {
+            case "view_mode_message":
+                ViewModeMessage modeMessage = (ViewModeMessage) m;
+                if(modeMessage.mode == ViewMode.Photo){
+                    photoViewRadioItem.setSelected(true);
+                }
+                break;
+        }
     }
 }
