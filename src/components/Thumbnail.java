@@ -99,7 +99,13 @@ public class Thumbnail extends JComponent {
         return -1;
     }
 
-    @Override
+    /**
+     * paintComponent
+     *
+     * Paint method for the thumbnail. Draws the thumbnail and highlights it if selected.
+     *
+     * @param g the Graphics object
+     */
     public void paintComponent(Graphics g){
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
@@ -110,6 +116,9 @@ public class Thumbnail extends JComponent {
         if(photoExists()) {
             BufferedImage image = photo.getImage();
             g2.scale(SCALEX, SCALEY); //scales the existing preferred size
+            g2.setColor(Color.pink);
+            g2.setStroke(new BasicStroke(10));
+            g2.drawRect(0,0, this.getWidth(), this.getHeight()); //draws a rect just for testing to show how much space is being taken up
             g2.drawImage(image, 0, 0, this.getWidth(), this.getHeight(), null);
             if(selected){
                 g2.setColor(Color.red);
