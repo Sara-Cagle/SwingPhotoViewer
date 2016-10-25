@@ -50,8 +50,17 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
         repaint();
     }
 
+    /**
+     * drawPhotoMode
+     *
+     * Creates the Photo Mode View of the application.
+     * The currently selected photo comes into the focus of the entire page in a scrollable pane.
+     */
     public void drawPhotoMode(){
-
+        PhotoComponent photoComponent = new PhotoComponent(currentPhoto);
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.getViewport().add(photoComponent);
+        this.add(scrollPane, BorderLayout.CENTER);
     }
 
     public void drawGridMode(){
@@ -63,19 +72,38 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
         this.add(thumbnailPanel, BorderLayout.CENTER);
     }
 
-
+    /**
+     * drawSplitMode
+     *
+     * Draws the Split Mode View where the top half of the content area is the photo
+     * and the bottom half is a horizontally scrollable strip of photos.
+     * The top half consists of a PhotoComponent, displayed at BorderLayout Center.
+     * The bottom thumbnail collection is a dynamically sized scrollpane based on an inner thumbnail panel.
+     *
+     */
     public void drawSplitMode(){
         PhotoComponent photoComponent = new PhotoComponent(currentPhoto);
-        JScrollPane scrollPane = new JScrollPane();
-        scrollPane.getViewport().add(photoComponent);
+        JScrollPane photoComponentScrollPane = new JScrollPane();
+        photoComponentScrollPane.getViewport().add(photoComponent);
 
-        JPanel thumbnailPanel = new JPanel();
-        thumbnailPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        JScrollPane thumbnailScrollPane = new JScrollPane(); //parent of the inner table
+
+        JPanel innerThumbnailPanel = new JPanel(); //thumbnails actually go in here, this size determines the scroller
+        innerThumbnailPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+
+        int thumbnailPanelWidth = 0;
+        int thumbnailPanelHeight = 0;
         for (ThumbnailComponent thumbnailComponent : thumbnails) {
-            thumbnailPanel.add(thumbnailComponent);
+            thumbnailPanelWidth += thumbnailComponent.getThumbnailImageWidth(); //gets full size, needs to get the thumbnail size
+            thumbnailPanelHeight = Math.max(thumbnailPanelHeight, thumbnailComponent.getThumbnailImageHeight());
+            innerThumbnailPanel.add(thumbnailComponent);
         }
-        this.add(scrollPane, BorderLayout.CENTER);
-        this.add(thumbnailPanel, BorderLayout.SOUTH);
+
+        innerThumbnailPanel.setPreferredSize(new Dimension(thumbnailPanelWidth, thumbnailPanelHeight));
+        innerThumbnailPanel.setSize(new Dimension(thumbnailPanelWidth, thumbnailPanelHeight));
+        thumbnailScrollPane.getViewport().add(innerThumbnailPanel);
+        this.add(photoComponentScrollPane, BorderLayout.CENTER);
+        this.add(thumbnailScrollPane, BorderLayout.SOUTH);
     }
 
     @Override
