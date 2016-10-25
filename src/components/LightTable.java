@@ -63,6 +63,12 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
         this.add(scrollPane, BorderLayout.CENTER);
     }
 
+    /**
+     * drawGridMode
+     *
+     * Creates the Grid Mode View of the application.
+     * Paints all of the existing thumbnails as a dynamic grid in the app.
+     */
     public void drawGridMode(){
         JPanel thumbnailPanel = new JPanel();
         thumbnailPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -86,34 +92,43 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
         JScrollPane photoComponentScrollPane = new JScrollPane();
         photoComponentScrollPane.getViewport().add(photoComponent);
 
-        JScrollPane thumbnailScrollPane = new JScrollPane(); //parent of the inner table
+
 
         JPanel innerThumbnailPanel = new JPanel(); //thumbnails actually go in here, this size determines the scroller
         innerThumbnailPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 0));
 
-        int thumbnailPanelWidth = 0;
-        int thumbnailPanelHeight = 0;
         for (ThumbnailComponent thumbnailComponent : thumbnails) {
-            thumbnailPanelWidth += thumbnailComponent.getThumbnailImageWidth();//thumbnailComponent.getPhoto().getImage().getWidth();//
-            thumbnailPanelHeight = Math.max(thumbnailPanelHeight, thumbnailComponent.getThumbnailImageHeight());
-            System.out.println("I'm adding the thumbnail to the split mode");
             innerThumbnailPanel.add(thumbnailComponent);
         }
+        JScrollPane thumbnailScrollPane = new JScrollPane(innerThumbnailPanel); //parent of the inner table
 
-        innerThumbnailPanel.setMinimumSize(new Dimension(thumbnailPanelWidth, thumbnailPanelHeight)); //currently have big huge gaps between images?
-        innerThumbnailPanel.setPreferredSize(new Dimension(thumbnailPanelWidth, thumbnailPanelHeight));
-        innerThumbnailPanel.setSize(new Dimension(thumbnailPanelWidth, thumbnailPanelHeight));
         thumbnailScrollPane.getViewport().add(innerThumbnailPanel);
         this.add(photoComponentScrollPane, BorderLayout.CENTER);
         this.add(thumbnailScrollPane, BorderLayout.SOUTH);
     }
 
-    @Override
+
+
+    /**
+     * onThumbnailClick
+     *
+     * This method is called when the thumbnail is single clicked.
+     * Will highlight the thumbnail in question.
+     *
+     * @param thumbnail the thumbnail in question
+     */
     public void onThumbnailClick(ThumbnailComponent thumbnail) {
         System.out.println("Single click");
     }
 
-    @Override
+    /**
+     * onThumbnailDoubleClick
+     *
+     * This method is called when the thumbnail is double clicked.
+     * Should swap the view to photo mode.
+     *
+     * @param thumbnail the thumbnail in question
+     */
     public void onThumbnailDoubleClick(ThumbnailComponent thumbnail) {
         System.out.println("Double click");
         currentPhoto = thumbnail.getPhoto();

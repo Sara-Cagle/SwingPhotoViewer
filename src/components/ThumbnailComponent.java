@@ -21,7 +21,8 @@ public class ThumbnailComponent extends JComponent {
         this.listener = listener;
         if(photoExists()) {
             BufferedImage image = photo.getImage();
-            this.setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
+            //this.setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
+            this.setPreferredSize(new Dimension(200, 200));
         }
         else { //shouldn't ever hit this
             this.setPreferredSize(new Dimension(100, 100)); //some default value
