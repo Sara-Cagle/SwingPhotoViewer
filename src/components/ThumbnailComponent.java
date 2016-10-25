@@ -16,6 +16,7 @@ public class ThumbnailComponent extends JComponent {
     private final double SCALEY = 0.5;
 
     public ThumbnailComponent(Photo photo, IThumbnailListener listener) {
+        System.out.println("I'm making a new thumbnail!!");
         this.photo = photo;
         this.listener = listener;
         if(photoExists()) {
@@ -27,10 +28,10 @@ public class ThumbnailComponent extends JComponent {
         }
         this.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
-                if(e.getClickCount() == 2){
+                if(e.getClickCount() == 2){ //change to photo mode
                     ThumbnailComponent.this.listener.onThumbnailDoubleClick(ThumbnailComponent.this);
                 }
-                else if(e.getClickCount()==1){ //unsure if need this
+                else if(e.getClickCount()==1){ //unsure if need this //highlight photo
                     ThumbnailComponent.this.listener.onThumbnailClick(ThumbnailComponent.this);
                 }
                 super.mouseClicked(e);

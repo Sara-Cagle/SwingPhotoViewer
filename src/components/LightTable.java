@@ -89,7 +89,7 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
         JScrollPane thumbnailScrollPane = new JScrollPane(); //parent of the inner table
 
         JPanel innerThumbnailPanel = new JPanel(); //thumbnails actually go in here, this size determines the scroller
-        innerThumbnailPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        innerThumbnailPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 0));
 
         int thumbnailPanelWidth = 0;
         int thumbnailPanelHeight = 0;
@@ -100,6 +100,7 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
             innerThumbnailPanel.add(thumbnailComponent);
         }
 
+        innerThumbnailPanel.setMinimumSize(new Dimension(thumbnailPanelWidth, thumbnailPanelHeight)); //currently have big huge gaps between images?
         innerThumbnailPanel.setPreferredSize(new Dimension(thumbnailPanelWidth, thumbnailPanelHeight));
         innerThumbnailPanel.setSize(new Dimension(thumbnailPanelWidth, thumbnailPanelHeight));
         thumbnailScrollPane.getViewport().add(innerThumbnailPanel);
