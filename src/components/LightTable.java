@@ -72,8 +72,8 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
     public void drawGridMode(){
         JPanel thumbnailPanel = new JPanel();
         thumbnailPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        for (ThumbnailComponent thumbnailComponent : thumbnails) {
-            thumbnailPanel.add(thumbnailComponent);
+        for (Photo photo : photos) {
+            thumbnailPanel.add(new ThumbnailComponent(photo, photo==currentPhoto, this));
         }
         this.add(thumbnailPanel, BorderLayout.CENTER);
     }
@@ -97,8 +97,8 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
         JPanel innerThumbnailPanel = new JPanel(); //thumbnails actually go in here, this size determines the scroller
         innerThumbnailPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 0));
 
-        for (ThumbnailComponent thumbnailComponent : thumbnails) {
-            innerThumbnailPanel.add(thumbnailComponent);
+        for (Photo photo : photos) {
+            innerThumbnailPanel.add(new ThumbnailComponent(photo, photo==currentPhoto, this));
         }
         JScrollPane thumbnailScrollPane = new JScrollPane(innerThumbnailPanel); //parent of the inner table
 
@@ -134,7 +134,6 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
     public void onThumbnailDoubleClick(ThumbnailComponent thumbnail) {
         System.out.println("Double click");
         currentPhoto = thumbnail.getPhoto();
-        //change to photoview
         Bus.getInstance().sendMessage(new ViewModeMessage(ViewMode.Photo));
 
     }
@@ -149,7 +148,7 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
                     Photo photo = new Photo(image);
                     currentPhoto = photo;
                     this.photos.add(photo);
-                    this.thumbnails.add(new ThumbnailComponent(photo, this));
+                    //this.thumbnails.add(new ThumbnailComponent(photo, this));
                     Bus.getInstance().sendMessage(new StatusMessage("Ready"));
                     updateView();
                 }

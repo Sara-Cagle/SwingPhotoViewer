@@ -12,11 +12,13 @@ import java.awt.image.BufferedImage;
 public class ThumbnailComponent extends JComponent {
     private Photo photo;
     private IThumbnailListener listener;
+    private boolean selected;
     private final double SCALEX = 0.5;
     private final double SCALEY = 0.5;
 
-    public ThumbnailComponent(Photo photo, IThumbnailListener listener) {
+    public ThumbnailComponent(Photo photo, boolean selected, IThumbnailListener listener) {
         this.photo = photo;
+        this.selected = selected;
         this.listener = listener;
         if(photoExists()) {
             BufferedImage image = photo.getImage();
@@ -103,6 +105,10 @@ public class ThumbnailComponent extends JComponent {
             BufferedImage image = photo.getImage();
             g2.scale(SCALEX, SCALEY); //scales the existing preferred size
             g2.drawImage(image, 0, 0, this.getWidth(), this.getHeight(), null);
+            if(selected){
+                g2.setColor(Color.red);
+                g2.drawRect(0, 0, this.getWidth(), this.getHeight());
+            }
         }
     }
 }
