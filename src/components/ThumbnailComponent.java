@@ -16,7 +16,6 @@ public class ThumbnailComponent extends JComponent {
     private final double SCALEY = 0.5;
 
     public ThumbnailComponent(Photo photo, IThumbnailListener listener) {
-        System.out.println("I'm making a new thumbnail!!");
         this.photo = photo;
         this.listener = listener;
         if(photoExists()) {

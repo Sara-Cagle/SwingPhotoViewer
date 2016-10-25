@@ -52,8 +52,8 @@ public class Bus {
      * @param m the Message to send to the listeners
      */
     public void sendMessage(Message m){
-        for(IMessageListener listener: registeredListeners){
-            listener.receiveMessage(m);
+        for(int i=0; i<registeredListeners.size(); i++){
+            registeredListeners.get(i).receiveMessage(m);
         }
     }
 
