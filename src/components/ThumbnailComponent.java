@@ -26,7 +26,6 @@ public class ThumbnailComponent extends JComponent {
             this.setPreferredSize(new Dimension(100, 100)); //some default value
         }
         this.addMouseListener(new MouseAdapter() {
-            @Override
             public void mouseClicked(MouseEvent e) {
                 if(e.getClickCount() == 2){
                     ThumbnailComponent.this.listener.onThumbnailDoubleClick(ThumbnailComponent.this);
@@ -70,7 +69,8 @@ public class ThumbnailComponent extends JComponent {
      */
     public int getThumbnailImageWidth(){
         if(photoExists()){
-            return (int)(this.getWidth() * SCALEX);
+            BufferedImage image = photo.getImage();
+            return (int)(image.getWidth() * SCALEX);
         }
         return -1;
     }
@@ -84,7 +84,8 @@ public class ThumbnailComponent extends JComponent {
      */
     public int getThumbnailImageHeight(){
         if(photoExists()){
-            return (int)(this.getHeight() * SCALEY);
+            BufferedImage image = photo.getImage();
+            return (int)(image.getHeight() * SCALEY);
         }
         return -1;
     }

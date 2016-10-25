@@ -94,8 +94,9 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
         int thumbnailPanelWidth = 0;
         int thumbnailPanelHeight = 0;
         for (ThumbnailComponent thumbnailComponent : thumbnails) {
-            thumbnailPanelWidth += thumbnailComponent.getThumbnailImageWidth(); //gets full size, needs to get the thumbnail size
+            thumbnailPanelWidth += thumbnailComponent.getThumbnailImageWidth();//thumbnailComponent.getPhoto().getImage().getWidth();//
             thumbnailPanelHeight = Math.max(thumbnailPanelHeight, thumbnailComponent.getThumbnailImageHeight());
+            System.out.println("I'm adding the thumbnail to the split mode");
             innerThumbnailPanel.add(thumbnailComponent);
         }
 
