@@ -82,7 +82,6 @@ public class Thumbnail extends JComponent {
                 double x = w;
                 double y = h;
                 if(w>h){
-                    System.out.println("The image was longer than it was wide");
                     while(x > 100){
                         x--;
                         y = x*(y/(x+1));
@@ -91,7 +90,6 @@ public class Thumbnail extends JComponent {
                     scaleY = y/h;
                 }
                 else{
-                    System.out.println("The image was taller than it was wide");
                     while(y > 100){
                         y--;
                         x = y*(x/(y+1));
@@ -102,7 +100,7 @@ public class Thumbnail extends JComponent {
             }
 
             //this.setPreferredSize(new Dimension(image.getWidth(), image.getHeight())); //this will mess up the split view grid
-            this.setPreferredSize(new Dimension(200, 200));
+            this.setPreferredSize(new Dimension(100, 100));
         }
     }
 
@@ -123,7 +121,7 @@ public class Thumbnail extends JComponent {
         if(photoExists()) {
             BufferedImage image = photo.getImage();
             //g2.scale(scaleX, scaleY); //scales the existing preferred size
-            g2.scale(0.5,0.5);
+            //g2.scale(0.5,0.5);
             g2.setStroke(new BasicStroke(10));
             g2.drawImage(image, 0, 0, this.getWidth(), this.getHeight(), null);
             if(selected){
