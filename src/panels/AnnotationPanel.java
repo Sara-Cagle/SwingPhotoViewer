@@ -76,12 +76,14 @@ public class AnnotationPanel extends JPanel implements IMessageListener{
                 AnnotationMode mode = Bus.getInstance().getAnnotationMode();
                 if(mode == AnnotationMode.Drawing){
                     System.out.println("I'm in annotationPanel and I just heard a new mode, setting to "+mode);
+                    Bus.getInstance().setAnnotationMode(AnnotationMode.Drawing);
                     drawing.setSelected(true);
                     Bus.getInstance().sendMessage(new AnnotationModeMessage(AnnotationMode.Drawing));
                 }
                 else{
                     System.out.println("I'm in annotationPanel and I just heard a new mode ELSE, setting to "+mode+ " (should be text)");
                     text.setSelected(true);
+                    Bus.getInstance().setAnnotationMode(AnnotationMode.Text);
                     Bus.getInstance().sendMessage(new AnnotationModeMessage(AnnotationMode.Text));
                 }
                 break;
