@@ -3,7 +3,6 @@ package panels;
 import bus.Bus;
 import bus.IMessageListener;
 import bus.messages.AdjustAnnotationColorsMessage;
-import bus.messages.AnnotationModeMessage;
 import bus.messages.Message;
 import bus.messages.StatusMessage;
 import constants.AnnotationMode;

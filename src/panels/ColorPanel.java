@@ -59,8 +59,9 @@ public class ColorPanel extends JPanel  implements IMessageListener{
             colorChooser = new JColorChooser();
             newColor = JColorChooser.showDialog(this, "Choose a color", this.getLineColor());
             if (newColor != null) {
-                Bus.getInstance().sendMessage(new ChangeStrokeColorMessage(newColor));
-                Bus.getInstance().setStrokeColor(lineColor);
+                System.out.println("Just picked a new pen color, its "+newColor);
+                Bus.getInstance().setStrokeColor(newColor);
+                Bus.getInstance().sendMessage(new AdjustAnnotationColorsMessage());
             }
         }));
 
@@ -68,8 +69,8 @@ public class ColorPanel extends JPanel  implements IMessageListener{
         boxColorButton.addActionListener((e -> {
             newColor = JColorChooser.showDialog(this, "Choose a color", this.getBoxColor());
             if (newColor != null) {
-                Bus.getInstance().sendMessage(new ChangeTextBoxColorMessage(newColor));
-                Bus.getInstance().setBoxColor(boxColor);
+                Bus.getInstance().setBoxColor(newColor);
+                Bus.getInstance().sendMessage(new AdjustAnnotationColorsMessage());
             }
         }));
 
@@ -120,21 +121,11 @@ public class ColorPanel extends JPanel  implements IMessageListener{
      */
     public void receiveMessage(Message m) {
         switch(m.type()) {
-            case "change_text_box_color_message":
-                ChangeTextBoxColorMessage textBoxColorMessage = (ChangeTextBoxColorMessage) m;
-                this.boxColorPanel.setBackground(textBoxColorMessage.color);
-                boxColor = textBoxColorMessage.color;
-                break;
-            case "change_stroke_color_message":
-                ChangeStrokeColorMessage strokeColorMessage = (ChangeStrokeColorMessage) m;
-                this.lineColorPanel.setBackground(strokeColorMessage.color);
-                lineColor = strokeColorMessage.color;
-                break;
             case "adjust_annotation_colors_message":
-                this.boxColorPanel.setBackground(Bus.getInstance().getBoxColor());
                 boxColor = Bus.getInstance().getBoxColor();
-                this.lineColorPanel.setBackground(Bus.getInstance().getStrokeColor());
+                this.boxColorPanel.setBackground(boxColor);
                 lineColor = Bus.getInstance().getStrokeColor();
+                this.lineColorPanel.setBackground(lineColor);
                 break;
             default:
                 break;
