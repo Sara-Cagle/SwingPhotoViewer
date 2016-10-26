@@ -25,6 +25,7 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
     private ArrayList<Photo> photos;
     private ViewMode mode;
     private Photo currentPhoto;
+    private int thumbnailSize;
 
     /**
      * LightTable constructor
@@ -36,9 +37,11 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
         this.setLayout(new BorderLayout());
         this.photos = new ArrayList<>();
         this.currentPhoto = null;
+        this.thumbnailSize = 100;
         Bus.getInstance().registerListener(this);
         mode = ViewMode.Photo;
         updateView();
+
     }
 
     /**
@@ -86,7 +89,7 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
         JPanel thumbnailPanel = new JPanel();
         thumbnailPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         for (Photo photo : photos) {
-            thumbnailPanel.add(new Thumbnail(photo, photo==currentPhoto, this));
+            thumbnailPanel.add(new Thumbnail(photo, photo==currentPhoto, this, thumbnailSize));
         }
         this.add(thumbnailPanel, BorderLayout.CENTER);
     }
@@ -107,7 +110,7 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
         JPanel innerThumbnailPanel = new JPanel();
         innerThumbnailPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         for (Photo photo : photos) {
-            innerThumbnailPanel.add(new Thumbnail(photo, photo==currentPhoto, this));
+            innerThumbnailPanel.add(new Thumbnail(photo, photo==currentPhoto, this, thumbnailSize));
         }
 
         JScrollPane thumbnailScrollPane = new JScrollPane(innerThumbnailPanel);
@@ -176,8 +179,13 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
                 System.out.println("Mode set to: "+mode);
                 updateView();
                 break;
-            case "repaint_message":
+           /* case "repaint_message":
                 System.out.println("Inside light table to update view ");
+                updateView();
+                break;*/
+            case "thumbnail_size_message":
+                ThumbnailSizeMessage thumbnailSizeMessage = (ThumbnailSizeMessage) m;
+                thumbnailSize = thumbnailSizeMessage.size;
                 updateView();
                 break;
             case "delete_image_message":

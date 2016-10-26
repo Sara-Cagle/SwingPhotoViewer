@@ -31,11 +31,11 @@ public class Thumbnail extends JComponent implements IMessageListener{
     private double scaleY;
     private int thumbnailSize;
 
-    public Thumbnail(Photo photo, boolean selected, IThumbnailListener listener) {
+    public Thumbnail(Photo photo, boolean selected, IThumbnailListener listener, int thumbnailSize) {
         this.photo = photo;
         this.selected = selected;
         this.listener = listener;
-        thumbnailSize = 100;
+        this.thumbnailSize = thumbnailSize;
         Bus.getInstance().registerListener(this);
         scaleImage();
         this.addMouseListener(new MouseAdapter() {
@@ -143,13 +143,13 @@ public class Thumbnail extends JComponent implements IMessageListener{
     }
 
     public void receiveMessage(Message m) {
-        switch (m.type()) {
+        /*switch (m.type()) {
             case "thumbnail_size_message":
                 ThumbnailSizeMessage message = (ThumbnailSizeMessage) m;
                 System.out.println("Hey i received a message for this size: "+message.size);
                 thumbnailSize = message.size;
                 Bus.getInstance().sendMessage(new RepaintMessage());
                 break;
-        }
+        }*/
     }
 }
