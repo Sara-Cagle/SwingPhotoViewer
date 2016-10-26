@@ -55,7 +55,7 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
      *
      * @param photo, the Photo object it's drawing on
      */
-    public PhotoComponent(Photo photo/*, Color boxColor, Color lineColor*/){
+    public PhotoComponent(Photo photo /*, Color boxColor, Color lineColor*/){
         super();
         this.setFocusable(true);
         this.photo = photo;
@@ -65,11 +65,7 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
         addMouseListener(mouseAdapter);
         addMouseMotionListener(mouseAdapter);
         this.addKeyListener(this);
-        mode = AnnotationMode.Text;
-        /*this.boxColor = Color.yellow;
-        this.lineColor = Color.black;*/
-        /*this.boxColor = boxColor;
-        this.lineColor = lineColor;*/
+        this.mode = Bus.getInstance().getAnnotationMode();
         this.boxColor = Bus.getInstance().getBoxColor();
         this.lineColor = Bus.getInstance().getStrokeColor();
         this.setPreferredSize(new Dimension(DEFAULTWIDTH,DEFAULTHEIGHT));
@@ -202,9 +198,8 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
                 ChangeStrokeColorMessage strokeColorMessage = (ChangeStrokeColorMessage) m;
                 lineColor = strokeColorMessage.color;
                 break;
-            case "annotation_mode_message":
+            case "adjust_annotation_colors_message":
                 mode = Bus.getInstance().getAnnotationMode();
-                System.out.println("Photocomponent just heard of a new annotation mode! it's this! "+mode);
                 break;
             default:
                 break;

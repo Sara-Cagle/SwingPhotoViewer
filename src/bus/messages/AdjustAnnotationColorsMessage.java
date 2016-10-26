@@ -7,7 +7,7 @@ import java.awt.*;
 /**
  * AdjustAnnotationColorsMessage
  *
- * Sends a message containing info about the last picked colors.
+ * Sends a message alerting that the program must pull global colors and annotation mode off the bus.
  *
  * @Author Sara Cagle
  * @Date 10/25/2016.

@@ -30,7 +30,6 @@ public class ColorPanel extends JPanel  implements IMessageListener{
     private Color newColor;
     private Color lineColor;
     private Color boxColor;
-    private AdjustAnnotationColorsMessage adjust;
 
     /**
      * ColorPanel
@@ -46,7 +45,6 @@ public class ColorPanel extends JPanel  implements IMessageListener{
         title = new TitledBorder("Color Selection");
         title.setTitleJustification(TitledBorder.CENTER);
         this.setBorder(title);
-        adjust = new AdjustAnnotationColorsMessage();
 
 
         newColor = null;
@@ -62,7 +60,6 @@ public class ColorPanel extends JPanel  implements IMessageListener{
             newColor = JColorChooser.showDialog(this, "Choose a color", this.getLineColor());
             if (newColor != null) {
                 Bus.getInstance().sendMessage(new ChangeStrokeColorMessage(newColor));
-                //adjust.setCurrentColors(lineColor, boxColor);
                 Bus.getInstance().setStrokeColor(lineColor);
             }
         }));
@@ -72,7 +69,6 @@ public class ColorPanel extends JPanel  implements IMessageListener{
             newColor = JColorChooser.showDialog(this, "Choose a color", this.getBoxColor());
             if (newColor != null) {
                 Bus.getInstance().sendMessage(new ChangeTextBoxColorMessage(newColor));
-                //adjust.setCurrentColors(lineColor, boxColor);
                 Bus.getInstance().setBoxColor(boxColor);
             }
         }));

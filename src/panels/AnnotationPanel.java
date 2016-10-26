@@ -37,8 +37,8 @@ public class AnnotationPanel extends JPanel implements IMessageListener{
     public AnnotationPanel() {
         super();
         this.setMaximumSize(new Dimension(800, 75));
-        adjust = new AdjustAnnotationColorsMessage();
         Bus.getInstance().registerListener(this);
+        Bus.getInstance().setAnnotationMode(AnnotationMode.Text);
 
         title = new TitledBorder("Annotation Mode");
         title.setTitleJustification(TitledBorder.CENTER);
@@ -54,16 +54,14 @@ public class AnnotationPanel extends JPanel implements IMessageListener{
         text.addActionListener(e -> {
             Bus.getInstance().sendMessage(new StatusMessage(text.getText() + " annotation activated"));
             Bus.getInstance().setAnnotationMode(AnnotationMode.Text);
-            Bus.getInstance().sendMessage(new AnnotationModeMessage(AnnotationMode.Text));
+            Bus.getInstance().sendMessage(new AdjustAnnotationColorsMessage());
         });
 
         annotationButtonGroup.add(drawing);
         drawing.addActionListener(e -> {
             Bus.getInstance().sendMessage(new StatusMessage(drawing.getText() + " annotation activated"));
             Bus.getInstance().setAnnotationMode(AnnotationMode.Drawing);
-            Bus.getInstance().sendMessage(new AnnotationModeMessage(AnnotationMode.Drawing));
-            System.out.println("I just clicked on the drawing thing, i should be changing mode to drawing");
-
+            Bus.getInstance().sendMessage(new AdjustAnnotationColorsMessage());
         });
 
         super.add(text);
@@ -75,16 +73,10 @@ public class AnnotationPanel extends JPanel implements IMessageListener{
             case "adjust_annotation_colors_message":
                 AnnotationMode mode = Bus.getInstance().getAnnotationMode();
                 if(mode == AnnotationMode.Drawing){
-                    System.out.println("I'm in annotationPanel and I just heard a new mode, setting to "+mode);
-                    Bus.getInstance().setAnnotationMode(AnnotationMode.Drawing);
                     drawing.setSelected(true);
-                    Bus.getInstance().sendMessage(new AnnotationModeMessage(AnnotationMode.Drawing));
                 }
                 else{
-                    System.out.println("I'm in annotationPanel and I just heard a new mode ELSE, setting to "+mode+ " (should be text)");
                     text.setSelected(true);
-                    Bus.getInstance().setAnnotationMode(AnnotationMode.Text);
-                    Bus.getInstance().sendMessage(new AnnotationModeMessage(AnnotationMode.Text));
                 }
                 break;
         }
