@@ -190,14 +190,13 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
      */
     public void receiveMessage(Message m){
         switch(m.type()){
-            case "change_color_message":
-                ChangeColorMessage changeColorMessage = (ChangeColorMessage) m;
-                if(changeColorMessage.objectType == Colors.Line){
-                    lineColor = changeColorMessage.color;
-                }
-                else{
-                    boxColor = changeColorMessage.color;
-                }
+            case "change_text_box_color_message":
+                ChangeTextBoxColorMessage textBoxColorMessage = (ChangeTextBoxColorMessage) m;
+                boxColor = textBoxColorMessage.color;
+                break;
+            case "change_stroke_color_message":
+                ChangeStrokeColorMessage strokeColorMessage = (ChangeStrokeColorMessage) m;
+                lineColor = strokeColorMessage.color;
                 break;
             case "annotation_mode_message":
                 AnnotationModeMessage annotationMode = (AnnotationModeMessage) m;

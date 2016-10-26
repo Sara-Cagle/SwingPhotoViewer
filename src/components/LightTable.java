@@ -166,6 +166,7 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
                     Photo photo = new Photo(image);
                     currentPhoto = photo;
                     this.photos.add(photo);
+                    Bus.getInstance().sendMessage(new AdjustAnnotationColorsMessage());
                     Bus.getInstance().sendMessage(new StatusMessage("Ready"));
                     updateView();
                 }

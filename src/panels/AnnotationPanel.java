@@ -1,7 +1,10 @@
 package panels;
 
 import bus.Bus;
+import bus.IMessageListener;
+import bus.messages.AdjustAnnotationColorsMessage;
 import bus.messages.AnnotationModeMessage;
+import bus.messages.Message;
 import bus.messages.StatusMessage;
 import constants.AnnotationMode;
 
@@ -18,11 +21,12 @@ import java.awt.*;
  * @Author Sara Cagle
  * @Date 9/13/2016
  */
-public class AnnotationPanel extends JPanel {
+public class AnnotationPanel extends JPanel implements IMessageListener{
     private TitledBorder title;
     private JRadioButton drawing;
     private JRadioButton text;
     private ButtonGroup annotationButtonGroup;
+    AdjustAnnotationColorsMessage adjust;
 
     /**
      * AnnotationPanel constructor
@@ -33,10 +37,13 @@ public class AnnotationPanel extends JPanel {
     public AnnotationPanel() {
         super();
         this.setMaximumSize(new Dimension(800, 75));
+        adjust = new AdjustAnnotationColorsMessage();
+        Bus.getInstance().registerListener(this);
 
         title = new TitledBorder("Annotation Mode");
         title.setTitleJustification(TitledBorder.CENTER);
         this.setBorder(title);
+
 
         text = new JRadioButton("Text", true);
         drawing = new JRadioButton("Drawing");
@@ -47,16 +54,32 @@ public class AnnotationPanel extends JPanel {
         text.addActionListener(e -> {
             Bus.getInstance().sendMessage(new StatusMessage(text.getText() + " annotation activated"));
             Bus.getInstance().sendMessage(new AnnotationModeMessage(AnnotationMode.Text));
+            adjust.setCurrentAnnotationMode(AnnotationMode.Text);
         });
 
         annotationButtonGroup.add(drawing);
         drawing.addActionListener(e -> {
             Bus.getInstance().sendMessage(new StatusMessage(drawing.getText() + " annotation activated"));
             Bus.getInstance().sendMessage(new AnnotationModeMessage(AnnotationMode.Drawing));
+            adjust.setCurrentAnnotationMode(AnnotationMode.Drawing);
         });
 
         super.add(text);
         super.add(drawing);
+    }
+
+    public void receiveMessage(Message m) {
+        switch (m.type()) {
+            case "adjust_annotation_colors_message":
+                AdjustAnnotationColorsMessage adjustMessage = (AdjustAnnotationColorsMessage) m;
+                if(adjustMessage.annotationMode == AnnotationMode.Text){
+                    text.setSelected(true);
+                }
+                else{
+                    drawing.setSelected(false);
+                }
+                break;
+        }
     }
 
 }

@@ -3,6 +3,9 @@ package bus.messages;
 import constants.ViewMode;
 
 /**
+ * ViewModeMessage
+ *
+ * Message alerting that the view mode has changed (Photo, Grid, Split).
  *
  * @Author Sara Cagle
  * @Date 10/23/2016.

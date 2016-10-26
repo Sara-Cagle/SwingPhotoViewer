@@ -19,8 +19,10 @@ public class Thumbnail extends JComponent {
     private Photo photo;
     private IThumbnailListener listener;
     private boolean selected;
-    private final double SCALEX = 0.2;
-    private final double SCALEY = 0.2;
+    //private final double SCALEX = 0.2;
+    //private final double SCALEY = 0.2;
+    private double scaleX;
+    private double scaleY;
 
     public Thumbnail(Photo photo, boolean selected, IThumbnailListener listener) {
         this.photo = photo;
@@ -30,9 +32,20 @@ public class Thumbnail extends JComponent {
             BufferedImage image = photo.getImage();
             //this.setPreferredSize(new Dimension(image.getWidth(), image.getHeight())); //this will mess up the split view grid
             this.setPreferredSize(new Dimension(200, 200));
-        }
-        else { //shouldn't ever hit this
-            this.setPreferredSize(new Dimension(100, 100)); //some default value
+            scaleX=0.3;
+            scaleY = 0.2;
+            if(image.getWidth()>image.getHeight()){
+                scaleX=0.3;
+                scaleY=0.2;
+            }
+            if(image.getWidth()<image.getHeight()){
+                scaleX=0.2;
+                scaleY=0.3;
+            }
+            if(image.getWidth()==image.getHeight()){
+                scaleX=0.3;
+                scaleY=0.3;
+            }
         }
         this.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
@@ -79,7 +92,7 @@ public class Thumbnail extends JComponent {
     public int getThumbnailImageWidth(){
         if(photoExists()){
             BufferedImage image = photo.getImage();
-            return (int)(image.getWidth() * SCALEX);
+            return (int)(image.getWidth() * scaleX);
         }
         return -1;
     }
@@ -94,7 +107,7 @@ public class Thumbnail extends JComponent {
     public int getThumbnailImageHeight(){
         if(photoExists()){
             BufferedImage image = photo.getImage();
-            return (int)(image.getHeight() * SCALEY);
+            return (int)(image.getHeight() * scaleY);
         }
         return -1;
     }
@@ -115,10 +128,8 @@ public class Thumbnail extends JComponent {
 
         if(photoExists()) {
             BufferedImage image = photo.getImage();
-            g2.scale(SCALEX, SCALEY); //scales the existing preferred size
-            g2.setColor(Color.pink);
+            g2.scale(scaleX, scaleY); //scales the existing preferred size
             g2.setStroke(new BasicStroke(10));
-            g2.drawRect(0,0, this.getWidth(), this.getHeight()); //draws a rect just for testing to show how much space is being taken up
             g2.drawImage(image, 0, 0, this.getWidth(), this.getHeight(), null);
             if(selected){
                 g2.setColor(Color.red);
