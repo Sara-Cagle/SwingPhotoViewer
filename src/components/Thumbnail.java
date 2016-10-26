@@ -120,13 +120,13 @@ public class Thumbnail extends JComponent {
 
         if(photoExists()) {
             BufferedImage image = photo.getImage();
-            //g2.scale(scaleX, scaleY); //scales the existing preferred size
-            //g2.scale(0.5,0.5);
+            int diffY = (120-(int)scaleY)/2;
+            int diffX = (100-(int)scaleX)/2;
             g2.setStroke(new BasicStroke(10));
-            g2.drawImage(image, 0, 0, (int)scaleX, (int)scaleY, null);
+            g2.drawImage(image, diffX, diffY, (int)scaleX, (int)scaleY, null);
             if(selected){
                 g2.setColor(Color.red);
-                g2.drawRect(0, 0, (int)scaleX, (int)scaleY);
+                g2.drawRect(diffX, diffY, (int)scaleX, (int)scaleY);
             }
         }
     }

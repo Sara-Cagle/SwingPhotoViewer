@@ -53,7 +53,7 @@ public class TopMenu extends JMenuBar implements IMessageListener{
 
             fileChooser.showOpenDialog(fileChooser);
             File file = fileChooser.getSelectedFile();
-            if(file.isDirectory()){
+            if(file.isDirectory()){ //allows uploading of an entire folder
                 for(File f: file.listFiles(pathname -> !pathname.isDirectory() && isImage(pathname))){
                     Bus.getInstance().sendMessage(new ImageMessage(f));
                 }
