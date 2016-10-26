@@ -63,36 +63,6 @@ public class Thumbnail extends JComponent {
     }
 
     /**
-     * getThumbnailImageWidth
-     *
-     * Calculates the width of the thumbnail based on scaling factor.
-     *
-     * @return width of thumbnail, -1 if error
-     */
-    public int getThumbnailImageWidth(){
-        if(photoExists()){
-            BufferedImage image = photo.getImage();
-            return (int)(image.getWidth() * scaleX);
-        }
-        return -1;
-    }
-
-    /**
-     * getThumbnailImageHeight
-     *
-     * Calculates the height of the thumbnail based on scaling factor.
-     *
-     * @return height of thumbnail, -1 if error
-     */
-    public int getThumbnailImageHeight(){
-        if(photoExists()){
-            BufferedImage image = photo.getImage();
-            return (int)(image.getHeight() * scaleY);
-        }
-        return -1;
-    }
-
-    /**
      * scaleImage
      *
      * Sets the scaling factor for the image.
@@ -131,8 +101,8 @@ public class Thumbnail extends JComponent {
                 }
             }
 
-            this.setPreferredSize(new Dimension(image.getWidth(), image.getHeight())); //this will mess up the split view grid
-            /*this.setPreferredSize(new Dimension(200, 200));*/
+            //this.setPreferredSize(new Dimension(image.getWidth(), image.getHeight())); //this will mess up the split view grid
+            this.setPreferredSize(new Dimension(200, 200));
         }
     }
 
@@ -152,7 +122,8 @@ public class Thumbnail extends JComponent {
 
         if(photoExists()) {
             BufferedImage image = photo.getImage();
-            g2.scale(scaleX, scaleY); //scales the existing preferred size
+            //g2.scale(scaleX, scaleY); //scales the existing preferred size
+            g2.scale(0.5,0.5);
             g2.setStroke(new BasicStroke(10));
             g2.drawImage(image, 0, 0, this.getWidth(), this.getHeight(), null);
             if(selected){

@@ -105,8 +105,8 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
         JScrollPane photoComponentScrollPane = new JScrollPane();
         photoComponentScrollPane.getViewport().add(photoComponent);
         JPanel innerThumbnailPanel = new JPanel(); //thumbnails actually go in here, this size determines the scroller
-        //innerThumbnailPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        innerThumbnailPanel.setLayout(new GridLayout(1, 100, 5, 5));
+        innerThumbnailPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        //innerThumbnailPanel.setLayout(new GridLayout(1, 100, 5, 5));
        // innerThumbnailPanel.setMaximumSize(new Dimension(100000000, 150)); //this doesn't work
         //innerThumbnailPanel.setMinimumSize(new Dimension(1, 150));
         for (Photo photo : photos) {
