@@ -87,11 +87,15 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
      */
     public void drawGridMode(){
         JPanel thumbnailPanel = new JPanel();
+        //thumbnailPanel.setLayout(new GridLayout());
         thumbnailPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         for (Photo photo : photos) {
             thumbnailPanel.add(new Thumbnail(photo, photo==currentPhoto, this, thumbnailSize));
         }
         this.add(thumbnailPanel, BorderLayout.CENTER);
+        //JScrollPane parentScrollPane = new JScrollPane(thumbnailPanel);
+        //parentScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        //this.add(parentScrollPane, BorderLayout.CENTER);
     }
 
     /**
@@ -213,6 +217,7 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
                 else{
                     if(!photos.get(0).equals(currentPhoto)){ //circular rotation
                         currentPhoto = photos.get(0);
+                        updateView();
                     }
                 }
                 break;
