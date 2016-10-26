@@ -1,12 +1,17 @@
 package bus.messages;
 
-import java.io.File;
 
 /**
- * Created by saracagle on 10/26/16.
+ * ThumbnailSizeMessage
+ *
+ * Shares the size of the thumbnails with the LightTable.
+ *
+ * @Author Sara Cagle
+ * @Date 10/26/2016.
  */
 public class ThumbnailSizeMessage extends Message{
     public int size;
+
     /**
      * ThumbnailSizeMessage constructor
      *

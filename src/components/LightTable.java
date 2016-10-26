@@ -179,10 +179,6 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
                 System.out.println("Mode set to: "+mode);
                 updateView();
                 break;
-           /* case "repaint_message":
-                System.out.println("Inside light table to update view ");
-                updateView();
-                break;*/
             case "thumbnail_size_message":
                 ThumbnailSizeMessage thumbnailSizeMessage = (ThumbnailSizeMessage) m;
                 thumbnailSize = thumbnailSizeMessage.size;
@@ -214,11 +210,22 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
                     currentPhoto = photos.get(photos.indexOf(currentPhoto)+1);
                     updateView();
                 }
+                else{
+                    if(!photos.get(0).equals(currentPhoto)){ //circular rotation
+                        currentPhoto = photos.get(0);
+                    }
+                }
                 break;
             case "move_left_message":
                 if(photos.indexOf(currentPhoto)-1 > -1){
                     currentPhoto = photos.get(photos.indexOf(currentPhoto)-1);
                     updateView();
+                }
+                else{
+                    if(!photos.get(photos.size()-1).equals(currentPhoto)){ //circular rotation
+                        currentPhoto = photos.get(photos.size()-1);
+                        updateView();
+                    }
                 }
                 break;
         }

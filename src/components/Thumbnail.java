@@ -1,12 +1,5 @@
 package components;
 
-import bus.Bus;
-import bus.IMessageListener;
-import bus.messages.Message;
-import bus.messages.RepaintMessage;
-import bus.messages.StatusMessage;
-import bus.messages.ThumbnailSizeMessage;
-import constants.AnnotationMode;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,11 +12,10 @@ import java.awt.image.BufferedImage;
  *
  * Thumbnail extends JComponent, is a smaller, scaled down version of a Photo.
  *
- *
  * @Author Sara Cagle
  * @Date 10/23/2016
  */
-public class Thumbnail extends JComponent implements IMessageListener{
+public class Thumbnail extends JComponent{
     private Photo photo;
     private IThumbnailListener listener;
     private boolean selected;
@@ -36,14 +28,13 @@ public class Thumbnail extends JComponent implements IMessageListener{
         this.selected = selected;
         this.listener = listener;
         this.thumbnailSize = thumbnailSize;
-        Bus.getInstance().registerListener(this);
         scaleImage();
         this.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 if(e.getClickCount() == 2){ //change to photo mode
                     Thumbnail.this.listener.onThumbnailDoubleClick(Thumbnail.this);
                 }
-                else if(e.getClickCount()==1){ //unsure if need this //highlight photo
+                else if(e.getClickCount()==1){ //highlight photo
                     Thumbnail.this.listener.onThumbnailClick(Thumbnail.this);
                 }
                 super.mouseClicked(e);
@@ -110,8 +101,7 @@ public class Thumbnail extends JComponent implements IMessageListener{
                 }
             }
 
-            this.setPreferredSize(new Dimension(thumbnailSize, thumbnailSize+20)); //this will mess up the split view grid
-            //this.setPreferredSize(new Dimension(100, 100));
+            this.setPreferredSize(new Dimension(thumbnailSize, thumbnailSize+20)); //20 is for vertical padding
         }
     }
 
@@ -133,23 +123,19 @@ public class Thumbnail extends JComponent implements IMessageListener{
             BufferedImage image = photo.getImage();
             int diffY = (thumbnailSize+20-(int)scaleY)/2;
             int diffX = (thumbnailSize-(int)scaleX)/2;
-            g2.setStroke(new BasicStroke(10));
+            int strokeSize = 2;
+            if(thumbnailSize==100){
+                strokeSize+=3;
+            }
+            if(thumbnailSize==200){
+                strokeSize+=8;
+            }
+            g2.setStroke(new BasicStroke(strokeSize));
             g2.drawImage(image, diffX, diffY, (int)scaleX, (int)scaleY, null);
             if(selected){
                 g2.setColor(Color.red);
                 g2.drawRect(diffX, diffY, (int)scaleX, (int)scaleY);
             }
         }
-    }
-
-    public void receiveMessage(Message m) {
-        /*switch (m.type()) {
-            case "thumbnail_size_message":
-                ThumbnailSizeMessage message = (ThumbnailSizeMessage) m;
-                System.out.println("Hey i received a message for this size: "+message.size);
-                thumbnailSize = message.size;
-                Bus.getInstance().sendMessage(new RepaintMessage());
-                break;
-        }*/
     }
 }

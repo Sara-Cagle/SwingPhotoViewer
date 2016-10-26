@@ -55,7 +55,7 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
      *
      * @param photo, the Photo object it's drawing on
      */
-    public PhotoComponent(Photo photo /*, Color boxColor, Color lineColor*/){
+    public PhotoComponent(Photo photo){
         super();
         this.setFocusable(true);
         this.photo = photo;

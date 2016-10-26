@@ -66,6 +66,13 @@ public class AnnotationPanel extends JPanel implements IMessageListener{
         super.add(drawing);
     }
 
+    /**
+     * receiveMessage
+     *
+     * Receives messages, listening for changes in annotation style.
+     *
+     * @param m the message
+     */
     public void receiveMessage(Message m) {
         switch (m.type()) {
             case "adjust_annotation_colors_message":

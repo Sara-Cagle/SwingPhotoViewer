@@ -1,18 +1,19 @@
 package panels;
 
 import bus.Bus;
-import bus.IMessageListener;
-import bus.messages.AdjustAnnotationColorsMessage;
-import bus.messages.StatusMessage;
 import bus.messages.ThumbnailSizeMessage;
-import constants.AnnotationMode;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
 /**
- * Created by saracagle on 10/26/16.
+ * ThumbnailSizePanel
+ *
+ * Contains info for changing the thumbnail size
+ *
+ * @Author Sara Cagle
+ * @Date 10/26/2016.
  */
 public class ThumbnailSizePanel extends JPanel{
     private TitledBorder title;
@@ -21,6 +22,11 @@ public class ThumbnailSizePanel extends JPanel{
     private JRadioButton large;
     private ButtonGroup sizeButtonGroup;
 
+    /**
+     * ThumbnailSizePanel constructor
+     *
+     * Sets up the radio buttons and their messages.
+     */
     public ThumbnailSizePanel(){
         super();
         this.setMaximumSize(new Dimension(800, 75));
@@ -37,26 +43,20 @@ public class ThumbnailSizePanel extends JPanel{
         sizeButtonGroup.add(small);
         small.addActionListener(e -> {
             Bus.getInstance().sendMessage(new ThumbnailSizeMessage(50));
-            //System.out.println("I clicked the small button, sending 50");
         });
 
         sizeButtonGroup.add(med);
         med.addActionListener(e -> {
             Bus.getInstance().sendMessage(new ThumbnailSizeMessage(100));
-           // System.out.println("I clicked the med button, sending 50");
         });
 
         sizeButtonGroup.add(large);
         large.addActionListener(e -> {
             Bus.getInstance().sendMessage(new ThumbnailSizeMessage(200));
-            //System.out.println("I clicked the small button, sending 200");
         });
 
         super.add(small);
         super.add(med);
         super.add(large);
-
-
-
     }
 }
