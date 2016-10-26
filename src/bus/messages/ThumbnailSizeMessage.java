@@ -6,7 +6,7 @@ import java.io.File;
  * Created by saracagle on 10/26/16.
  */
 public class ThumbnailSizeMessage extends Message{
-    private int size;
+    public int size;
     /**
      * ThumbnailSizeMessage constructor
      *

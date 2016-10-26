@@ -1,5 +1,13 @@
 package components;
 
+import bus.Bus;
+import bus.IMessageListener;
+import bus.messages.Message;
+import bus.messages.RepaintMessage;
+import bus.messages.StatusMessage;
+import bus.messages.ThumbnailSizeMessage;
+import constants.AnnotationMode;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -15,17 +23,20 @@ import java.awt.image.BufferedImage;
  * @Author Sara Cagle
  * @Date 10/23/2016
  */
-public class Thumbnail extends JComponent {
+public class Thumbnail extends JComponent implements IMessageListener{
     private Photo photo;
     private IThumbnailListener listener;
     private boolean selected;
     private double scaleX;
     private double scaleY;
+    private int thumbnailSize;
 
     public Thumbnail(Photo photo, boolean selected, IThumbnailListener listener) {
         this.photo = photo;
         this.selected = selected;
         this.listener = listener;
+        thumbnailSize = 100;
+        Bus.getInstance().registerListener(this);
         scaleImage();
         this.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
@@ -76,13 +87,13 @@ public class Thumbnail extends JComponent {
             int h = image.getHeight();
             double x = w;
             double y = h;
-            if(image.getWidth()<100 && image.getHeight() < 100){ //small enough, don't scale.
+            if(image.getWidth()<thumbnailSize && image.getHeight() < thumbnailSize){ //small enough, don't scale.
                 scaleX = w;
                 scaleY = h;
             }
             else{ //aiming for 100x100 while remaining in ratio
                 if(w>h){
-                    while(x > 100){
+                    while(x > thumbnailSize){
                         x--;
                         y = x*(y/(x+1));
                     }
@@ -90,7 +101,7 @@ public class Thumbnail extends JComponent {
                     scaleY = y;
                 }
                 else{
-                    while(y > 100){
+                    while(y > thumbnailSize){
                         y--;
                         x = y*(x/(y+1));
                     }
@@ -99,7 +110,7 @@ public class Thumbnail extends JComponent {
                 }
             }
 
-            this.setPreferredSize(new Dimension(100, 120)); //this will mess up the split view grid
+            this.setPreferredSize(new Dimension(thumbnailSize, thumbnailSize+20)); //this will mess up the split view grid
             //this.setPreferredSize(new Dimension(100, 100));
         }
     }
@@ -120,14 +131,25 @@ public class Thumbnail extends JComponent {
 
         if(photoExists()) {
             BufferedImage image = photo.getImage();
-            int diffY = (120-(int)scaleY)/2;
-            int diffX = (100-(int)scaleX)/2;
+            int diffY = (thumbnailSize+20-(int)scaleY)/2;
+            int diffX = (thumbnailSize-(int)scaleX)/2;
             g2.setStroke(new BasicStroke(10));
             g2.drawImage(image, diffX, diffY, (int)scaleX, (int)scaleY, null);
             if(selected){
                 g2.setColor(Color.red);
                 g2.drawRect(diffX, diffY, (int)scaleX, (int)scaleY);
             }
+        }
+    }
+
+    public void receiveMessage(Message m) {
+        switch (m.type()) {
+            case "thumbnail_size_message":
+                ThumbnailSizeMessage message = (ThumbnailSizeMessage) m;
+                System.out.println("Hey i received a message for this size: "+message.size);
+                thumbnailSize = message.size;
+                Bus.getInstance().sendMessage(new RepaintMessage());
+                break;
         }
     }
 }

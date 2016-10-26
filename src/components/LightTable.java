@@ -104,16 +104,13 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
         PhotoComponent photoComponent = new PhotoComponent(currentPhoto);
         JScrollPane photoComponentScrollPane = new JScrollPane();
         photoComponentScrollPane.getViewport().add(photoComponent);
-        JPanel innerThumbnailPanel = new JPanel(); //thumbnails actually go in here, this size determines the scroller
+        JPanel innerThumbnailPanel = new JPanel();
         innerThumbnailPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        //innerThumbnailPanel.setLayout(new GridLayout(1, 100, 5, 5));
-       // innerThumbnailPanel.setMaximumSize(new Dimension(100000000, 150)); //this doesn't work
-        //innerThumbnailPanel.setMinimumSize(new Dimension(1, 150));
         for (Photo photo : photos) {
             innerThumbnailPanel.add(new Thumbnail(photo, photo==currentPhoto, this));
         }
 
-        JScrollPane thumbnailScrollPane = new JScrollPane(innerThumbnailPanel); //parent of the inner table
+        JScrollPane thumbnailScrollPane = new JScrollPane(innerThumbnailPanel);
         thumbnailScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
         thumbnailScrollPane.getViewport().add(innerThumbnailPanel);
 
@@ -177,6 +174,10 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
                 ViewModeMessage modeMessage = (ViewModeMessage) m;
                 mode = modeMessage.mode;
                 System.out.println("Mode set to: "+mode);
+                updateView();
+                break;
+            case "repaint_message":
+                System.out.println("Inside light table to update view ");
                 updateView();
                 break;
             case "delete_image_message":

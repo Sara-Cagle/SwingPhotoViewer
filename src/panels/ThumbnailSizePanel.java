@@ -37,22 +37,19 @@ public class ThumbnailSizePanel extends JPanel{
         sizeButtonGroup.add(small);
         small.addActionListener(e -> {
             Bus.getInstance().sendMessage(new ThumbnailSizeMessage(50));
-            /*Bus.getInstance().setAnnotationMode(AnnotationMode.Text);
-            Bus.getInstance().sendMessage(new AdjustAnnotationColorsMessage());*/
+            //System.out.println("I clicked the small button, sending 50");
         });
 
         sizeButtonGroup.add(med);
         med.addActionListener(e -> {
             Bus.getInstance().sendMessage(new ThumbnailSizeMessage(100));
-            /*Bus.getInstance().setAnnotationMode(AnnotationMode.Drawing);
-            Bus.getInstance().sendMessage(new AdjustAnnotationColorsMessage());*/
+           // System.out.println("I clicked the med button, sending 50");
         });
 
         sizeButtonGroup.add(large);
         large.addActionListener(e -> {
             Bus.getInstance().sendMessage(new ThumbnailSizeMessage(200));
-           /* Bus.getInstance().setAnnotationMode(AnnotationMode.Drawing);
-            Bus.getInstance().sendMessage(new AdjustAnnotationColorsMessage());*/
+            //System.out.println("I clicked the small button, sending 200");
         });
 
         super.add(small);
