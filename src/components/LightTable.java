@@ -112,8 +112,9 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
         for (Photo photo : photos) {
             innerThumbnailPanel.add(new Thumbnail(photo, photo==currentPhoto, this));
         }
-
+        
         JScrollPane thumbnailScrollPane = new JScrollPane(innerThumbnailPanel); //parent of the inner table
+        thumbnailScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
         thumbnailScrollPane.getViewport().add(innerThumbnailPanel);
 
         this.add(photoComponentScrollPane, BorderLayout.CENTER);

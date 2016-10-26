@@ -74,33 +74,33 @@ public class Thumbnail extends JComponent {
             BufferedImage image = photo.getImage();
             int w = image.getWidth();
             int h = image.getHeight();
+            double x = w;
+            double y = h;
             if(image.getWidth()<100 && image.getHeight() < 100){ //small enough, don't scale.
-                scaleX = 1.0;
-                scaleY = 1.0;
+                scaleX = w;
+                scaleY = h;
             }
             else{ //aiming for 100x100 while remaining in ratio
-                double x = w;
-                double y = h;
                 if(w>h){
                     while(x > 100){
                         x--;
                         y = x*(y/(x+1));
                     }
-                    scaleX = x/w;
-                    scaleY = y/h;
+                    scaleX = x;
+                    scaleY = y;
                 }
                 else{
                     while(y > 100){
                         y--;
                         x = y*(x/(y+1));
                     }
-                    scaleX = x/w;
-                    scaleY = y/h;
+                    scaleX = x;
+                    scaleY = y;
                 }
             }
 
-            //this.setPreferredSize(new Dimension(image.getWidth(), image.getHeight())); //this will mess up the split view grid
-            this.setPreferredSize(new Dimension(100, 100));
+            this.setPreferredSize(new Dimension(100, 120)); //this will mess up the split view grid
+            //this.setPreferredSize(new Dimension(100, 100));
         }
     }
 
@@ -123,10 +123,10 @@ public class Thumbnail extends JComponent {
             //g2.scale(scaleX, scaleY); //scales the existing preferred size
             //g2.scale(0.5,0.5);
             g2.setStroke(new BasicStroke(10));
-            g2.drawImage(image, 0, 0, this.getWidth(), this.getHeight(), null);
+            g2.drawImage(image, 0, 0, (int)scaleX, (int)scaleY, null);
             if(selected){
                 g2.setColor(Color.red);
-                g2.drawRect(0, 0, this.getWidth(), this.getHeight());
+                g2.drawRect(0, 0, (int)scaleX, (int)scaleY);
             }
         }
     }
