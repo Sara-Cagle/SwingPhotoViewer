@@ -42,14 +42,18 @@ public class ColorPanel extends JPanel  implements IMessageListener{
     public ColorPanel(){
         super();
         this.setMaximumSize(new Dimension(800, 75));
+        Bus.getInstance().registerListener(this);
         title = new TitledBorder("Color Selection");
         title.setTitleJustification(TitledBorder.CENTER);
         this.setBorder(title);
         adjust = new AdjustAnnotationColorsMessage();
 
+
         newColor = null;
         lineColor = Color.black;
         boxColor = Color.yellow;
+        Bus.getInstance().setBoxColor(boxColor);
+        Bus.getInstance().setStrokeColor(lineColor);
 
 
         lineColorButton = new JButton("Select Pen Stroke Color");
@@ -58,7 +62,8 @@ public class ColorPanel extends JPanel  implements IMessageListener{
             newColor = JColorChooser.showDialog(this, "Choose a color", this.getLineColor());
             if (newColor != null) {
                 Bus.getInstance().sendMessage(new ChangeStrokeColorMessage(newColor));
-                adjust.setCurrentColors(lineColor, boxColor);
+                //adjust.setCurrentColors(lineColor, boxColor);
+                Bus.getInstance().setStrokeColor(lineColor);
             }
         }));
 
@@ -67,7 +72,8 @@ public class ColorPanel extends JPanel  implements IMessageListener{
             newColor = JColorChooser.showDialog(this, "Choose a color", this.getBoxColor());
             if (newColor != null) {
                 Bus.getInstance().sendMessage(new ChangeTextBoxColorMessage(newColor));
-                adjust.setCurrentColors(lineColor, boxColor);
+                //adjust.setCurrentColors(lineColor, boxColor);
+                Bus.getInstance().setBoxColor(boxColor);
             }
         }));
 
@@ -81,7 +87,7 @@ public class ColorPanel extends JPanel  implements IMessageListener{
         this.add(lineColorButton);
         this.add(lineColorPanel);
 
-        Bus.getInstance().registerListener(this);
+
 
     }
 
@@ -129,13 +135,10 @@ public class ColorPanel extends JPanel  implements IMessageListener{
                 lineColor = strokeColorMessage.color;
                 break;
             case "adjust_annotation_colors_message":
-                AdjustAnnotationColorsMessage adjustMessage = (AdjustAnnotationColorsMessage) m;
-                System.out.println("Just got some new colors: Box color is: "+adjustMessage.boxColor);
-                System.out.println("Just got some new colors: Line color is: "+adjustMessage.strokeColor);
-                this.boxColorPanel.setBackground(adjustMessage.boxColor);
-                boxColor = adjustMessage.boxColor;
-                this.lineColorPanel.setBackground(adjustMessage.strokeColor);
-                lineColor = adjustMessage.strokeColor;
+                this.boxColorPanel.setBackground(Bus.getInstance().getBoxColor());
+                boxColor = Bus.getInstance().getBoxColor();
+                this.lineColorPanel.setBackground(Bus.getInstance().getStrokeColor());
+                lineColor = Bus.getInstance().getStrokeColor();
                 break;
             default:
                 break;

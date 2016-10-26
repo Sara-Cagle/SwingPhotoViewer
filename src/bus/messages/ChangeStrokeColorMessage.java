@@ -26,7 +26,7 @@ public class ChangeStrokeColorMessage extends Message{
         /**
          * type
          *
-         * @return the type of the message, "change_color_message"
+         * @return the type of the message, "change_stroke_color_message"
          */
         public String type() {
             return "change_stroke_color_message";

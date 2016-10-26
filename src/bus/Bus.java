@@ -1,5 +1,8 @@
 package bus;
 import bus.messages.*;
+import constants.AnnotationMode;
+
+import java.awt.*;
 import java.util.ArrayList;
 
 /**
@@ -17,6 +20,9 @@ public class Bus {
 
     private static Bus bus;
     private ArrayList<IMessageListener> registeredListeners;
+    private Color strokeColor;
+    private Color boxColor;
+    private AnnotationMode annotationMode;
 
     /**
      * Bus constructor
@@ -69,5 +75,29 @@ public class Bus {
         if(!registeredListeners.contains(listener)) {
             registeredListeners.add(listener);
         }
+    }
+
+    public void setStrokeColor(Color c){
+        strokeColor = c;
+    }
+
+    public void setBoxColor(Color c){
+        boxColor = c;
+    }
+
+    public Color getStrokeColor(){
+        return strokeColor;
+    }
+
+    public Color getBoxColor(){
+        return boxColor;
+    }
+
+    public void setAnnotationMode(AnnotationMode m){
+        annotationMode = m;
+    }
+
+    public AnnotationMode getAnnotationMode(){
+        return annotationMode;
     }
 }
