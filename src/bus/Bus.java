@@ -1,5 +1,8 @@
 package bus;
 import bus.messages.*;
+import constants.AnnotationMode;
+
+import java.awt.*;
 import java.util.ArrayList;
 
 /**
@@ -17,6 +20,9 @@ public class Bus {
 
     private static Bus bus;
     private ArrayList<IMessageListener> registeredListeners;
+    private Color strokeColor;
+    private Color boxColor;
+    private AnnotationMode annotationMode;
 
     /**
      * Bus constructor
@@ -52,8 +58,8 @@ public class Bus {
      * @param m the Message to send to the listeners
      */
     public void sendMessage(Message m){
-        for(IMessageListener listener: registeredListeners){
-            listener.receiveMessage(m);
+        for(int i=0; i<registeredListeners.size(); i++){
+            registeredListeners.get(i).receiveMessage(m);
         }
     }
 
@@ -69,5 +75,71 @@ public class Bus {
         if(!registeredListeners.contains(listener)) {
             registeredListeners.add(listener);
         }
+    }
+
+    /**
+     * setStrokeColor
+     *
+     * Sets the linestroke color globally.
+     *
+     * @param c, the color
+     */
+    public void setStrokeColor(Color c){
+        strokeColor = c;
+    }
+
+    /**
+     * setBoxColor
+     *
+     * Sets the textbox color globally.
+     *
+     * @param c, the color
+     */
+    public void setBoxColor(Color c){
+        boxColor = c;
+    }
+
+    /**
+     * getStrokeColor
+     *
+     * Gets the linestroke color to traverse images.
+     *
+     * @return the color
+     */
+    public Color getStrokeColor(){
+        return strokeColor;
+    }
+
+    /**
+     * getBoxColor
+     *
+     * Gets the textbox color to traverse images.
+     *
+     * @return the color
+     */
+    public Color getBoxColor(){
+        return boxColor;
+    }
+
+    /**
+     * setAnnotationMode
+     *
+     * Sets the annotation mode globally.
+     *
+     * @param m the mode (drawing or text)
+     */
+    public void setAnnotationMode(AnnotationMode m){
+        annotationMode = m;
+    }
+
+    /**
+     * getAnnotationMode
+     *
+     * Gets the annotation mode to traverse images.
+     *
+     * @return the mode (drawing or text)
+     */
+    public AnnotationMode getAnnotationMode(){
+        return annotationMode;
     }
 }

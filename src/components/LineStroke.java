@@ -18,11 +18,6 @@ public class LineStroke {
     private List<Point> pointList;
     private Color color;
 
-    public LineStroke(List<Point> pointList, Color color){
-        this.pointList = pointList;
-        this.color = color;
-    }
-
     /**
      * LineStroke constructor
      *

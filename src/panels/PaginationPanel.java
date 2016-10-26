@@ -1,5 +1,7 @@
 package panels;
 import bus.Bus;
+import bus.messages.MoveLeftMessage;
+import bus.messages.MoveRightMessage;
 import bus.messages.StatusMessage;
 
 import javax.swing.*;
@@ -28,11 +30,13 @@ public class PaginationPanel extends JPanel{
         left = new JButton("<- Backward");
         left.addActionListener(e -> {
             Bus.getInstance().sendMessage(new StatusMessage("Moved backward"));
+            Bus.getInstance().sendMessage(new MoveLeftMessage());
         });
 
         right = new JButton("Forward ->");
         right.addActionListener(e -> {
             Bus.getInstance().sendMessage(new StatusMessage("Moved forward"));
+            Bus.getInstance().sendMessage(new MoveRightMessage());
         });
 
         this.add(left);

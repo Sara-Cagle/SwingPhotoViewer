@@ -1,20 +1,14 @@
 package bus.messages;
 
 /**
- * Created by saracagle on 9/30/16.
+ * DeleteImageMessage
+ *
+ * Message that indicates an image has been deleted.
+ *
+ * @Author Sara Cagle
+ * @Date 9/30/2016.
  */
 public class DeleteImageMessage extends Message{
-    /*public boolean message;
-
-    /**
-     * DeleteImageMessage constructor
-     *
-     * @param message, signals to PhotoComponent to delete the image
-     */
-   /* public DeleteImageMessage(boolean message){
-        this.message = message;
-    }*/
-
     /**
      * type
      *

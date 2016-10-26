@@ -1,12 +1,13 @@
 package panels;
 
 import bus.Bus;
-import bus.messages.DeleteImageMessage;
-import bus.messages.StatusMessage;
-import bus.messages.ImageMessage;
+import bus.IMessageListener;
+import bus.messages.*;
+import constants.ViewMode;
 
 import javax.swing.*;
 import java.io.File;
+import java.io.FileFilter;
 
 
 /**
@@ -18,7 +19,7 @@ import java.io.File;
  * @Author Sara Cagle
  * @Data 9/13/2016
  */
-public class TopMenu extends JMenuBar{
+public class TopMenu extends JMenuBar implements IMessageListener{
 
     private JMenu file;
     private JMenuItem importItem;
@@ -39,21 +40,34 @@ public class TopMenu extends JMenuBar{
     public TopMenu(){
         super();
 
+        Bus.getInstance().registerListener(this);
+
         file = new JMenu("File");
 
         importItem = new JMenuItem("Import");
         importItem.addActionListener(e -> {
             Bus.getInstance().sendMessage(new StatusMessage("Importing photo..."));
+
             JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+
             fileChooser.showOpenDialog(fileChooser);
             File file = fileChooser.getSelectedFile();
-            if(isImage(file)){
-                Bus.getInstance().sendMessage(new ImageMessage(file));
+            if(file.isDirectory()){ //allows uploading of an entire folder
+                for(File f: file.listFiles(pathname -> !pathname.isDirectory() && isImage(pathname))){
+                    Bus.getInstance().sendMessage(new ImageMessage(f));
+                }
             }
             else{
-                System.out.println("The file selected was not an image.");
-                Bus.getInstance().sendMessage(new StatusMessage("File was not an image | Ready"));
+                if(isImage(file)){
+                    Bus.getInstance().sendMessage(new ImageMessage(file));
+                }
+                else{
+                    System.out.println("The file selected was not an image.");
+                    Bus.getInstance().sendMessage(new StatusMessage("File was not an image | Ready"));
+                }
             }
+
 
         });
 
@@ -80,16 +94,19 @@ public class TopMenu extends JMenuBar{
         photoViewRadioItem = new JRadioButtonMenuItem("Photo View", true);
         photoViewRadioItem.addActionListener(e -> {
             Bus.getInstance().sendMessage(new StatusMessage(photoViewRadioItem.getText()+" activated"));
+            Bus.getInstance().sendMessage(new ViewModeMessage(ViewMode.Photo));
         });
 
         gridViewRadioItem = new JRadioButtonMenuItem("Grid View");
         gridViewRadioItem.addActionListener(e -> {
             Bus.getInstance().sendMessage(new StatusMessage(gridViewRadioItem.getText()+" activated"));
+            Bus.getInstance().sendMessage(new ViewModeMessage(ViewMode.Grid));
         });
 
         splitViewRadioItem = new JRadioButtonMenuItem("Split View");
         splitViewRadioItem.addActionListener(e -> {
             Bus.getInstance().sendMessage(new StatusMessage(splitViewRadioItem.getText()+" activated."));
+            Bus.getInstance().sendMessage(new ViewModeMessage(ViewMode.Split));
         });
 
         viewRadioButtonGroup.add(photoViewRadioItem);
@@ -101,9 +118,37 @@ public class TopMenu extends JMenuBar{
         this.add(view);
     }
 
+    /**
+     * isImage
+     *
+     * Checks if the imported document is an image.
+     * Only accept jpg, jpeg, gif, png
+     *
+     * @param file the uploaded file
+     * @return boolean, it's am image or not
+     */
     private boolean isImage(File file){
         String fileName = file.getName().toLowerCase();
         return fileName.endsWith(".jpg") || fileName.endsWith(".jpeg")
             || fileName.endsWith(".gif") || fileName.endsWith(".png");
+    }
+
+    /**
+     * receiveMessage
+     *
+     * Receives a message passed in from the Bus.
+     * Listening for the mode change. Only can be changed to Photo mode.
+     *
+     * @param m, a Message received from the bus.
+     */
+    public void receiveMessage(Message m) {
+        switch(m.type()) {
+            case "view_mode_message":
+                ViewModeMessage modeMessage = (ViewModeMessage) m;
+                if(modeMessage.mode == ViewMode.Photo){
+                    photoViewRadioItem.setSelected(true);
+                }
+                break;
+        }
     }
 }

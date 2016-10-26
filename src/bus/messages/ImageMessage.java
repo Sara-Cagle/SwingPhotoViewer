@@ -7,7 +7,8 @@ import java.io.File;
  *
  * Message object that shares uploaded files with the bus.
  *
- * Created by saracagle on 9/28/16.
+ * @Author Sara Cagle
+ * @Date 9/28/2016.
  */
 public class ImageMessage extends Message{
     public File file;

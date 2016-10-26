@@ -18,6 +18,7 @@ public class LeftToolPanel extends JPanel{
     private ColorPanel colorPanel;
     private TagPanel tagPanel;
     private JPanel centerPanel;
+    private ThumbnailSizePanel thumbnailSizePanel;
 
 
     /**
@@ -34,9 +35,11 @@ public class LeftToolPanel extends JPanel{
         annotationPanel = new AnnotationPanel();
         paginationPanel = new PaginationPanel();
         colorPanel = new ColorPanel();
+        thumbnailSizePanel = new ThumbnailSizePanel();
         centerPanel.add(tagPanel);
         centerPanel.add(annotationPanel);
         centerPanel.add(colorPanel);
+        centerPanel.add(thumbnailSizePanel);
         this.add(centerPanel, BorderLayout.CENTER);
         this.add(paginationPanel, BorderLayout.PAGE_END);
     }

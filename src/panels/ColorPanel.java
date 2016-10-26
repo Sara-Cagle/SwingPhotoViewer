@@ -2,8 +2,7 @@ package panels;
 
 import bus.Bus;
 import bus.IMessageListener;
-import bus.messages.ChangeColorMessage;
-import bus.messages.Message;
+import bus.messages.*;
 import constants.Colors;
 
 import javax.swing.*;
@@ -22,15 +21,15 @@ import java.awt.*;
  * @Date 10/4/16
  */
 public class ColorPanel extends JPanel  implements IMessageListener{
-    JColorChooser colorChooser;
-    TitledBorder title;
-    JButton lineColorButton;
-    JButton boxColorButton;
-    JPanel lineColorPanel;
-    JPanel boxColorPanel;
-    Color newColor;
-    Color lineColor;
-    Color boxColor;
+    private JColorChooser colorChooser;
+    private TitledBorder title;
+    private JButton lineColorButton;
+    private JButton boxColorButton;
+    private JPanel lineColorPanel;
+    private JPanel boxColorPanel;
+    private Color newColor;
+    private Color lineColor;
+    private Color boxColor;
 
     /**
      * ColorPanel
@@ -42,21 +41,27 @@ public class ColorPanel extends JPanel  implements IMessageListener{
     public ColorPanel(){
         super();
         this.setMaximumSize(new Dimension(800, 75));
+        Bus.getInstance().registerListener(this);
         title = new TitledBorder("Color Selection");
         title.setTitleJustification(TitledBorder.CENTER);
         this.setBorder(title);
 
+
         newColor = null;
         lineColor = Color.black;
         boxColor = Color.yellow;
+        Bus.getInstance().setBoxColor(boxColor);
+        Bus.getInstance().setStrokeColor(lineColor);
 
 
-        lineColorButton = new JButton("Select Pen Color");
+        lineColorButton = new JButton("Select Pen Stroke Color");
         lineColorButton.addActionListener((e -> {
             colorChooser = new JColorChooser();
             newColor = JColorChooser.showDialog(this, "Choose a color", this.getLineColor());
             if (newColor != null) {
-                Bus.getInstance().sendMessage(new ChangeColorMessage(newColor, Colors.Line));
+                System.out.println("Just picked a new pen color, its "+newColor);
+                Bus.getInstance().setStrokeColor(newColor);
+                Bus.getInstance().sendMessage(new AdjustAnnotationColorsMessage());
             }
         }));
 
@@ -64,7 +69,8 @@ public class ColorPanel extends JPanel  implements IMessageListener{
         boxColorButton.addActionListener((e -> {
             newColor = JColorChooser.showDialog(this, "Choose a color", this.getBoxColor());
             if (newColor != null) {
-                Bus.getInstance().sendMessage(new ChangeColorMessage(newColor, Colors.Box));
+                Bus.getInstance().setBoxColor(newColor);
+                Bus.getInstance().sendMessage(new AdjustAnnotationColorsMessage());
             }
         }));
 
@@ -78,7 +84,7 @@ public class ColorPanel extends JPanel  implements IMessageListener{
         this.add(lineColorButton);
         this.add(lineColorPanel);
 
-        Bus.getInstance().registerListener(this);
+
 
     }
 
@@ -115,41 +121,16 @@ public class ColorPanel extends JPanel  implements IMessageListener{
      */
     public void receiveMessage(Message m) {
         switch(m.type()) {
-            case "change_color_message":
-                ChangeColorMessage colorMessage = (ChangeColorMessage) m;
-                if(colorMessage.objectType == Colors.Line){
-                    this.lineColorPanel.setBackground(colorMessage.color);
-                    lineColor = colorMessage.color;
-                }
-                else {
-                    this.boxColorPanel.setBackground(colorMessage.color);
-                    boxColor = colorMessage.color;
-                }
+            case "adjust_annotation_colors_message":
+                boxColor = Bus.getInstance().getBoxColor();
+                this.boxColorPanel.setBackground(boxColor);
+                lineColor = Bus.getInstance().getStrokeColor();
+                this.lineColorPanel.setBackground(lineColor);
                 break;
             default:
                 break;
         }
     }
-
-    private void cleanUpColorSwatches(){
-        AbstractColorChooserPanel[] colorTabs = colorChooser.getChooserPanels();
-        colorChooser.setPreviewPanel(new JPanel());
-        for(int i=0; i<colorTabs.length; i++){
-            if(colorTabs[i].getClass().getName() == "javax.swing.colorchooser.DefaultSwatchChooserPanel"){
-                /*JPanel swatches = (JPanel) colorTabs[i].getComponent(0); //these will remove "recent:" and the recent swatches
-                System.out.println("this many components in swatches: "+swatches.getComponentCount());
-                swatches.remove(2);
-                System.out.println("this many components in swatches: "+swatches.getComponentCount());
-                swatches.remove(1);
-                System.out.println("this many components in swatches: "+swatches.getComponentCount());*/
-            }
-            else{
-                colorChooser.removeChooserPanel(colorTabs[i]); //this removes all but the default color swatch tab
-            }
-        }
-    }
-
-
 
 
 }
