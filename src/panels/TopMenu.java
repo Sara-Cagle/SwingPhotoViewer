@@ -7,6 +7,7 @@ import constants.ViewMode;
 
 import javax.swing.*;
 import java.io.File;
+import java.io.FileFilter;
 
 
 /**
@@ -46,16 +47,27 @@ public class TopMenu extends JMenuBar implements IMessageListener{
         importItem = new JMenuItem("Import");
         importItem.addActionListener(e -> {
             Bus.getInstance().sendMessage(new StatusMessage("Importing photo..."));
+
             JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+
             fileChooser.showOpenDialog(fileChooser);
             File file = fileChooser.getSelectedFile();
-            if(isImage(file)){
-                Bus.getInstance().sendMessage(new ImageMessage(file));
+            if(file.isDirectory()){
+                for(File f: file.listFiles(pathname -> !pathname.isDirectory() && isImage(pathname))){
+                    Bus.getInstance().sendMessage(new ImageMessage(f));
+                }
             }
             else{
-                System.out.println("The file selected was not an image.");
-                Bus.getInstance().sendMessage(new StatusMessage("File was not an image | Ready"));
+                if(isImage(file)){
+                    Bus.getInstance().sendMessage(new ImageMessage(file));
+                }
+                else{
+                    System.out.println("The file selected was not an image.");
+                    Bus.getInstance().sendMessage(new StatusMessage("File was not an image | Ready"));
+                }
             }
+
 
         });
 
