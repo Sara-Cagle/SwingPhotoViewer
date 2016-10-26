@@ -129,7 +129,6 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
      * @param thumbnail the thumbnail in question
      */
     public void onThumbnailClick(Thumbnail thumbnail) {
-        System.out.println("Single click");
         currentPhoto = thumbnail.getPhoto();
         updateView();
     }
@@ -143,7 +142,6 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
      * @param thumbnail the thumbnail in question
      */
     public void onThumbnailDoubleClick(Thumbnail thumbnail) {
-        System.out.println("Double click");
         currentPhoto = thumbnail.getPhoto();
         Bus.getInstance().sendMessage(new ViewModeMessage(ViewMode.Photo));
     }

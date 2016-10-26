@@ -19,8 +19,6 @@ public class Thumbnail extends JComponent {
     private Photo photo;
     private IThumbnailListener listener;
     private boolean selected;
-    //private final double SCALEX = 0.2;
-    //private final double SCALEY = 0.2;
     private double scaleX;
     private double scaleY;
 
@@ -28,25 +26,7 @@ public class Thumbnail extends JComponent {
         this.photo = photo;
         this.selected = selected;
         this.listener = listener;
-        if(photoExists()) {
-            BufferedImage image = photo.getImage();
-            //this.setPreferredSize(new Dimension(image.getWidth(), image.getHeight())); //this will mess up the split view grid
-            this.setPreferredSize(new Dimension(200, 200));
-            scaleX=0.3;
-            scaleY = 0.2;
-            if(image.getWidth()>image.getHeight()){
-                scaleX=0.3;
-                scaleY=0.2;
-            }
-            if(image.getWidth()<image.getHeight()){
-                scaleX=0.2;
-                scaleY=0.3;
-            }
-            if(image.getWidth()==image.getHeight()){
-                scaleX=0.3;
-                scaleY=0.3;
-            }
-        }
+        scaleImage();
         this.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 if(e.getClickCount() == 2){ //change to photo mode
@@ -110,6 +90,50 @@ public class Thumbnail extends JComponent {
             return (int)(image.getHeight() * scaleY);
         }
         return -1;
+    }
+
+    /**
+     * scaleImage
+     *
+     * Sets the scaling factor for the image.
+     * Default is to try and get the image to be 100x100 or less.
+     * The image ratio will stay intact.
+     */
+    private void scaleImage(){
+        if(photoExists()) {
+            BufferedImage image = photo.getImage();
+            int w = image.getWidth();
+            int h = image.getHeight();
+            if(image.getWidth()<100 && image.getHeight() < 100){ //small enough, don't scale.
+                scaleX = 1.0;
+                scaleY = 1.0;
+            }
+            else{ //aiming for 100x100 while remaining in ratio
+                double x = w;
+                double y = h;
+                if(w>h){
+                    System.out.println("The image was longer than it was wide");
+                    while(x > 100){
+                        x--;
+                        y = x*(y/(x+1));
+                    }
+                    scaleX = x/w;
+                    scaleY = y/h;
+                }
+                else{
+                    System.out.println("The image was taller than it was wide");
+                    while(y > 100){
+                        y--;
+                        x = y*(x/(y+1));
+                    }
+                    scaleX = x/w;
+                    scaleY = y/h;
+                }
+            }
+
+            this.setPreferredSize(new Dimension(image.getWidth(), image.getHeight())); //this will mess up the split view grid
+            /*this.setPreferredSize(new Dimension(200, 200));*/
+        }
     }
 
     /**

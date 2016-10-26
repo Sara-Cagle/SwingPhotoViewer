@@ -25,7 +25,6 @@ public class AnnotationPanel extends JPanel implements IMessageListener{
     private JRadioButton drawing;
     private JRadioButton text;
     private ButtonGroup annotationButtonGroup;
-    AdjustAnnotationColorsMessage adjust;
 
     /**
      * AnnotationPanel constructor
