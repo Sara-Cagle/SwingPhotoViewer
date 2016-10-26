@@ -87,15 +87,13 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
      */
     public void drawGridMode(){
         JPanel thumbnailPanel = new JPanel();
-        //thumbnailPanel.setLayout(new GridLayout());
-        thumbnailPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+
+        thumbnailPanel.setLayout(new GridLayout(3,0));
         for (Photo photo : photos) {
             thumbnailPanel.add(new Thumbnail(photo, photo==currentPhoto, this, thumbnailSize));
         }
-        this.add(thumbnailPanel, BorderLayout.CENTER);
-        //JScrollPane parentScrollPane = new JScrollPane(thumbnailPanel);
-        //parentScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        //this.add(parentScrollPane, BorderLayout.CENTER);
+        JScrollPane parentScrollPane = new JScrollPane(thumbnailPanel);
+        this.add(parentScrollPane, BorderLayout.CENTER);
     }
 
     /**
