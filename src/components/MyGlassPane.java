@@ -23,6 +23,13 @@ public class MyGlassPane extends JComponent {
         this.addMouseMotionListener(mouseAdapter);
     }
 
+    /**
+     * checkGesture
+     *
+     * Finds and executes applicable gestures from the given line.
+     *
+     * @param l, the line for the gesture
+     */
     private void checkGesture(LineStroke l){
         StringBuilder builder = new StringBuilder();
         java.util.List<Point> points = l.getPoints();
@@ -33,12 +40,19 @@ public class MyGlassPane extends JComponent {
         }
         System.out.println(builder.toString());
 
-
-
-        //convert the points to a string
         //if string matches any of the regex, do the action
     }
 
+    /**
+     * getPointDiff
+     *
+     * Takes in points and finds the difference between the two.
+     * This differene is converted into a char representing a direction for gestures
+     *
+     * @param p1, the first point
+     * @param p2, the second point you move to
+     * @return the char representing the direction moved
+     */
     private char getPointDiff(Point p1, Point p2){
         //North = W
         //South = S
@@ -86,6 +100,13 @@ public class MyGlassPane extends JComponent {
     }
 
 
+    /**
+     * paintComponent
+     *
+     * Paints anything drawn on the glass pane. Should only be gesture lines.
+     *
+     * @param g, the Graphics object
+     */
     public void paintComponent(Graphics g){
         super.paintComponent(g);
         //System.out.println("drawing glass pane");
