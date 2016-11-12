@@ -2,6 +2,7 @@ package components;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -10,36 +11,13 @@ import java.awt.event.MouseListener;
  * @date 11/9/2016.
  */
 public class MyGlassPane extends JComponent {
+    private Container contentPane;
 
     public MyGlassPane(Container contentPane) {
+        this.contentPane = contentPane;
         System.out.println("instantiated glass pane");
-        MouseListener listener = new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                //System.out.println("click in glasspane");
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
-            }
-        };
-        this.addMouseListener(listener);
+        MouseAdapter mouseAdapter = new GlassPaneMouseAdapter();
+        this.addMouseListener(mouseAdapter);
     }
 
 
@@ -60,6 +38,37 @@ public class MyGlassPane extends JComponent {
             drawFlipped(g);
         }*/
         revalidate();
+    }
+
+    private class GlassPaneMouseAdapter extends MouseAdapter {
+        public void mouseClicked(MouseEvent e) {
+            if(e.getClickCount() == 2){
+                repaint();
+            }
+
+
+        }
+
+        public void mousePressed(MouseEvent e){
+            if(SwingUtilities.isRightMouseButton(e)){
+                //start the gesture
+            }
+        }
+
+        public void mouseDragged(MouseEvent e){
+            if(SwingUtilities.isRightMouseButton(e)){
+
+            }
+            //compile e.getPoint() to the gesture list
+            //repaint
+        }
+
+        public void mouseReleased(MouseEvent e){
+            //run the gesture check
+            //do the gesture
+            //reset the gesture list
+            //repaint?
+        }
     }
 
 }
