@@ -29,6 +29,15 @@ public class LineStroke {
     }
 
     /**
+     * getPoints
+     *
+     * @return pointList, the collection of points for the line
+     */
+    public List<Point> getPoints(){
+        return pointList;
+    }
+
+    /**
      * draw
      *
      * Draws the line with the Graphics object.

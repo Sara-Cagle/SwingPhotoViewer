@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 
 /**
  * @Author Sara Cagle
@@ -20,11 +21,73 @@ public class MyGlassPane extends JComponent {
         this.addMouseListener(mouseAdapter);
     }
 
+    private void checkGesture(LineStroke line){
+        StringBuilder builder = new StringBuilder();
+        java.util.List<Point> points = line.getPoints();
+        for(int i=0; i<points.size(); i++){
+            if(i+1<points.size()){
+                builder.append(getPointDiff(points.get(i), points.get(i+1)));
+            }
+        }
+        System.out.println(builder.toString());
+
+
+
+        //convert the points to a string
+        //if string matches any of the regex, do the action
+    }
+
+    private char getPointDiff(Point p1, Point p2){
+        //North = W
+        //South = S
+        //West = A
+        //East = D
+        //Northwest = Q
+        //Northeast = E
+        //Southwest = Z
+        //Southeast = X
+        int deltaX = p2.x-p1.x;
+        int deltaY = p2.y-p1.y;
+        if(deltaX > 0 && deltaY >0){
+            //move southeast
+            return 'X';
+        }
+        if(deltaX >0 && deltaY == 0){
+            //move east
+            return 'D';
+        }
+        if(deltaX > 0 && deltaY <0){
+            //move northeast
+            return 'E';
+        }
+        if(deltaX == 0 && deltaY >0){
+            //move south
+            return 'S';
+        }
+        if(deltaX == 0 && deltaY<0){
+            //move north
+            return 'W';
+        }
+        if(deltaX<0 && deltaY>0){
+            //move southwest
+            return 'Z';
+        }
+        if(deltaX<0 && deltaY<0){
+            //move northwest
+            return 'Q';
+        }
+        if(deltaX < 0 && deltaY == 0){
+            //move west
+            return 'A';
+        }
+        return 'P';
+    }
+
 
     public void paintComponent(Graphics g){
         super.paintComponent(g);
         /*g.drawRect(10,10,100,500);*/
-        System.out.println("drawing glass pane");
+        //System.out.println("drawing glass pane");
         /*Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
@@ -41,33 +104,69 @@ public class MyGlassPane extends JComponent {
     }
 
     private class GlassPaneMouseAdapter extends MouseAdapter {
+        private LineStroke line;
+
         public void mouseClicked(MouseEvent e) {
-            if(e.getClickCount() == 2){
-                repaint();
+            if(isRightClick(e)){
+                System.out.print("right clicked!");
+
             }
-
-
+            else{
+               dispatchEvent(e);
+            }
         }
 
         public void mousePressed(MouseEvent e){
-            if(SwingUtilities.isRightMouseButton(e)){
+            if(isRightClick(e)){
+                System.out.print("right click mouse pressed");
+                line = new LineStroke(Color.pink);
+                //MyGlassPane.this.line=line;
                 //start the gesture
+            }
+            else{
+                dispatchEvent(e);
             }
         }
 
         public void mouseDragged(MouseEvent e){
-            if(SwingUtilities.isRightMouseButton(e)){
-
+            if(isRightClick(e)){
+                System.out.println("I'm dragging");
+                this.line.addPoint(e.getPoint());
+                repaint();
+            }
+            else{
+                dispatchEvent(e);
             }
             //compile e.getPoint() to the gesture list
             //repaint
         }
 
         public void mouseReleased(MouseEvent e){
+            if(isRightClick(e)){
+                MyGlassPane.this.checkGesture(line);
+                line = null;
+            }
+            else{
+                dispatchEvent(e);
+            }
             //run the gesture check
             //do the gesture
             //reset the gesture list
             //repaint?
+        }
+
+        private void dispatchEvent(MouseEvent e){
+            Point currPoint = e.getPoint();
+            Point containerPoint = SwingUtilities.convertPoint(MyGlassPane.this, currPoint, MyGlassPane.this.contentPane);
+            Component component = SwingUtilities.getDeepestComponentAt(MyGlassPane.this.contentPane, containerPoint.x, containerPoint.y);
+            if(component != null){
+                Point componentPoint = SwingUtilities.convertPoint(MyGlassPane.this, currPoint, component);
+                component.dispatchEvent(new MouseEvent(component, e.getID(), e.getWhen(), e.getModifiers(), componentPoint.x, componentPoint.y, e.getClickCount(), e.isPopupTrigger()));
+            }
+        }
+
+        private boolean isRightClick(MouseEvent e) {
+            return SwingUtilities.isRightMouseButton(e) || e.isControlDown();
         }
     }
 
