@@ -13,17 +13,19 @@ import java.util.ArrayList;
  */
 public class MyGlassPane extends JComponent {
     private Container contentPane;
+    private LineStroke line;
 
     public MyGlassPane(Container contentPane) {
         this.contentPane = contentPane;
         System.out.println("instantiated glass pane");
         MouseAdapter mouseAdapter = new GlassPaneMouseAdapter();
         this.addMouseListener(mouseAdapter);
+        this.addMouseMotionListener(mouseAdapter);
     }
 
-    private void checkGesture(LineStroke line){
+    private void checkGesture(LineStroke l){
         StringBuilder builder = new StringBuilder();
-        java.util.List<Point> points = line.getPoints();
+        java.util.List<Point> points = l.getPoints();
         for(int i=0; i<points.size(); i++){
             if(i+1<points.size()){
                 builder.append(getPointDiff(points.get(i), points.get(i+1)));
@@ -86,29 +88,22 @@ public class MyGlassPane extends JComponent {
 
     public void paintComponent(Graphics g){
         super.paintComponent(g);
-        /*g.drawRect(10,10,100,500);*/
         //System.out.println("drawing glass pane");
-        /*Graphics2D g2 = (Graphics2D) g;
+        Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-
-        drawBackground(g);
-        if(!flipped){
-            drawImage(g);
+        if(line != null){
+            g2.setStroke(new BasicStroke(5));
+            line.draw(g2);
         }
-        else{
-            drawFlipped(g);
-        }*/
         revalidate();
     }
 
     private class GlassPaneMouseAdapter extends MouseAdapter {
-        private LineStroke line;
 
         public void mouseClicked(MouseEvent e) {
             if(isRightClick(e)){
-                System.out.print("right clicked!");
 
             }
             else{
@@ -118,10 +113,7 @@ public class MyGlassPane extends JComponent {
 
         public void mousePressed(MouseEvent e){
             if(isRightClick(e)){
-                System.out.print("right click mouse pressed");
-                line = new LineStroke(Color.pink);
-                //MyGlassPane.this.line=line;
-                //start the gesture
+                MyGlassPane.this.line= new LineStroke(Color.pink);
             }
             else{
                 dispatchEvent(e);
@@ -130,29 +122,23 @@ public class MyGlassPane extends JComponent {
 
         public void mouseDragged(MouseEvent e){
             if(isRightClick(e)){
-                System.out.println("I'm dragging");
-                this.line.addPoint(e.getPoint());
+                MyGlassPane.this.line.addPoint(e.getPoint());
                 repaint();
             }
             else{
                 dispatchEvent(e);
             }
-            //compile e.getPoint() to the gesture list
-            //repaint
         }
 
         public void mouseReleased(MouseEvent e){
             if(isRightClick(e)){
-                MyGlassPane.this.checkGesture(line);
-                line = null;
+                MyGlassPane.this.checkGesture(MyGlassPane.this.line);
+                MyGlassPane.this.line = null;
+                repaint();
             }
             else{
                 dispatchEvent(e);
             }
-            //run the gesture check
-            //do the gesture
-            //reset the gesture list
-            //repaint?
         }
 
         private void dispatchEvent(MouseEvent e){
