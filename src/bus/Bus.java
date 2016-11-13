@@ -1,5 +1,6 @@
 package bus;
 import bus.messages.*;
+import components.PhotoComponent;
 import constants.AnnotationMode;
 
 import java.awt.*;
@@ -74,6 +75,18 @@ public class Bus {
     public void registerListener(IMessageListener listener){
         if(!registeredListeners.contains(listener)) {
             registeredListeners.add(listener);
+        }
+    }
+
+    public void removePhotoListenerers() {
+        ArrayList<IMessageListener> toRemove = new ArrayList<>();
+        for(IMessageListener listener: registeredListeners) {
+            if(listener instanceof PhotoComponent) {
+                toRemove.add(listener);
+            }
+        }
+        for(IMessageListener listener: toRemove) {
+            this.registeredListeners.remove(listener);
         }
     }
 

@@ -55,6 +55,7 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
      */
     public void updateView() {
         this.removeAll(); //clear the component
+        Bus.getInstance().removePhotoListenerers();
         switch(mode){
             case Photo:
                 drawPhotoMode();

@@ -1,9 +1,7 @@
 package components;
 
 import bus.Bus;
-import bus.messages.MoveLeftMessage;
-import bus.messages.MoveRightMessage;
-import bus.messages.ViewModeMessage;
+import bus.messages.*;
 import constants.Templates;
 import constants.ViewMode;
 
@@ -67,7 +65,7 @@ public class MyGlassPane extends JComponent {
                 break;
             }
         }
-        if(matchedPattern != null){
+        if(matchedPattern == null){
             JOptionPane.showMessageDialog(null, "Sorry, that gesture was not recognized.");
         }
         else{
@@ -78,23 +76,23 @@ public class MyGlassPane extends JComponent {
                 case "right":
                     Bus.getInstance().sendMessage(new MoveRightMessage());
                     break;
-                case "pigtail":
-                    //Bus.getInstance().sendMessage(new /*message type*/);
-                    break;
+                /*case "pigtail":
+                    Bus.getInstance().sendMessage(new DeleteImageMessage());
+                    break;*/
                 case "loop":
                     //Bus.getInstance().sendMessage(new /*message type*/);
                     break;
                 case "tag1":
-                   // Bus.getInstance().sendMessage(new /*message type*/);
+                    Bus.getInstance().sendMessage(new TagMessage(1));
                     break;
                 case "tag2":
-                    //Bus.getInstance().sendMessage(new /*message type*/);
+                    Bus.getInstance().sendMessage(new TagMessage(2));
                     break;
                 case "tag3":
-                    //Bus.getInstance().sendMessage(new /*message type*/);
+                    Bus.getInstance().sendMessage(new TagMessage(3));
                     break;
                 case "tag4":
-                    //Bus.getInstance().sendMessage(new /*message type*/);
+                    Bus.getInstance().sendMessage(new TagMessage(4));
                     break;
                 default:
                     break;

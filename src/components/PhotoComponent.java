@@ -195,6 +195,15 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
                 lineColor = Bus.getInstance().getStrokeColor();
                 boxColor = Bus.getInstance().getBoxColor();
                 break;
+            case "tag_message":
+                TagMessage tagMessage = (TagMessage) m;
+                int tagNumber = tagMessage.tagNumber;
+                if(!photo.hasTag(tagNumber)){ //add the tag if it doesn't exist yet
+                    photo.addTag(tagNumber);
+                }
+                else{
+                    photo.removeTag(tagNumber); //otherwise, remove the tag
+                }
             default:
                 break;
         }
