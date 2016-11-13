@@ -38,19 +38,33 @@ public class MyGlassPane extends JComponent {
     private void checkGesture(LineStroke l){
         StringBuilder builder = new StringBuilder();
         java.util.List<Point> points = l.getPoints();
+        char prevLetter = 'D'; //some arbitrary starting direction
         for(int i=0; i<points.size(); i++){
             if(i+1<points.size()){
-                builder.append(getPointDiff(points.get(i), points.get(i+1)));
+                char letter = getPointDiff(points.get(i), points.get(i+1));
+                if(letter == 'K' || letter =='P'){ //checking for same points or errors
+                    builder.append(prevLetter);
+                }
+                else{
+                    prevLetter = letter;
+                    builder.append(letter);
+                }
+
             }
         }
         System.out.println(builder.toString());
+        boolean matched = false;
         for(String pattern: templates.gestures.keySet()){
             if(Pattern.matches(pattern, builder.toString())){
                 System.out.println("Found a match w this: "+pattern);
                 System.out.println("It is this action: "+templates.gestures.get(pattern));
+                matched = true;
                 //perform this action it matched
                 break;
             }
+        }
+        if(!matched){
+            JOptionPane.showMessageDialog(null, "Sorry, that gesture was not recognized.");
         }
     }
 
@@ -96,6 +110,9 @@ public class MyGlassPane extends JComponent {
             //move north
             return 'W';
         }
+        if(deltaX == 0 && deltaY==0){ //edge case
+            return 'K';
+        }
         if(deltaX<0 && deltaY>0){
             //move southwest
             return 'Z';
@@ -108,7 +125,7 @@ public class MyGlassPane extends JComponent {
             //move west
             return 'A';
         }
-        return 'P';
+        return 'P'; //shouldn't hit this
     }
 
 
