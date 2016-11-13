@@ -1,6 +1,11 @@
 package components;
 
+import bus.Bus;
+import bus.messages.MoveLeftMessage;
+import bus.messages.MoveRightMessage;
+import bus.messages.ViewModeMessage;
 import constants.Templates;
+import constants.ViewMode;
 
 import javax.swing.*;
 import java.awt.*;
@@ -53,18 +58,47 @@ public class MyGlassPane extends JComponent {
             }
         }
         System.out.println(builder.toString());
-        boolean matched = false;
+        String matchedPattern = null;
         for(String pattern: templates.gestures.keySet()){
             if(Pattern.matches(pattern, builder.toString())){
                 System.out.println("Found a match w this: "+pattern);
                 System.out.println("It is this action: "+templates.gestures.get(pattern));
-                matched = true;
-                //perform this action it matched
+                matchedPattern = templates.gestures.get(pattern);
                 break;
             }
         }
-        if(!matched){
+        if(matchedPattern != null){
             JOptionPane.showMessageDialog(null, "Sorry, that gesture was not recognized.");
+        }
+        else{
+            switch(matchedPattern){
+                case "left":
+                    Bus.getInstance().sendMessage(new MoveLeftMessage());
+                    break;
+                case "right":
+                    Bus.getInstance().sendMessage(new MoveRightMessage());
+                    break;
+                case "pigtail":
+                    //Bus.getInstance().sendMessage(new /*message type*/);
+                    break;
+                case "loop":
+                    //Bus.getInstance().sendMessage(new /*message type*/);
+                    break;
+                case "tag1":
+                   // Bus.getInstance().sendMessage(new /*message type*/);
+                    break;
+                case "tag2":
+                    //Bus.getInstance().sendMessage(new /*message type*/);
+                    break;
+                case "tag3":
+                    //Bus.getInstance().sendMessage(new /*message type*/);
+                    break;
+                case "tag4":
+                    //Bus.getInstance().sendMessage(new /*message type*/);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 

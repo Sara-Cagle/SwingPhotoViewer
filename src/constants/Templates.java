@@ -19,7 +19,6 @@ public class Templates {
     public final String tag3 = "^(X*)(E*)(D+)(E*)(X*)(S+)(Z*)(X*)(W+)$";
     public final String tag4 = "^$";
     public final HashMap<String, String> gestures = new HashMap<>();
-    //public final ArrayList<String> gestures = new ArrayList<>();
 
     public Templates(){
         gestures.put(left, "left");
