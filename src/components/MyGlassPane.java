@@ -1,11 +1,14 @@
 package components;
 
+import constants.Templates;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 /**
  * @Author Sara Cagle
@@ -14,6 +17,7 @@ import java.util.ArrayList;
 public class MyGlassPane extends JComponent {
     private Container contentPane;
     private LineStroke line;
+    private Templates templates;
 
     public MyGlassPane(Container contentPane) {
         this.contentPane = contentPane;
@@ -21,6 +25,7 @@ public class MyGlassPane extends JComponent {
         MouseAdapter mouseAdapter = new GlassPaneMouseAdapter();
         this.addMouseListener(mouseAdapter);
         this.addMouseMotionListener(mouseAdapter);
+        templates = new Templates();
     }
 
     /**
@@ -39,9 +44,16 @@ public class MyGlassPane extends JComponent {
             }
         }
         System.out.println(builder.toString());
-
-        //if string matches any of the regex, do the action
+        for(String pattern: templates.gestures.keySet()){
+            if(Pattern.matches(pattern, builder.toString())){
+                System.out.println("Found a match w this: "+pattern);
+                System.out.println("It is this action: "+templates.gestures.get(pattern));
+                //perform this action it matched
+                break;
+            }
+        }
     }
+
 
     /**
      * getPointDiff

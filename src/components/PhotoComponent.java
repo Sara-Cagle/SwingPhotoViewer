@@ -211,7 +211,7 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
         if(e.getKeyCode()==KeyEvent.VK_BACK_SPACE){ //can't be done in keyTyped because that's only for input keys
             inFocusTextBox.removeChar();
         }
-        if(e.getKeyChar() != '\b'){
+        if(e.getKeyChar() != '\b' && inFocusTextBox != null){
             inFocusTextBox.addChar(e.getKeyChar());
         }
         repaint();
