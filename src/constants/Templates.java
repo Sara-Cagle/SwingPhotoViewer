@@ -12,12 +12,12 @@ public class Templates {
 
     public final String left = "^[ASZ]+[XSD]+$";
     public final String right = "^[XSD]+[SAZ]+$";
-    public final String pigtail = "^(W+)$";
-    public final String loop = "^(A*)(Z+)(S+)(X+)(D+)(E+)(W+)(Q+)(A+)$";
-    public final String tag1 = "^(Z*)(X*)(S+)(Z*)(X*)$"; //STRAIGHTISH LINE DOWN
-    public final String tag2 = "^(Q*)(E*)(W+)(Q*)(E*)$";//Straightish up //"^(X*)(E*)(D+)(E*)(X*)(S+)(Z*)(X*)$"; //RIGHT TO LEFT LINE, THEN STRAIGHT DOWN
-    public final String tag3 = "^(E*)(X*)(D+)(E*)(X*)$"; //straightish line left to right//"^(X*)(E*)(D+)(E*)(X*)(S+)(Z*)(X*)(W+)$";
-    public final String tag4 = "^(Q*)(Z*)(A+)(Q*)(Z*)$"; //straightish line right to left
+    public final String pigtail = "^(L+)$";
+    public final String loop = "^[QAZ]+[AZS]+[EDX]+[EWQ]+[WQA]+[QAZ]+$";//starts in middle ish of top circle, goes counter clockwise
+    public final String tag1 = "^[ZSX]+$"; //STRAIGHTISH LINE DOWN
+    public final String tag2 = "^[QWE]+$";//Straightish up //"^(X*)(E*)(D+)(E*)(X*)(S+)(Z*)(X*)$"; //RIGHT TO LEFT LINE, THEN STRAIGHT DOWN
+    public final String tag3 = "^[EDX]+$"; //straightish line left to right//"^(X*)(E*)(D+)(E*)(X*)(S+)(Z*)(X*)(W+)$";
+    public final String tag4 = "^[QAZ]+$"; //straightish line right to left
     public final HashMap<String, String> gestures = new HashMap<>();
 
     public Templates(){
