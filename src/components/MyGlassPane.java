@@ -39,7 +39,7 @@ public class MyGlassPane extends JComponent {
         StringBuilder builder = new StringBuilder();
         java.util.List<Point> points = l.getPoints();
         char prevLetter = 'D'; //some arbitrary starting direction
-        for(int i=0; i<points.size(); i++){
+        for(int i=0; i<points.size(); i+=3){
             if(i+1<points.size()){
                 char letter = getPointDiff(points.get(i), points.get(i+1));
                 if(letter == 'K' || letter =='P'){ //checking for same points or errors
@@ -73,9 +73,9 @@ public class MyGlassPane extends JComponent {
                 case "right":
                     Bus.getInstance().sendMessage(new MoveRightMessage());
                     break;
-                /*case "pigtail":
+                case "pigtail":
                     Bus.getInstance().sendMessage(new DeleteImageMessage());
-                    break;*/
+                    break;
                 case "loop":
                     //Bus.getInstance().sendMessage(new /*message type*/);
                     break;
@@ -123,41 +123,43 @@ public class MyGlassPane extends JComponent {
         //Southeast = X
         int deltaX = p2.x-p1.x;
         int deltaY = p2.y-p1.y;
-        if(deltaX > 0 && deltaY >0){
-            //move southeast
-            return 'X';
-        }
-        if(deltaX >0 && deltaY == 0){
-            //move east
-            return 'D';
-        }
-        if(deltaX > 0 && deltaY <0){
-            //move northeast
-            return 'E';
-        }
-        if(deltaX == 0 && deltaY >0){
-            //move south
-            return 'S';
-        }
-        if(deltaX == 0 && deltaY<0){
-            //move north
-            return 'W';
-        }
-        if(deltaX == 0 && deltaY==0){ //edge case
-            return 'K';
-        }
-        if(deltaX<0 && deltaY>0){
-            //move southwest
-            return 'Z';
-        }
-        if(deltaX<0 && deltaY<0){
-            //move northwest
-            return 'Q';
-        }
-        if(deltaX < 0 && deltaY == 0){
-            //move west
-            return 'A';
-        }
+
+            if (deltaX > 0 && deltaY > 0) {
+                //move southeast
+                return 'X';
+            }
+            if (deltaX > 0 && deltaY == 0) {
+                //move east
+                return 'D';
+            }
+            if (deltaX > 0 && deltaY < 0) {
+                //move northeast
+                return 'E';
+            }
+            if (deltaX == 0 && deltaY > 0) {
+                //move south
+                return 'S';
+            }
+            if (deltaX == 0 && deltaY < 0) {
+                //move north
+                return 'W';
+            }
+            if (deltaX == 0 && deltaY == 0) { //edge case
+                return 'K';
+            }
+            if (deltaX < 0 && deltaY > 0) {
+                //move southwest
+                return 'Z';
+            }
+            if (deltaX < 0 && deltaY < 0) {
+                //move northwest
+                return 'Q';
+            }
+            if (deltaX < 0 && deltaY == 0) {
+                //move west
+                return 'A';
+            }
+
         return 'P'; //shouldn't hit this
     }
 
@@ -204,7 +206,7 @@ public class MyGlassPane extends JComponent {
         }
 
         public void mouseDragged(MouseEvent e){
-            if(isRightClick(e)){
+            if(isRightClick(e)) {
                 MyGlassPane.this.line.addPoint(e.getPoint());
                 repaint();
             }

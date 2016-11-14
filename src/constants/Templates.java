@@ -12,10 +12,10 @@ public class Templates {
 
     public final String left = "^(Z+)(S*)(X+)$";
     public final String right = "^(X+)(S*)(Z+)$";
-    public final String pigtail = "^()()()$";
+    public final String pigtail = "^(W+)$";
     public final String loop = "^(A*)(Z+)(S+)(X+)(D+)(E+)(W+)(Q+)(A+)$";
     public final String tag1 = "^(Z*)(X*)(S+)(Z*)(X*)$"; //STRAIGHTISH LINE DOWN
-    public final String tag2 = "^(X*)(E*)(D+)(E*)(X*)(S+)(Z*)(X*)$"; //RIGHT TO LEFT LINE, THEN STRAIGHT DOWN
+    public final String tag2 = "^(W+)$";//Straight up //"^(X*)(E*)(D+)(E*)(X*)(S+)(Z*)(X*)$"; //RIGHT TO LEFT LINE, THEN STRAIGHT DOWN
     public final String tag3 = "^(X*)(E*)(D+)(E*)(X*)(S+)(Z*)(X*)(W+)$";
     public final String tag4 = "^$";
     public final HashMap<String, String> gestures = new HashMap<>();

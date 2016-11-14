@@ -6,6 +6,11 @@ package bus.messages;
 public class PhotoTagMessage extends Message {
     public int tag;
 
+    /**
+     * PanelTagMessage constructor
+     *
+     * @param tag, the tagNumber to be turned on/off
+     */
     public PhotoTagMessage(int tag) {
         this.tag = tag;
     }

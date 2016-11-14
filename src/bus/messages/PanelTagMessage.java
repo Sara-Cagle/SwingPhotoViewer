@@ -20,7 +20,7 @@ public class PanelTagMessage extends Message{
     /**
      * type
      *
-     * @return the type of the message, "tag_message"
+     * @return the type of the message, "panel_tag_message"
      */
     public String type() {
         return "panel_tag_message";
