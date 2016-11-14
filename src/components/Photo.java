@@ -123,4 +123,15 @@ public class Photo {
         tagList.remove(tagList.indexOf(tagNumber));
     }
 
+    /**
+     * getTags
+     *
+     * Getter for the list of tags.
+     *
+     * @return tagList, the list of tags
+     */
+    public ArrayList<Integer> getTags(){
+        return tagList;
+    }
+
 }

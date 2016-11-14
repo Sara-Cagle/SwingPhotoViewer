@@ -31,7 +31,6 @@ public class Main {
         mainFrame.setSize(800,580);
         mainFrame.setMinimumSize(new Dimension(740, 480));
         mainFrame.setLayout(new BorderLayout());
-        ContentPanel contentPanel = new ContentPanel();
 
         mainFrame.add(new TopMenu(), BorderLayout.PAGE_START);
         mainFrame.add(new LeftToolPanel(), BorderLayout.LINE_START);

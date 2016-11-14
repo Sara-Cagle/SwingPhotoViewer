@@ -68,7 +68,6 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
                 break;
         }
         validate();
-        repaint();
     }
 
     /**

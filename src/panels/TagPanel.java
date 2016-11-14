@@ -2,8 +2,8 @@ package panels;
 import bus.Bus;
 import bus.IMessageListener;
 import bus.messages.Message;
-import bus.messages.TagMessage;
-import bus.messages.ThumbnailSizeMessage;
+import bus.messages.PanelTagMessage;
+import bus.messages.PhotoTagMessage;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -42,22 +42,22 @@ public class TagPanel extends JPanel implements IMessageListener{
 
         tag1 = new JCheckBox("Spring");
         tag1.addActionListener(e -> {
-            Bus.getInstance().sendMessage(new TagMessage(1));
+            Bus.getInstance().sendMessage(new PhotoTagMessage(1));
         });
 
         tag2 = new JCheckBox("Summer");
         tag2.addActionListener(e -> {
-            Bus.getInstance().sendMessage(new TagMessage(2));
+            Bus.getInstance().sendMessage(new PhotoTagMessage(2));
         });
 
         tag3 = new JCheckBox("Fall");
-        tag3.addActionListener(e -> {
-            Bus.getInstance().sendMessage(new TagMessage(3));
+        tag3.addActionListener(e ->  {
+            Bus.getInstance().sendMessage(new PhotoTagMessage(3));
         });
 
         tag4 = new JCheckBox("Winter");
         tag4.addActionListener(e -> {
-            Bus.getInstance().sendMessage(new TagMessage(4));
+            Bus.getInstance().sendMessage(new PhotoTagMessage(4));
         });
 
         this.add(tag1);
@@ -77,10 +77,10 @@ public class TagPanel extends JPanel implements IMessageListener{
      */
     public void receiveMessage(Message m){
         switch(m.type()){
-            case "tag_message":
-                TagMessage tagMessage = (TagMessage) m;
-                int tagNumber = tagMessage.tagNumber;
-                switch(tagNumber){ //toggle checked/unchecked
+            case "panel_tag_message":
+                PanelTagMessage panelTagMessage = (PanelTagMessage) m;
+                int tagNumber = panelTagMessage.tagNumber;
+                switch(tagNumber) { //toggle checked/unchecked
                     case 1:
                         tag1.setSelected(!tag1.isSelected());
                         break;
@@ -94,6 +94,13 @@ public class TagPanel extends JPanel implements IMessageListener{
                         tag4.setSelected(!tag4.isSelected());
                         break;
                 }
+            break;
+            case "clear_tag_message":
+                tag1.setSelected(false);
+                tag2.setSelected(false);
+                tag3.setSelected(false);
+                tag4.setSelected(false);
+                break;
             default:
                 break;
         }

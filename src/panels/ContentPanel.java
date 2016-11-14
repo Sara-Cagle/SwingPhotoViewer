@@ -26,7 +26,6 @@ public class ContentPanel extends JPanel{
     public ContentPanel(){
         super();
         this.setLayout(new BorderLayout()); //need to set border layout in order to have full scrollability
-        //photoComponent = new PhotoComponent(); //this will determine the size (greater than minimum)
         lightTable = new LightTable();
         this.add(lightTable, BorderLayout.CENTER);
     }

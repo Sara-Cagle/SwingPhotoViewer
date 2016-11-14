@@ -4,9 +4,7 @@ import bus.Bus;
 import bus.IMessageListener;
 import bus.messages.*;
 import constants.AnnotationMode;
-import constants.Colors;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -14,9 +12,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.awt.Color;
-import java.util.ArrayList;
 
 /**
  * PhotoComponent
@@ -60,7 +56,6 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
         this.setFocusable(true);
         this.photo = photo;
         flipped = false;
-        Bus.getInstance().registerListener(this);
         mouseAdapter = new PhotoMouseAdapter();
         addMouseListener(mouseAdapter);
         addMouseMotionListener(mouseAdapter);
@@ -74,6 +69,14 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
             BufferedImage image = photo.getImage();
             this.setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
             this.setSize(new Dimension(image.getWidth(), image.getHeight()));
+            Bus.getInstance().sendMessage(new ClearTagPanelMessage());
+            for(Integer tag: photo.getTags()) {
+                Bus.getInstance().sendMessage(new PanelTagMessage(tag));
+            }
+        }
+
+        if(photo != null) {
+            Bus.getInstance().registerListener(this);
         }
     }
 
@@ -195,9 +198,9 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
                 lineColor = Bus.getInstance().getStrokeColor();
                 boxColor = Bus.getInstance().getBoxColor();
                 break;
-            case "tag_message":
-                TagMessage tagMessage = (TagMessage) m;
-                int tagNumber = tagMessage.tagNumber;
+            case "photo_tag_message":
+                PhotoTagMessage panelTagMessage = (PhotoTagMessage) m;
+                int tagNumber = panelTagMessage.tag;
                 if(!photo.hasTag(tagNumber)){ //add the tag if it doesn't exist yet
                     photo.addTag(tagNumber);
                 }

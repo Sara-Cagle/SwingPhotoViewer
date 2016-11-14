@@ -3,14 +3,11 @@ package components;
 import bus.Bus;
 import bus.messages.*;
 import constants.Templates;
-import constants.ViewMode;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 /**
@@ -83,16 +80,20 @@ public class MyGlassPane extends JComponent {
                     //Bus.getInstance().sendMessage(new /*message type*/);
                     break;
                 case "tag1":
-                    Bus.getInstance().sendMessage(new TagMessage(1));
+                    Bus.getInstance().sendMessage(new PanelTagMessage(1));
+                    Bus.getInstance().sendMessage(new PhotoTagMessage(1));
                     break;
                 case "tag2":
-                    Bus.getInstance().sendMessage(new TagMessage(2));
+                    Bus.getInstance().sendMessage(new PanelTagMessage(2));
+                    Bus.getInstance().sendMessage(new PhotoTagMessage(2));
                     break;
                 case "tag3":
-                    Bus.getInstance().sendMessage(new TagMessage(3));
+                    Bus.getInstance().sendMessage(new PanelTagMessage(3));
+                    Bus.getInstance().sendMessage(new PhotoTagMessage(3));
                     break;
                 case "tag4":
-                    Bus.getInstance().sendMessage(new TagMessage(4));
+                    Bus.getInstance().sendMessage(new PanelTagMessage(4));
+                    Bus.getInstance().sendMessage(new PhotoTagMessage(4));
                     break;
                 default:
                     break;
