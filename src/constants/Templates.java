@@ -12,7 +12,7 @@ public class Templates {
 
     public final String left = "^[ASZ]+[XSD]+$";
     public final String right = "^[XSD]+[SAZ]+$";
-    public final String pigtail = "^(L+)$";
+    public final String pigtail = "^[QAZ]+[AZS]+[EDX]+[EWQ]+[WQA]+[QAZ]+[XSD]+$"; //same as loop, but then southeast down
     public final String loop = "^[QAZ]+[AZS]+[EDX]+[EWQ]+[WQA]+[QAZ]+$";//starts in middle ish of top circle, goes counter clockwise
     public final String tag1 = "^[ZSX]+$"; //STRAIGHTISH LINE DOWN
     public final String tag2 = "^[QWE]+$";//Straightish up //"^(X*)(E*)(D+)(E*)(X*)(S+)(Z*)(X*)$"; //RIGHT TO LEFT LINE, THEN STRAIGHT DOWN
