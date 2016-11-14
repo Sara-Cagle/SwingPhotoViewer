@@ -26,7 +26,7 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
     private ViewMode mode;
     private Photo currentPhoto;
     private int thumbnailSize;
-    //private MyGlassPane glassPane;
+    //private GlassPane glassPane;
 
 
     /**
@@ -42,8 +42,6 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
         this.thumbnailSize = 100;
         Bus.getInstance().registerListener(this);
         mode = ViewMode.Photo;
-        //glassPane = new MyGlassPane();
-        //this.setGlassPane()
         updateView();
 
     }

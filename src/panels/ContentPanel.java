@@ -16,9 +16,9 @@ import components.PhotoComponent;
  * @Date 9/29/2016
  */
 public class ContentPanel extends JPanel{
-    private JComponent photoComponent;
+    //private JComponent photoComponent;
     private JComponent lightTable;
-    private JScrollPane scrollPane;
+    //private JScrollPane scrollPane;
 
     /**
      * ContentPanel constructor

@@ -1,7 +1,12 @@
 package bus.messages;
 
 /**
- * Created by saracagle on 11/13/16.
+ * PhotoTagMessage
+ *
+ * Message to send info to the photo that it has been tagged.
+ *
+ * @Autor Sara Cagle
+ * @Date 11/13/2016
  */
 public class PhotoTagMessage extends Message {
     public int tag;
@@ -15,6 +20,11 @@ public class PhotoTagMessage extends Message {
         this.tag = tag;
     }
 
+    /**
+     * type
+     *
+     * @return the type of the message, "photo_tag_message"
+     */
     public String type() {
         return "photo_tag_message";
     }

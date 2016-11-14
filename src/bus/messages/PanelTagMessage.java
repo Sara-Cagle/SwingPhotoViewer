@@ -1,8 +1,12 @@
 package bus.messages;
 
 /**
+ * PanelTagMessage
+ *
+ * Message to send info to the tag panel that there is an associated tag with a photo.
+ *
  * @Author Sara Cagle
- * @Datw 11/13/16
+ * @Date 11/13/2016
  */
 public class PanelTagMessage extends Message{
 

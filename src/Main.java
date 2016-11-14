@@ -1,4 +1,4 @@
-import components.MyGlassPane;
+import components.GlassPane;
 import panels.ContentPanel;
 import panels.LeftToolPanel;
 import panels.StatusPanel;
@@ -36,8 +36,8 @@ public class Main {
         mainFrame.add(new LeftToolPanel(), BorderLayout.LINE_START);
         mainFrame.add(new ContentPanel(), BorderLayout.CENTER);
         mainFrame.add(new StatusPanel(), BorderLayout.PAGE_END);
-        MyGlassPane myGlassPane = new MyGlassPane(mainFrame.getContentPane());
-        mainFrame.setGlassPane(myGlassPane);
+        GlassPane glassPane = new GlassPane(mainFrame.getContentPane());
+        mainFrame.setGlassPane(glassPane);
         mainFrame.getGlassPane().setVisible(true);
 
         mainFrame.setVisible(true);
