@@ -94,6 +94,18 @@ public class TextBox {
     }
 
     /**
+     * isPointInside
+     *
+     * Checks if a given point is inside the text box.
+     *
+     * @param point, the point in question
+     * @return true or false, if the point is in the box
+     */
+    public boolean isPointInside(Point point){
+        return (point.x <= startX+width && point.x >= startX) && (point.y <=startY+height && point.y>= startY);
+    }
+
+    /**
      * getString
      *
      * Takes the input text one character at a time and builds a String.

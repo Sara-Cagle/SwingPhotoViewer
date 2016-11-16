@@ -82,6 +82,7 @@ public class GlassPane extends JComponent {
                     Bus.getInstance().sendMessage(new DeleteImageMessage());
                     break;
                 case "loop":
+                    selection(points);
                     //Bus.getInstance().sendMessage(new /*message type*/);
                     break;
                 case "tag1":
@@ -166,6 +167,13 @@ public class GlassPane extends JComponent {
             }
 
         return 'P'; //shouldn't hit this
+    }
+
+    public void selection(java.util.List<Point> loop){
+        //take in the loop, defined by the points
+        //pass the points down into PhotoComponent
+        //PhotoComponent will handle selection?
+
     }
 
 

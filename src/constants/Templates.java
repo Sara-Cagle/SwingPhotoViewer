@@ -13,13 +13,13 @@ import java.util.HashMap;
 public class Templates {
 
 
-    public final String left = "^[ASZ]+[XSD]+$";
-    public final String right = "^[XSD]+[SAZ]+$";
+    public final String left = "^[ASZ]+[XSD]+$"; //left charrot
+    public final String right = "^[XSD]+[SAZ]+$"; //right charrot
     public final String pigtail = "^[QAZ]+[AZS]+[EDX]+[EWQ]+[WQA]+[QAZ]+[XSD]+$"; //same as loop, but then southeast down
     public final String loop = "^[QAZ]+[AZS]+[EDX]+[EWQ]+[WQA]+[QAZ]+$";//starts in middle ish of top circle, goes counter clockwise
     public final String tag1 = "^[ZSX]+$"; //STRAIGHTISH LINE DOWN
-    public final String tag2 = "^[QWE]+$";//Straightish up //"^(X*)(E*)(D+)(E*)(X*)(S+)(Z*)(X*)$"; //RIGHT TO LEFT LINE, THEN STRAIGHT DOWN
-    public final String tag3 = "^[EDX]+$"; //straightish line left to right//"^(X*)(E*)(D+)(E*)(X*)(S+)(Z*)(X*)(W+)$";
+    public final String tag2 = "^[QWE]+$";//Straightish up
+    public final String tag3 = "^[EDX]+$"; //straightish line left to right
     public final String tag4 = "^[QAZ]+$"; //straightish line right to left
     public final HashMap<String, String> gestures = new HashMap<>();
 
@@ -39,8 +39,6 @@ public class Templates {
         gestures.put(tag4, "tag4");
 
     }
-
-
 }
 //North = W
 //South = S
