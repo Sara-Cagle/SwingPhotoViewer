@@ -6,7 +6,12 @@ import components.TextBox;
 import java.util.ArrayList;
 
 /**
- * Created by saracagle on 11/16/16.
+ * DeleteSelectedItemsMessage
+ *
+ * To let the PhotoComponent know Glass Pane is deleting things.
+ *
+ * @Author Sara Cagle
+ * @Date 11/16/2016
  */
 public class DeleteSelectedItemsMessage extends Message{
     public ArrayList<TextBox> selectedBoxes;

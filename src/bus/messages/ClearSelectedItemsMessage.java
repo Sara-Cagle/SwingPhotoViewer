@@ -1,7 +1,12 @@
 package bus.messages;
 
 /**
- * Created by saracagle on 11/16/16.
+ * ClearSelectedItemsMessage
+ *
+ * To let the glass pane know it should clear its selections.
+ *
+ * @Author Sara Cagle
+ * @Date 11/16/2016
  */
 public class ClearSelectedItemsMessage extends Message{
 

@@ -6,7 +6,12 @@ import components.TextBox;
 import java.util.ArrayList;
 
 /**
- * Created by saracagle on 11/16/16.
+ * HasSelectedItemsMessage
+ *
+ * To inform the glass pane that it has items that may be deleted.
+ *
+ * @Author Sara Cagle
+ * @Date 11/16/2016
  */
 public class HasSelectedItemsMessage extends Message{
 
