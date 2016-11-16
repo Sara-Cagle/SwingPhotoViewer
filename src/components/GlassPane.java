@@ -91,7 +91,7 @@ public class GlassPane extends JComponent {
                         photoComponentLoop.add(SwingUtilities.convertPoint(this, p, contentPanel));
                     }
                     Bus.getInstance().sendMessage(new SelectionMessage(photoComponentLoop));
-                    
+
                     break;
                 case "tag1":
                     Bus.getInstance().sendMessage(new PanelTagMessage(1));

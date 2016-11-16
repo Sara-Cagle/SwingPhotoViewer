@@ -192,23 +192,64 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
      * @param loop the collection of points in the drawn loop
      */
     public void selection(java.util.List<Point> loop){
+        clearSelected();
         if(!flipped){
+            //add message about needing to flip the photo
             return;
         }
-        int counter = 0;
+
         for(TextBox box: photo.getTextBoxes()){
             for(Point p: loop){
+
                 if(box.isPointInside(p)){
                     System.out.println("There was a point inside a box.");
                     System.out.println(p.x +", "+p.y);
-                    box.setColor(Color.pink);
-                    counter++;
+                    box.setSelected(true);
+                    break;
+                }
+            }
+        }
+        int maxY = 0;
+        int maxX = 0;
+        int minY = Integer.MAX_VALUE;
+        int minX = Integer.MAX_VALUE;
+        for(Point p: loop){
+            if(p.x > maxX) {
+                maxX = p.x;
+            }
+            if(p.y > maxY){
+                maxY = p.y;
+            }
+            if(p.x< minX){
+                minX = p.x;
+            }
+            if(p.y< minY){
+                minY = p.y;
+            }
+        }
+        /*boolean[][] pointContainment = new boolean[maxY-minY][maxX-minX];
+        for(int i=0; i<loop.size(); i++){
+
+        }*/
+
+        for(LineStroke stroke: photo.getLines()){
+            for(Point p: stroke.getPoints()){
+                if((p.x <= maxX && p.x >= minX) && (p.y <= maxY && p.y >= minY)){ //uses a square bounding box
+                    stroke.setSelected(true);
                     break;
                 }
             }
         }
         repaint();
-        System.out.println("There were points found in this many text boxes: "+counter);
+    }
+
+    public void clearSelected(){
+        for(TextBox b: photo.getTextBoxes()){
+            b.setSelected(false);
+        }
+        for(LineStroke s: photo.getLines()){
+            s.setSelected(false);
+        }
     }
 
     /**

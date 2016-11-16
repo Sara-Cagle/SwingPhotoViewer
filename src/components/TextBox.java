@@ -26,6 +26,7 @@ public class TextBox {
     private int startY;
     private ArrayList<Character> text;
     private Color color;
+    private boolean selected;
 
     /**
      * TextBox
@@ -41,6 +42,7 @@ public class TextBox {
         setDimensions(startPoint, endPoint);
         this.color = color;
         text = new ArrayList<>();
+        selected = false;
     }
 
     /**
@@ -116,6 +118,16 @@ public class TextBox {
         this.color = color;
     }
 
+    /**
+     * setSelected
+     *
+     * Sets the selected boolean to b
+     *
+     * @param b boolean selected or not
+     */
+    public void setSelected(boolean b){
+        selected = b;
+    }
     /**
      * getString
      *
@@ -203,7 +215,13 @@ public class TextBox {
         if( (metrics.getAscent()+metrics.getDescent()+metrics.getLeading())*strings.length > height){
             height = (metrics.getAscent()+metrics.getDescent()+metrics.getLeading())*strings.length;
         }
-        g.setColor(color);
+
+        if(selected){
+            g.setColor(Color.pink);
+        }
+        else{
+            g.setColor(color);
+        }
         g.fillRect(startX, startY, width, height);
         g.setColor(Color.black);
         g.drawRect(startX, startY, width, height);
