@@ -17,10 +17,10 @@ public class Templates {
     public final String right = "^[XSD]+[SAZ]+$"; //right charrot
     public final String pigtail = "^[QAZ]+[AZS]+[EDX]+[EWQ]+[WQA]+[QAZ]+[XSD]+$"; //same as loop, but then southeast down
     public final String loop = "^[QAZ]+[AZS]+[EDX]+[EWQ]+[WQA]+[QAZ]+$";//starts in middle ish of top circle, goes counter clockwise
-    public final String tag1 = "^[ZSX]+$"; //STRAIGHTISH LINE DOWN
-    public final String tag2 = "^[QWE]+$";//Straightish up
-    public final String tag3 = "^[EDX]+$"; //straightish line left to right
-    public final String tag4 = "^[QAZ]+$"; //straightish line right to left
+    public final String tag1 = "[SXD]+[EWD]+";//downward charrot, starting from left to right \/
+    public final String tag2 = "[WED]+[SDX]+";//upward charrot, starting from left to right /\
+    public final String tag3 = "[SXD]+[EWD]+[SXD]+";//zigzag up down, start up left, then down, then up, then down \/\
+    public final String tag4 = "[EWD]+[SXD]+[EWD]+";//zigzag up down, start down left, then up, then down, then up /\/
     public final HashMap<String, String> gestures = new HashMap<>();
 
     /**
