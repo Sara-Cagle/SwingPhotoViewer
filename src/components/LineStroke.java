@@ -62,6 +62,22 @@ public class LineStroke {
     }
 
     /**
+     * applyDelta
+     *
+     * Takes in the delta of new coordinates from old coordinates.
+     * Resets the coordinates of the box to apply the delta.
+     *
+     * @param x the change in x value
+     * @param y the change in y value
+     */
+    public void applyDelta(int x, int y){
+        for(Point p: pointList){
+            p.x+=x;
+            p.y+=y;
+        }
+    }
+
+    /**
      * draw
      *
      * Draws the line with the Graphics object.

@@ -40,6 +40,9 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
     private TextBox inFocusTextBox;
     private Color boxColor;
     private Color lineColor;
+    private ArrayList<TextBox> selectedBoxes;
+    private ArrayList<LineStroke> selectedLines;
+    private boolean hasCurrSelection;
 
 
     /**
@@ -60,6 +63,9 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
         mouseAdapter = new PhotoMouseAdapter();
         addMouseListener(mouseAdapter);
         addMouseMotionListener(mouseAdapter);
+        hasCurrSelection = false;
+        selectedBoxes = new ArrayList<>();
+        selectedLines = new ArrayList<>();
         this.addKeyListener(this);
         this.mode = Bus.getInstance().getAnnotationMode();
         this.boxColor = Bus.getInstance().getBoxColor();
@@ -200,11 +206,12 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
 
         for(TextBox box: photo.getTextBoxes()){
             for(Point p: loop){
-
                 if(box.isPointInside(p)){
                     System.out.println("There was a point inside a box.");
                     System.out.println(p.x +", "+p.y);
+                    selectedBoxes.add(box);
                     box.setSelected(true);
+                    hasCurrSelection = true;
                     break;
                 }
             }
@@ -236,6 +243,8 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
             for(Point p: stroke.getPoints()){
                 if((p.x <= maxX && p.x >= minX) && (p.y <= maxY && p.y >= minY)){ //uses a square bounding box
                     stroke.setSelected(true);
+                    selectedLines.add(stroke);
+                    hasCurrSelection = true;
                     break;
                 }
             }
@@ -244,12 +253,17 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
     }
 
     public void clearSelected(){
-        for(TextBox b: photo.getTextBoxes()){
+        hasCurrSelection = false;
+        for(TextBox b: selectedBoxes){
             b.setSelected(false);
+
+
         }
-        for(LineStroke s: photo.getLines()){
+        for(LineStroke s: selectedLines){
             s.setSelected(false);
         }
+        selectedBoxes.clear();
+        selectedLines.clear();
     }
 
     /**
@@ -320,8 +334,10 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
         private TextBox currentTextBox;
         private Point startCorner;
         private Point endCorner;
+        private Point prevPoint;
 
         public void mouseClicked(MouseEvent e) {
+            PhotoComponent.this.clearSelected();
             if(e.getClickCount() == 2 && PhotoComponent.this.isPointInImage(e.getPoint())){
                 flipped = !flipped;
                 repaint();
@@ -331,6 +347,11 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
         public void mousePressed(MouseEvent e){
             PhotoComponent.this.requestFocusInWindow();
             if(flipped){
+                if(PhotoComponent.this.hasCurrSelection){
+                    prevPoint = e.getPoint();
+                    //do nothing, don't let user annotate
+                    return;
+                }
                 if(mode == AnnotationMode.Drawing){
                     currentLine = new LineStroke(PhotoComponent.this.lineColor);
                     PhotoComponent.this.photo.addLine(currentLine);
@@ -345,6 +366,20 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
 
         public void mouseDragged(MouseEvent e){
             if(flipped){
+                if(PhotoComponent.this.hasCurrSelection){
+
+                    int deltaX = e.getPoint().x - prevPoint.x;
+                    int deltaY = e.getPoint().y - prevPoint.y;
+                    for(TextBox b: PhotoComponent.this.selectedBoxes){
+                        b.applyDelta(deltaX, deltaY);
+                    }
+                    for(LineStroke s: PhotoComponent.this.selectedLines){
+                        s.applyDelta(deltaX, deltaY);
+                    }
+                    repaint();
+                    prevPoint = e.getPoint();
+                    return;
+                }
                 if(mode == AnnotationMode.Drawing && PhotoComponent.this.isPointInImage(e.getPoint())){
                     this.currentLine.addPoint(e.getPoint());
                     repaint();
@@ -365,6 +400,7 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
             currentTextBox = null;
             startCorner = null;
             endCorner = null;
+            prevPoint = null;
         }
 
     }

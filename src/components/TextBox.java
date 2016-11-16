@@ -144,6 +144,20 @@ public class TextBox {
     }
 
     /**
+     * applyDelta
+     *
+     * Takes in the delta of new coordinates from old coordinates.
+     * Resets the coordinates of the box to apply the delta.
+     *
+     * @param x the change in x value
+     * @param y the change in y value
+     */
+    public void applyDelta(int x, int y){
+        this.startX += x;
+        this.startY += y;
+    }
+
+    /**
      * splitStrings
      *
      * Takes in a string being typed into the textbox.
