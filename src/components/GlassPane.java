@@ -1,6 +1,7 @@
 package components;
 
 import bus.Bus;
+import bus.IMessageListener;
 import bus.messages.*;
 import constants.Templates;
 
@@ -20,12 +21,14 @@ import java.util.regex.Pattern;
  * @Author Sara Cagle
  * @Date 11/9/2016.
  */
-public class GlassPane extends JComponent {
+public class GlassPane extends JComponent implements IMessageListener{
     private Container contentPane;
     private LineStroke line;
     private Templates templates;
     private JPanel contentPanel;
     private StatusModal statusModal;
+    private ArrayList<TextBox> selectedBoxes;
+    private ArrayList<LineStroke> selectedLines;
 
     public GlassPane(Container contentPane, JPanel contentPanel) {
         this.contentPane = contentPane;
@@ -37,6 +40,9 @@ public class GlassPane extends JComponent {
         statusModal = new StatusModal("", contentPanel.getX());
         System.out.println("This is contentPanel.getX: "+contentPanel.getX());
         templates = new Templates();
+        selectedBoxes = new ArrayList<>();
+        selectedLines = new ArrayList<>();
+        Bus.getInstance().registerListener(this);
     }
 
     /**
@@ -85,8 +91,15 @@ public class GlassPane extends JComponent {
                     Bus.getInstance().sendMessage(new MoveRightMessage());
                     break;
                 case "pigtail":
-                    Bus.getInstance().sendMessage(new DeleteImageMessage());
-                    //if there is a loop, then the pigtail needs to delete the selection, not the whole image
+                    if(selectedBoxes.size() > 0 || selectedLines.size()>0){
+                        System.out.println("Im gonna delete boxes and stuff because theyre not empty");
+                        Bus.getInstance().sendMessage(new DeleteSelectedItemsMessage(selectedBoxes, selectedLines));
+                        Bus.getInstance().sendMessage(new ClearSelectedItemsMessage());
+                    }
+                    else{
+                        System.out.println("Im just deleting the image");
+                        Bus.getInstance().sendMessage(new DeleteImageMessage());
+                    }
                     break;
                 case "loop":
                     java.util.List<Point> photoComponentLoop = new ArrayList<>();
@@ -178,6 +191,30 @@ public class GlassPane extends JComponent {
             }
 
         return 'P'; //shouldn't hit this
+    }
+
+    /**
+     * receiveMessage
+     *
+     * Receives a message of a file that will be passed in from the Bus.
+     * Listens for the annotation mode and the colors.
+     *
+     * @param m, a Message received from the bus.
+     */
+    public void receiveMessage(Message m){
+        switch(m.type()){
+            case "has_selected_items_message":
+                HasSelectedItemsMessage selectedItemsMessage = (HasSelectedItemsMessage) m;
+                System.out.println("updated my list of selected items to prolly delete");
+                selectedBoxes = selectedItemsMessage.selectedBoxes;
+                selectedLines = selectedItemsMessage.selectedLines;
+                break;
+            case "clear_selected_items_message":
+                selectedBoxes.clear();
+                selectedLines.clear();
+            default:
+                break;
+        }
     }
 
 

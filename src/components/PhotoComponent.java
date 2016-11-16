@@ -198,7 +198,7 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
      * @param loop the collection of points in the drawn loop
      */
     public void selection(java.util.List<Point> loop){
-        clearSelected();
+        Bus.getInstance().sendMessage(new ClearSelectedItemsMessage());
         if(!flipped){
             //add message about needing to flip the photo
             return;
@@ -207,8 +207,6 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
         for(TextBox box: photo.getTextBoxes()){
             for(Point p: loop){
                 if(box.isPointInside(p)){
-                    System.out.println("There was a point inside a box.");
-                    System.out.println(p.x +", "+p.y);
                     selectedBoxes.add(box);
                     box.setSelected(true);
                     hasCurrSelection = true;
@@ -249,15 +247,19 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
                 }
             }
         }
+        Bus.getInstance().sendMessage(new HasSelectedItemsMessage(selectedBoxes, selectedLines));
         repaint();
     }
 
+    /**
+     * clearSelected
+     *
+     * Unselects all of the selected items.
+     */
     public void clearSelected(){
         hasCurrSelection = false;
         for(TextBox b: selectedBoxes){
             b.setSelected(false);
-
-
         }
         for(LineStroke s: selectedLines){
             s.setSelected(false);
@@ -294,6 +296,18 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
             case "selection_message":
                 SelectionMessage selectionMessage = (SelectionMessage) m;
                 this.selection(selectionMessage.loop);
+                break;
+            case "delete_selected_items_message":
+                DeleteSelectedItemsMessage deleteSelectedItemsMessage = (DeleteSelectedItemsMessage) m;
+                for(TextBox box: deleteSelectedItemsMessage.selectedBoxes){
+                    photo.getTextBoxes().remove(box);
+                }
+                for(LineStroke stroke: deleteSelectedItemsMessage.selectedLines){
+                    photo.getLines().remove(stroke);
+                }
+                break;
+            case "clear_selected_items_message":
+                clearSelected();
             default:
                 break;
         }
@@ -337,7 +351,7 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
         private Point prevPoint;
 
         public void mouseClicked(MouseEvent e) {
-            PhotoComponent.this.clearSelected();
+            Bus.getInstance().sendMessage(new ClearSelectedItemsMessage());
             if(e.getClickCount() == 2 && PhotoComponent.this.isPointInImage(e.getPoint())){
                 flipped = !flipped;
                 repaint();

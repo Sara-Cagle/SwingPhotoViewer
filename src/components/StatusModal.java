@@ -1,10 +1,14 @@
 package components;
 
-import javax.swing.*;
 import java.awt.*;
 
 /**
- * Created by saracagle on 11/15/16.
+ * StatusModal
+ *
+ * Creates a status modal that indicates to the user what's happening on the contentPanel.
+ *
+ * @Author Sara Cagle
+ * @Data 11/15/2016
  */
 public class StatusModal {
     private String status;
