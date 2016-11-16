@@ -13,12 +13,12 @@ import java.util.HashMap;
 public class Templates {
 
 
-    public final String left = "^[ASZ]+[XSD]+$"; //left charrot
-    public final String right = "^[XSD]+[SAZ]+$"; //right charrot
-    public final String pigtail = "^[QAZ]+[AZS]+[EDX]+[EWQ]+[WQA]+[QAZ]+[XSD]+$"; //same as loop, but then southeast down
+    public final String left = "^[ASZ]+[XSD]+$"; //left carrot
+    public final String right = "^[XSD]+[SAZ]+$"; //right carrot
+    public final String pigtail = "^[QAZ]+[AZS]+[EDX]+[EWQ]+[WQA]+[QAZ]+[XSD]+$"; //same as loop, but then southeast
     public final String loop = "^[QAZ]+[AZS]+[EDX]+[EWQ]+[WQA]+[QAZ]+$";//starts in middle ish of top circle, goes counter clockwise
-    public final String tag1 = "[SXD]+[EWD]+";//downward charrot, starting from left to right \/
-    public final String tag2 = "[WED]+[SDX]+";//upward charrot, starting from left to right /\
+    public final String tag1 = "[SXD]+[EWD]+";//downward carrot, starting from left to right \/
+    public final String tag2 = "[WED]+[SDX]+";//upward carrot, starting from left to right /\
     public final String tag3 = "[SXD]+[EWD]+[SXD]+";//zigzag up down, start up left, then down, then up, then down \/\
     public final String tag4 = "[EWD]+[SXD]+[EWD]+";//zigzag up down, start down left, then up, then down, then up /\/
     public final HashMap<String, String> gestures = new HashMap<>();

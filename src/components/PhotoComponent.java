@@ -200,7 +200,7 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
     public void selection(java.util.List<Point> loop){
         Bus.getInstance().sendMessage(new ClearSelectedItemsMessage());
         if(!flipped){
-            //add message about needing to flip the photo
+            JOptionPane.showMessageDialog(null, "Are you trying to select something? Try flipping the photo, first.");
             return;
         }
 
@@ -232,10 +232,6 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
                 minY = p.y;
             }
         }
-        /*boolean[][] pointContainment = new boolean[maxY-minY][maxX-minX];
-        for(int i=0; i<loop.size(); i++){
-
-        }*/
 
         for(LineStroke stroke: photo.getLines()){
             for(Point p: stroke.getPoints()){
@@ -324,7 +320,7 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
         if(e.getKeyCode()==KeyEvent.VK_BACK_SPACE){ //can't be done in keyTyped because that's only for input keys
             inFocusTextBox.removeChar();
         }
-        if(e.getKeyChar() != '\b' && inFocusTextBox != null){
+        if(e.getKeyChar() != '\b' && e.getKeyCode() != KeyEvent.VK_CONTROL && inFocusTextBox != null){
             inFocusTextBox.addChar(e.getKeyChar());
         }
         repaint();
