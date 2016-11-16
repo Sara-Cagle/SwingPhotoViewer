@@ -8,25 +8,30 @@ import java.awt.*;
  */
 public class StatusModal {
     private String status;
+    private int startX;
 
-    public StatusModal(String status){
+    public StatusModal(String status, int startX){
         super();
         System.out.println("I've created the modal");
         this.status = status;
-        //this.setPreferredSize(new Dimension(300, 100));
-        //this.setSize(new Dimension(300, 100));
-        //repaint();
+        this.startX = startX;
+    }
 
+    public void setStatus(String status){
+        this.status = status;
+    }
+
+    public void setX(int startX){
+        this.startX = startX;
     }
 
     public void draw(Graphics g){
-        System.out.println("I've redrawn the modal");
         Graphics2D g2 = (Graphics2D) g;
         g2.setColor(Color.red);
-        g2.fillRect(0, 0, 300, 100);
-        g2.setColor(Color.red);
-        g2.drawRect(0, 0, 300, 100);
-        g2.drawString(status, 10, 10);
+        g2.fillRect(15+startX, 25, 300, 40);
+        g2.drawRect(15+startX, 25, 300, 40);
+        g2.setColor(Color.black);
+        g2.drawString(status, 15+startX+10, 40);
 
     }
 }

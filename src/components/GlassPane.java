@@ -25,6 +25,7 @@ public class GlassPane extends JComponent {
     private LineStroke line;
     private Templates templates;
     private JPanel contentPanel;
+    private StatusModal statusModal;
 
     public GlassPane(Container contentPane, JPanel contentPanel) {
         this.contentPane = contentPane;
@@ -33,6 +34,8 @@ public class GlassPane extends JComponent {
         MouseAdapter mouseAdapter = new GlassPaneMouseAdapter();
         this.addMouseListener(mouseAdapter);
         this.addMouseMotionListener(mouseAdapter);
+        statusModal = new StatusModal("", contentPanel.getX());
+        System.out.println("This is contentPanel.getX: "+contentPanel.getX());
         templates = new Templates();
     }
 
@@ -189,6 +192,9 @@ public class GlassPane extends JComponent {
         super.paintComponent(g);
         //System.out.println("drawing glass pane");
         Graphics2D g2 = (Graphics2D) g;
+        statusModal.setStatus("Nobody's home.");
+        statusModal.setX(contentPanel.getX());
+        statusModal.draw(g2);
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
