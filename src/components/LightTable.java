@@ -209,6 +209,9 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
                 updateView();
                 break;
             case "move_right_message":
+                if(photos.size() < 1){
+                    break;
+                }
                 if(photos.indexOf(currentPhoto)+1 < photos.size()){
                     currentPhoto = photos.get(photos.indexOf(currentPhoto)+1);
                     updateView();
@@ -221,6 +224,9 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
                 }
                 break;
             case "move_left_message":
+                if(photos.size() < 1){
+                    break;
+                }
                 if(photos.indexOf(currentPhoto)-1 > -1){
                     currentPhoto = photos.get(photos.indexOf(currentPhoto)-1);
                     updateView();

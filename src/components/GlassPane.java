@@ -33,12 +33,10 @@ public class GlassPane extends JComponent implements IMessageListener{
     public GlassPane(Container contentPane, JPanel contentPanel) {
         this.contentPane = contentPane;
         this.contentPanel = contentPanel;
-        System.out.println("instantiated glass pane");
         MouseAdapter mouseAdapter = new GlassPaneMouseAdapter();
         this.addMouseListener(mouseAdapter);
         this.addMouseMotionListener(mouseAdapter);
         statusModal = new StatusModal("", contentPanel.getX());
-        System.out.println("This is contentPanel.getX: "+contentPanel.getX());
         templates = new Templates();
         selectedBoxes = new ArrayList<>();
         selectedLines = new ArrayList<>();
@@ -86,19 +84,21 @@ public class GlassPane extends JComponent implements IMessageListener{
             switch(matchedPattern){
                 case "left":
                     Bus.getInstance().sendMessage(new MoveLeftMessage());
+                    Bus.getInstance().sendMessage(new StatusMessage("Moved to previous photo."));
                     break;
                 case "right":
                     Bus.getInstance().sendMessage(new MoveRightMessage());
+                    Bus.getInstance().sendMessage(new StatusMessage("Moved to next photo."));
                     break;
                 case "pigtail":
-                    if(selectedBoxes.size() > 0 || selectedLines.size()>0){
-                        System.out.println("Im gonna delete boxes and stuff because theyre not empty");
+                    if(selectedBoxes.size() > 0 || selectedLines.size()>0){ //delete the selection
                         Bus.getInstance().sendMessage(new DeleteSelectedItemsMessage(selectedBoxes, selectedLines));
                         Bus.getInstance().sendMessage(new ClearSelectedItemsMessage());
+                        Bus.getInstance().sendMessage(new StatusMessage("Deleted the selection."));
                     }
-                    else{
-                        System.out.println("Im just deleting the image");
+                    else{ //delete the image
                         Bus.getInstance().sendMessage(new DeleteImageMessage());
+                        Bus.getInstance().sendMessage(new StatusMessage("Deleted the image."));
                     }
                     break;
                 case "loop":
@@ -107,23 +107,27 @@ public class GlassPane extends JComponent implements IMessageListener{
                         photoComponentLoop.add(SwingUtilities.convertPoint(this, p, contentPanel));
                     }
                     Bus.getInstance().sendMessage(new SelectionMessage(photoComponentLoop));
-
+                    Bus.getInstance().sendMessage(new StatusMessage("Ready."));
                     break;
                 case "tag1":
                     Bus.getInstance().sendMessage(new PanelTagMessage(1));
                     Bus.getInstance().sendMessage(new PhotoTagMessage(1));
+                    Bus.getInstance().sendMessage(new StatusMessage("Toggled a tag."));
                     break;
                 case "tag2":
                     Bus.getInstance().sendMessage(new PanelTagMessage(2));
                     Bus.getInstance().sendMessage(new PhotoTagMessage(2));
+                    Bus.getInstance().sendMessage(new StatusMessage("Toggled a tag."));
                     break;
                 case "tag3":
                     Bus.getInstance().sendMessage(new PanelTagMessage(3));
                     Bus.getInstance().sendMessage(new PhotoTagMessage(3));
+                    Bus.getInstance().sendMessage(new StatusMessage("Toggled a tag."));
                     break;
                 case "tag4":
                     Bus.getInstance().sendMessage(new PanelTagMessage(4));
                     Bus.getInstance().sendMessage(new PhotoTagMessage(4));
+                    Bus.getInstance().sendMessage(new StatusMessage("Toggled a tag."));
                     break;
                 default:
                     break;
@@ -205,7 +209,6 @@ public class GlassPane extends JComponent implements IMessageListener{
         switch(m.type()){
             case "has_selected_items_message":
                 HasSelectedItemsMessage selectedItemsMessage = (HasSelectedItemsMessage) m;
-                System.out.println("updated my list of selected items to prolly delete");
                 selectedBoxes = selectedItemsMessage.selectedBoxes;
                 selectedLines = selectedItemsMessage.selectedLines;
                 break;
