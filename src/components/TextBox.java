@@ -106,6 +106,17 @@ public class TextBox {
     }
 
     /**
+     * setColor
+     *
+     * Sets the color of the box, used for showing selections.
+     *
+     * @param color, the color to change to
+     */
+    public void setColor(Color color){
+        this.color = color;
+    }
+
+    /**
      * getString
      *
      * Takes the input text one character at a time and builds a String.

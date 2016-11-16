@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 /**
@@ -23,9 +24,11 @@ public class GlassPane extends JComponent {
     private Container contentPane;
     private LineStroke line;
     private Templates templates;
+    private JPanel contentPanel;
 
-    public GlassPane(Container contentPane) {
+    public GlassPane(Container contentPane, JPanel contentPanel) {
         this.contentPane = contentPane;
+        this.contentPanel = contentPanel;
         System.out.println("instantiated glass pane");
         MouseAdapter mouseAdapter = new GlassPaneMouseAdapter();
         this.addMouseListener(mouseAdapter);
@@ -80,10 +83,15 @@ public class GlassPane extends JComponent {
                     break;
                 case "pigtail":
                     Bus.getInstance().sendMessage(new DeleteImageMessage());
+                    //if there is a loop, then the pigtail needs to delete the selection, not the whole image
                     break;
                 case "loop":
-                    selection(points);
-                    //Bus.getInstance().sendMessage(new /*message type*/);
+                    java.util.List<Point> photoComponentLoop = new ArrayList<>();
+                    for(Point p: points){
+                        photoComponentLoop.add(SwingUtilities.convertPoint(this, p, contentPanel));
+                    }
+                    Bus.getInstance().sendMessage(new SelectionMessage(photoComponentLoop));
+                    
                     break;
                 case "tag1":
                     Bus.getInstance().sendMessage(new PanelTagMessage(1));
@@ -167,13 +175,6 @@ public class GlassPane extends JComponent {
             }
 
         return 'P'; //shouldn't hit this
-    }
-
-    public void selection(java.util.List<Point> loop){
-        //take in the loop, defined by the points
-        //pass the points down into PhotoComponent
-        //PhotoComponent will handle selection?
-
     }
 
 

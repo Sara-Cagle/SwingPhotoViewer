@@ -13,6 +13,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.awt.Color;
+import java.util.ArrayList;
 
 /**
  * PhotoComponent
@@ -184,6 +185,33 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
     }
 
     /**
+     * selection
+     *
+     * Using the points of a loop, determines which text boxes have been selected.
+     *
+     * @param loop the collection of points in the drawn loop
+     */
+    public void selection(java.util.List<Point> loop){
+        if(!flipped){
+            return;
+        }
+        int counter = 0;
+        for(TextBox box: photo.getTextBoxes()){
+            for(Point p: loop){
+                if(box.isPointInside(p)){
+                    System.out.println("There was a point inside a box.");
+                    System.out.println(p.x +", "+p.y);
+                    box.setColor(Color.pink);
+                    counter++;
+                    break;
+                }
+            }
+        }
+        repaint();
+        System.out.println("There were points found in this many text boxes: "+counter);
+    }
+
+    /**
      * receiveMessage
      *
      * Receives a message of a file that will be passed in from the Bus.
@@ -207,6 +235,10 @@ public class PhotoComponent extends JComponent implements IMessageListener, KeyL
                 else{
                     photo.removeTag(tagNumber); //otherwise, remove the tag
                 }
+                break;
+            case "selection_message":
+                SelectionMessage selectionMessage = (SelectionMessage) m;
+                this.selection(selectionMessage.loop);
             default:
                 break;
         }

@@ -26,6 +26,7 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
     private ViewMode mode;
     private Photo currentPhoto;
     private int thumbnailSize;
+    private StatusModal modal;
     //private GlassPane glassPane;
 
 
@@ -42,6 +43,8 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
         this.thumbnailSize = 100;
         Bus.getInstance().registerListener(this);
         mode = ViewMode.Photo;
+        modal = new StatusModal("");
+
         updateView();
 
     }
@@ -57,6 +60,7 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
         switch(mode){
             case Photo:
                 drawPhotoMode();
+                modal = new StatusModal("Hello world");
                 break;
             case Grid:
                 drawGridMode();
@@ -197,9 +201,9 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
                     updateView();
                     break;
                 }
-                if(currIndex-1 >= 0){ //currentPhoto is not the beginning
+                if(currIndex-1 >= 0) { //currentPhoto is not the beginning
                     photos.remove(currentPhoto);
-                    currentPhoto = photos.get(currIndex-1);
+                    currentPhoto = photos.get(currIndex - 1);
                     Bus.getInstance().sendMessage(new StatusMessage("Ready"));
                     updateView();
                     break;
