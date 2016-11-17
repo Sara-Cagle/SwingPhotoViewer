@@ -90,13 +90,22 @@ public class GlassPane extends JComponent implements IMessageListener{
                     break;
                 case "pigtail":
                     if(selectedBoxes.size() > 0 || selectedLines.size()>0){ //delete the selection
-                        Bus.getInstance().sendMessage(new DeleteSelectedItemsMessage(selectedBoxes, selectedLines));
-                        Bus.getInstance().sendMessage(new ClearSelectedItemsMessage());
-                        Bus.getInstance().sendMessage(new StatusMessage("Deleted the selection."));
+                        int yesNoDialogButton = JOptionPane.YES_NO_OPTION;
+                        int deleteResult = JOptionPane.showConfirmDialog (null, "Are you sure you want to delete the selected annotations?","Delete Selected Annotations", yesNoDialogButton);
+                        if(deleteResult == JOptionPane.YES_OPTION){
+                            Bus.getInstance().sendMessage(new DeleteSelectedItemsMessage(selectedBoxes, selectedLines));
+                            Bus.getInstance().sendMessage(new ClearSelectedItemsMessage());
+                            Bus.getInstance().sendMessage(new StatusMessage("Deleted the selection."));
+                        }
                     }
                     else{ //delete the image
-                        Bus.getInstance().sendMessage(new DeleteImageMessage());
-                        Bus.getInstance().sendMessage(new StatusMessage("Deleted the image."));
+                        int yesNoDialogButton = JOptionPane.YES_NO_OPTION;
+                        int deleteResult = JOptionPane.showConfirmDialog (null, "Are you sure you want to delete this photo?","Delete Photo", yesNoDialogButton);
+                        if(deleteResult == JOptionPane.YES_OPTION){
+                            Bus.getInstance().sendMessage(new DeleteImageMessage());
+                            Bus.getInstance().sendMessage(new StatusMessage("Deleted the image."));
+                        }
+
                     }
                     break;
                 case "loop":
