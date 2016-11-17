@@ -1,4 +1,10 @@
 package panels;
+import bus.Bus;
+import bus.IMessageListener;
+import bus.messages.Message;
+import bus.messages.PanelTagMessage;
+import bus.messages.PhotoTagMessage;
+
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
@@ -10,12 +16,12 @@ import java.awt.*;
  * @Author Sara Cagle
  * @Date 9/13/2016
  */
-public class TagPanel extends JPanel{
+public class TagPanel extends JPanel implements IMessageListener{
     private TitledBorder title;
-    private JCheckBox option1;
-    private JCheckBox option2;
-    private JCheckBox option3;
-    private JCheckBox option4;
+    private JCheckBox tag1;
+    private JCheckBox tag2;
+    private JCheckBox tag3;
+    private JCheckBox tag4;
 
     /**
      * TagPanel constructor
@@ -28,20 +34,75 @@ public class TagPanel extends JPanel{
         //need to set max size or else the objects stretch out
         //the height value (100) will eventually be dynamic based on number of tags
         this.setMaximumSize(new Dimension(800, 100));
+        Bus.getInstance().registerListener(this);
 
         title = new TitledBorder("Tags");
         title.setTitleJustification(TitledBorder.CENTER);
         this.setBorder(title);
 
-        /* These will likely be changed to some ArrayList instantiation in the future */
-        option1 = new JCheckBox("Spring");
-        option2 = new JCheckBox("Summer");
-        option3 = new JCheckBox("Fall");
-        option4 = new JCheckBox("Winter");
+        tag1 = new JCheckBox("Spring");
+        tag1.addActionListener(e -> {
+            Bus.getInstance().sendMessage(new PhotoTagMessage(1));
+        });
 
-        this.add(option1);
-        this.add(option2);
-        this.add(option3);
-        this.add(option4);
+        tag2 = new JCheckBox("Summer");
+        tag2.addActionListener(e -> {
+            Bus.getInstance().sendMessage(new PhotoTagMessage(2));
+        });
+
+        tag3 = new JCheckBox("Fall");
+        tag3.addActionListener(e ->  {
+            Bus.getInstance().sendMessage(new PhotoTagMessage(3));
+        });
+
+        tag4 = new JCheckBox("Winter");
+        tag4.addActionListener(e -> {
+            Bus.getInstance().sendMessage(new PhotoTagMessage(4));
+        });
+
+        this.add(tag1);
+        this.add(tag2);
+        this.add(tag3);
+        this.add(tag4);
+
+    }
+
+    /**
+     * receiveMessage
+     *
+     * Receives a message of a file that will be passed in from the Bus.
+     * Listens for the annotation mode and the colors.
+     *
+     * @param m, a Message received from the bus.
+     */
+    public void receiveMessage(Message m){
+        switch(m.type()){
+            case "panel_tag_message":
+                PanelTagMessage panelTagMessage = (PanelTagMessage) m;
+                int tagNumber = panelTagMessage.tagNumber;
+                switch(tagNumber) { //toggle checked/unchecked
+                    case 1:
+                        tag1.setSelected(!tag1.isSelected());
+                        break;
+                    case 2:
+                        tag2.setSelected(!tag2.isSelected());
+                        break;
+                    case 3:
+                        tag3.setSelected(!tag3.isSelected());
+                        break;
+                    case 4:
+                        tag4.setSelected(!tag4.isSelected());
+                        break;
+                }
+            break;
+            case "clear_tag_message":
+                tag1.setSelected(false);
+                tag2.setSelected(false);
+                tag3.setSelected(false);
+                tag4.setSelected(false);
+                break;
+            default:
+                break;
+        }
     }
 }

@@ -17,6 +17,7 @@ import java.util.List;
 public class LineStroke {
     private List<Point> pointList;
     private Color color;
+    private boolean selected;
 
     /**
      * LineStroke constructor
@@ -26,6 +27,54 @@ public class LineStroke {
     public LineStroke(Color color){
         this.pointList = new ArrayList<>();
         this.color = color;
+        selected = false;
+    }
+
+    /**
+     * getPoints
+     *
+     * @return pointList, the collection of points for the line
+     */
+    public List<Point> getPoints(){
+        return pointList;
+    }
+
+    /**
+     * setColor
+     *
+     * Changes the color of the stroke, used for selecting.
+     *
+     * @param color, the color in question
+     */
+    public void setColor(Color color){
+        this.color = color;
+    }
+
+    /**
+     * setSelected
+     *
+     * Sets the selected bool.
+     *
+     * @param b, selected or not boolean
+     */
+    public void setSelected(boolean b){
+        selected = b;
+    }
+
+    /**
+     * applyDelta
+     *
+     * Takes in the delta of new coordinates from old coordinates.
+     * Resets the coordinates of the box to apply the delta.
+     *
+     * @param x the change in x value
+     * @param y the change in y value
+     */
+    public void applyDelta(int x, int y){
+        for(Point p: pointList){
+            p.x+=x;
+            p.y+=y;
+        }
     }
 
     /**
@@ -44,7 +93,12 @@ public class LineStroke {
             x[i] = pointList.get(i).x;
             y[i] = pointList.get(i).y;
         }
-        g.setColor(this.color);
+        if(selected){
+            g.setColor(Color.pink);
+        }
+        else {
+            g.setColor(this.color);
+        }
         g.drawPolyline(x, y, pointList.size());
     }
 

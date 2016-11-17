@@ -18,6 +18,7 @@ public class Photo {
     private BufferedImage image;
     private ArrayList<TextBox> textBoxList;
     private ArrayList<LineStroke> lineStrokeList;
+    private ArrayList<Integer> tagList;
 
     /**
      * Photo constructor
@@ -30,6 +31,7 @@ public class Photo {
         this.image = i;
         this.textBoxList = new ArrayList<>();
         this.lineStrokeList = new ArrayList<>();
+        this.tagList = new ArrayList<>();
     }
 
     /**
@@ -85,6 +87,51 @@ public class Photo {
      */
     public ArrayList<TextBox> getTextBoxes() {
         return textBoxList;
+    }
+
+    /**
+     * hasTag
+     *
+     * Checks to see if the photo has already been tagged with this.
+     *
+     * @param tagNumber, the tag
+     * @return boolean, the photo has the tag or not
+     */
+    public boolean hasTag(int tagNumber){
+        return tagList.contains(tagNumber);
+    }
+
+    /**
+     * addTag
+     *
+     * Adds given tag to the photo.
+     *
+     * @param tagNumber, the tag
+     */
+    public void addTag(int tagNumber){
+        tagList.add(tagNumber);
+    }
+
+    /**
+     * removeTag
+     *
+     * Removes the given tag from the photo.
+     *
+     * @param tagNumber, the tag
+     */
+    public void removeTag(int tagNumber){
+        tagList.remove(tagList.indexOf(tagNumber));
+    }
+
+    /**
+     * getTags
+     *
+     * Getter for the list of tags.
+     *
+     * @return tagList, the list of tags
+     */
+    public ArrayList<Integer> getTags(){
+        return tagList;
     }
 
 }

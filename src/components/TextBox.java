@@ -26,6 +26,7 @@ public class TextBox {
     private int startY;
     private ArrayList<Character> text;
     private Color color;
+    private boolean selected;
 
     /**
      * TextBox
@@ -41,6 +42,7 @@ public class TextBox {
         setDimensions(startPoint, endPoint);
         this.color = color;
         text = new ArrayList<>();
+        selected = false;
     }
 
     /**
@@ -94,6 +96,39 @@ public class TextBox {
     }
 
     /**
+     * isPointInside
+     *
+     * Checks if a given point is inside the text box.
+     *
+     * @param point, the point in question
+     * @return true or false, if the point is in the box
+     */
+    public boolean isPointInside(Point point){
+        return (point.x <= startX+width && point.x >= startX) && (point.y <=startY+height && point.y>= startY);
+    }
+
+    /**
+     * setColor
+     *
+     * Sets the color of the box, used for showing selections.
+     *
+     * @param color, the color to change to
+     */
+    public void setColor(Color color){
+        this.color = color;
+    }
+
+    /**
+     * setSelected
+     *
+     * Sets the selected boolean to b
+     *
+     * @param b boolean selected or not
+     */
+    public void setSelected(boolean b){
+        selected = b;
+    }
+    /**
      * getString
      *
      * Takes the input text one character at a time and builds a String.
@@ -106,6 +141,20 @@ public class TextBox {
             builder.append(c);
         }
         return builder.toString();
+    }
+
+    /**
+     * applyDelta
+     *
+     * Takes in the delta of new coordinates from old coordinates.
+     * Resets the coordinates of the box to apply the delta.
+     *
+     * @param x the change in x value
+     * @param y the change in y value
+     */
+    public void applyDelta(int x, int y){
+        this.startX += x;
+        this.startY += y;
     }
 
     /**
@@ -180,7 +229,13 @@ public class TextBox {
         if( (metrics.getAscent()+metrics.getDescent()+metrics.getLeading())*strings.length > height){
             height = (metrics.getAscent()+metrics.getDescent()+metrics.getLeading())*strings.length;
         }
-        g.setColor(color);
+
+        if(selected){
+            g.setColor(Color.pink);
+        }
+        else{
+            g.setColor(color);
+        }
         g.fillRect(startX, startY, width, height);
         g.setColor(Color.black);
         g.drawRect(startX, startY, width, height);

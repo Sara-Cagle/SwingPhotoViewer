@@ -73,8 +73,13 @@ public class TopMenu extends JMenuBar implements IMessageListener{
 
         deleteItem = new JMenuItem("Delete");
         deleteItem.addActionListener(e -> {
-            Bus.getInstance().sendMessage(new StatusMessage("Deleting photo..."));
-            Bus.getInstance().sendMessage(new DeleteImageMessage());
+            int yesNoDialogButton = JOptionPane.YES_NO_OPTION;
+            int deleteResult = JOptionPane.showConfirmDialog (null, "Are you sure you want to delete this photo?","Delete Photo", yesNoDialogButton);
+            if(deleteResult == JOptionPane.YES_OPTION){
+                Bus.getInstance().sendMessage(new StatusMessage("Deleting photo..."));
+                Bus.getInstance().sendMessage(new DeleteImageMessage());
+            }
+
         });
 
         exitItem = new JMenuItem("Exit");

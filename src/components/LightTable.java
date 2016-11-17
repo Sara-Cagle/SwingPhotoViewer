@@ -27,6 +27,7 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
     private Photo currentPhoto;
     private int thumbnailSize;
 
+
     /**
      * LightTable constructor
      *
@@ -51,6 +52,7 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
      */
     public void updateView() {
         this.removeAll(); //clear the component
+        Bus.getInstance().removePhotoListenerers();
         switch(mode){
             case Photo:
                 drawPhotoMode();
@@ -63,7 +65,6 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
                 break;
         }
         validate();
-        repaint();
     }
 
     /**
@@ -195,9 +196,9 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
                     updateView();
                     break;
                 }
-                if(currIndex-1 >= 0){ //currentPhoto is not the beginning
+                if(currIndex-1 >= 0) { //currentPhoto is not the beginning
                     photos.remove(currentPhoto);
-                    currentPhoto = photos.get(currIndex-1);
+                    currentPhoto = photos.get(currIndex - 1);
                     Bus.getInstance().sendMessage(new StatusMessage("Ready"));
                     updateView();
                     break;
@@ -208,6 +209,9 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
                 updateView();
                 break;
             case "move_right_message":
+                if(photos.size() < 1){
+                    break;
+                }
                 if(photos.indexOf(currentPhoto)+1 < photos.size()){
                     currentPhoto = photos.get(photos.indexOf(currentPhoto)+1);
                     updateView();
@@ -220,6 +224,9 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
                 }
                 break;
             case "move_left_message":
+                if(photos.size() < 1){
+                    break;
+                }
                 if(photos.indexOf(currentPhoto)-1 > -1){
                     currentPhoto = photos.get(photos.indexOf(currentPhoto)-1);
                     updateView();
