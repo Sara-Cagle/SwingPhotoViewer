@@ -3,6 +3,7 @@ package panels;
 import java.awt.*;
 import javax.swing.*;
 
+import bus.Bus;
 import bus.IMessageListener;
 import bus.messages.Message;
 import components.LightTable;
@@ -33,6 +34,7 @@ public class ContentPanel extends JPanel implements IMessageListener{
         lightTable = new LightTable();
         this.add(lightTable, BorderLayout.CENTER);
         magnetBoard = new MagnetBoard();
+        Bus.getInstance().registerListener(this);
     }
 
     public void receiveMessage(Message m) {
@@ -40,10 +42,14 @@ public class ContentPanel extends JPanel implements IMessageListener{
             case "magnet_off_message":
                 this.removeAll();
                 this.add(lightTable, BorderLayout.CENTER);
+                repaint();
+                revalidate();
                 break;
             case "magnet_on_message":
                 this.removeAll();
                 this.add(magnetBoard, BorderLayout.CENTER);
+                repaint();
+                revalidate();
                 break;
                 //make sure its magnetboard in grid view
         }
