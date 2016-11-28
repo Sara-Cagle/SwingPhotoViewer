@@ -31,7 +31,6 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
         activeMagnets = new ArrayList<>();
         this.thumbnailSize = 100;
         Bus.getInstance().registerListener(this);
-
     }
 
     public void updateView(){
@@ -42,7 +41,7 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
         int rowCounter = 1;
         Dimension size;
 
-        thumbnailPanel.setLayout(null/*new GridLayout(3,0)*/);
+        thumbnailPanel.setLayout(null);
         for (Photo photo : photos) {
             System.out.println("Printing photo at: "+ locationX+" , "+locationY);
             Thumbnail thumbnail = new Thumbnail(photo, false, this, thumbnailSize);
@@ -50,19 +49,16 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
             thumbnailPanel.add(thumbnail);
             thumbnail.setBounds(locationX, locationY, size.width, size.height);
             rowCounter++;
-            if(rowCounter > 3){ //move down row, increase locationY by thumbnailsize and padding
+            if(rowCounter > 3){
                 System.out.println("Making a new row");
                 rowCounter = 1;
                 locationX = 0;
                 locationY+= thumbnailSize+10;
             }
-            else{ //increase x only
+            else{
                 System.out.println("moving horz");
                 locationX += thumbnailSize+10;
             }
-
-
-            //thumbnailPanel.add(new Thumbnail(photo, false, this, thumbnailSize));
         }
         thumbnailPanel.setPreferredSize(new Dimension((thumbnailSize+10)*3, (thumbnailSize+10)*photos.size()/3));
         JScrollPane parentScrollPane = new JScrollPane(thumbnailPanel);
