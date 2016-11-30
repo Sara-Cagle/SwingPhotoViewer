@@ -2,16 +2,16 @@ package components;
 
 import bus.Bus;
 import bus.IMessageListener;
-import bus.messages.ImageMessage;
-import bus.messages.Message;
-import bus.messages.ThumbnailSizeMessage;
-import bus.messages.ViewModeMessage;
+import bus.messages.*;
+import constants.AnnotationMode;
 import constants.ViewMode;
 import panels.MagnetPanel;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,16 +21,23 @@ import java.util.List;
  * Created by saracagle on 11/27/16.
  */
 public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailListener {
-    private List activeMagnets;
+    private List<Magnet> activeMagnets;
     private List<Photo> photos;
     private int thumbnailSize;
+    private MagnetMouseAdapter mouseAdapter;
 
     public MagnetBoard(){
         this.setLayout(new BorderLayout());
         photos = new ArrayList<>();
         activeMagnets = new ArrayList<>();
         this.thumbnailSize = 100;
+        mouseAdapter = new MagnetMouseAdapter();
+        addMouseListener(mouseAdapter);
+        addMouseMotionListener(mouseAdapter);
         Bus.getInstance().registerListener(this);
+        Magnet m = new Magnet("Winter");
+        m.setPoint(50,50);
+        activeMagnets.add(m);
     }
 
     public void updateView(){
@@ -42,29 +49,33 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
         Dimension size;
 
         thumbnailPanel.setLayout(null);
+        for(Magnet moo: activeMagnets){
+            moo.setBounds(moo.getPoint().x, moo.getPoint().y, 100, 100);
+            thumbnailPanel.add(moo);
+        }
         for (Photo photo : photos) {
-            System.out.println("Printing photo at: "+ locationX+" , "+locationY);
             Thumbnail thumbnail = new Thumbnail(photo, false, this, thumbnailSize);
             size = thumbnail.getPreferredSize();
             thumbnailPanel.add(thumbnail);
             thumbnail.setBounds(locationX, locationY, size.width, size.height);
             rowCounter++;
             if(rowCounter > 3){
-                System.out.println("Making a new row");
                 rowCounter = 1;
                 locationX = 0;
                 locationY+= thumbnailSize+10;
             }
             else{
-                System.out.println("moving horz");
                 locationX += thumbnailSize+10;
             }
         }
         thumbnailPanel.setPreferredSize(new Dimension((thumbnailSize+10)*3, (thumbnailSize+10)*photos.size()/3));
         JScrollPane parentScrollPane = new JScrollPane(thumbnailPanel);
         this.add(parentScrollPane, BorderLayout.CENTER);
+        repaint();
         revalidate();
     }
+
+
 
     /**
      * onThumbnailClick
@@ -112,5 +123,61 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
                 updateView();
                 break;
         }
+    }
+
+    /**
+     * Internal class of MouseAdapter created for the MagnetBoard.
+     * Handles mouse information for dragging around magnets
+     */
+    private class MagnetMouseAdapter extends MouseAdapter {
+        private ArrayList<Magnet> selectedMagnets = new ArrayList<>();
+        private Point prevPoint;
+        //we use a list for edge cases, but there should really only be one thing in here
+
+        public void mouseClicked(MouseEvent e) {
+            System.out.println("Hello ive been clicked");
+            prevPoint = e.getPoint();
+            //don't do anything?
+        }
+
+        public void mousePressed(MouseEvent e){
+            for(Magnet m : MagnetBoard.this.activeMagnets){
+                if(m.containsPoint(e.getPoint())){
+                    selectedMagnets.add(m);
+                    System.out.println("I added a magnet to the list");
+                }
+            }
+            if(selectedMagnets.isEmpty()){
+                System.out.println("Nothing was selected");
+            }
+            //select the magnet
+            //loop through all magnets
+            //check if the point is inside the magnet
+            //if it is, we move the magnet
+        }
+
+        public void mouseDragged(MouseEvent e){
+            if(!selectedMagnets.isEmpty()){
+                for(Magnet m : selectedMagnets){
+                    int deltaX = e.getPoint().x - prevPoint.x;
+                    int deltaY = e.getPoint().y - prevPoint.y;
+                    m.applyDelta(deltaX, deltaY);
+                    repaint();
+                    prevPoint = e.getPoint();
+                }
+            }
+            //update the magnet location
+        }
+
+        public void mouseReleased(MouseEvent e){
+            selectedMagnets.clear();
+            /*currentLine = null;
+            PhotoComponent.this.inFocusTextBox = currentTextBox;
+            currentTextBox = null;
+            startCorner = null;
+            endCorner = null;
+            prevPoint = null;*/
+        }
+
     }
 }
