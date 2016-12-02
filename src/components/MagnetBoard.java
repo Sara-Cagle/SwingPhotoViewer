@@ -24,16 +24,12 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
     private List<Magnet> activeMagnets;
     private List<Photo> photos;
     private int thumbnailSize;
-    private MagnetMouseAdapter mouseAdapter;
 
     public MagnetBoard(){
         this.setLayout(new BorderLayout());
         photos = new ArrayList<>();
         activeMagnets = new ArrayList<>();
         this.thumbnailSize = 100;
-        mouseAdapter = new MagnetMouseAdapter();
-        addMouseListener(mouseAdapter);
-        addMouseMotionListener(mouseAdapter);
         Bus.getInstance().registerListener(this);
         Magnet m = new Magnet("Winter");
         m.setPoint(50,50);
@@ -123,61 +119,5 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
                 updateView();
                 break;
         }
-    }
-
-    /**
-     * Internal class of MouseAdapter created for the MagnetBoard.
-     * Handles mouse information for dragging around magnets
-     */
-    private class MagnetMouseAdapter extends MouseAdapter {
-        private ArrayList<Magnet> selectedMagnets = new ArrayList<>();
-        private Point prevPoint;
-        //we use a list for edge cases, but there should really only be one thing in here
-
-        public void mouseClicked(MouseEvent e) {
-            System.out.println("Hello ive been clicked");
-            prevPoint = e.getPoint();
-            //don't do anything?
-        }
-
-        public void mousePressed(MouseEvent e){
-            for(Magnet m : MagnetBoard.this.activeMagnets){
-                if(m.containsPoint(e.getPoint())){
-                    selectedMagnets.add(m);
-                    System.out.println("I added a magnet to the list");
-                }
-            }
-            if(selectedMagnets.isEmpty()){
-                System.out.println("Nothing was selected");
-            }
-            //select the magnet
-            //loop through all magnets
-            //check if the point is inside the magnet
-            //if it is, we move the magnet
-        }
-
-        public void mouseDragged(MouseEvent e){
-            if(!selectedMagnets.isEmpty()){
-                for(Magnet m : selectedMagnets){
-                    int deltaX = e.getPoint().x - prevPoint.x;
-                    int deltaY = e.getPoint().y - prevPoint.y;
-                    m.applyDelta(deltaX, deltaY);
-                    repaint();
-                    prevPoint = e.getPoint();
-                }
-            }
-            //update the magnet location
-        }
-
-        public void mouseReleased(MouseEvent e){
-            selectedMagnets.clear();
-            /*currentLine = null;
-            PhotoComponent.this.inFocusTextBox = currentTextBox;
-            currentTextBox = null;
-            startCorner = null;
-            endCorner = null;
-            prevPoint = null;*/
-        }
-
     }
 }

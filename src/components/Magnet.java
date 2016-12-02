@@ -2,7 +2,10 @@ package components;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 /**
  * Created by saracagle on 11/27/16.
@@ -11,6 +14,7 @@ public class Magnet extends JComponent {
     private String tag;
     private Point location;
     private final int DIAMETER = 20;
+    private MagnetMouseAdapter mouseAdapter;
 
 
     public Magnet(String tag){
@@ -18,6 +22,9 @@ public class Magnet extends JComponent {
         location = new Point();
         this.setSize(new Dimension(100,100));
         this.setPreferredSize(new Dimension(100,100));
+        mouseAdapter = new MagnetMouseAdapter();
+        addMouseListener(mouseAdapter);
+        addMouseMotionListener(mouseAdapter);
     }
 
     public void setPoint(int x, int y){
@@ -56,5 +63,33 @@ public class Magnet extends JComponent {
         g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         g2.setColor(Color.red);
         g2.fillOval(0, 0, DIAMETER, DIAMETER); //draws an oval inside a rectangle, w/ top left corner of 0,0
+    }
+
+
+    /**
+     * Internal class of MouseAdapter created for the MagnetBoard.
+     * Handles mouse information for dragging around magnets
+     */
+    private class MagnetMouseAdapter extends MouseAdapter {
+        private Point anchorPoint;
+
+        public void mouseClicked(MouseEvent e) {
+
+        }
+
+        public void mousePressed(MouseEvent e){
+            System.out.println("Press" + e.getPoint());
+            anchorPoint = e.getPoint();
+        }
+
+        //has some issues for if you pull your mouse off of the magnet
+        public void mouseDragged(MouseEvent e){
+            Magnet.this.setLocation(e.getX() - anchorPoint.x + Magnet.this.getLocation().x, e.getY() - anchorPoint.y + Magnet.this.getLocation().y);
+        }
+
+        public void mouseReleased(MouseEvent e){
+            System.out.println("Release " + e.getPoint());
+        }
+
     }
 }
