@@ -30,7 +30,6 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
         this.setLayout(new BorderLayout());
         photos = new ArrayList<>();
         activeMagnets = new ArrayList<>();
-        magnetTags = new ArrayList<>();
         this.thumbnailSize = 100;
         Bus.getInstance().registerListener(this);
     }
@@ -99,7 +98,14 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
     }
 
     public void animateThumbnails(){
-
+        System.out.println("I'm animating something");
+        for(Photo photo: photos){
+            for(Magnet mag: activeMagnets){
+                if(photo.getTags().contains(mag.getTag())){
+                    System.out.println("Found a match in a photo for tag "+mag.getTag());
+                }
+            }
+        }
     }
 
     public void receiveMessage(Message m) {
@@ -124,16 +130,15 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
             case "magnet_message":
                 MagnetMessage magnetMessage = (MagnetMessage) m;
                 int tag = magnetMessage.tag;
-                if(magnetTags.contains(tag)){
-                    magnetTags.remove(Integer.valueOf(tag));
-                    for(Magnet mag : activeMagnets){
-                        if(mag.getTag() == tag){
-                            activeMagnets.remove(mag);
-                            break;
-                        }
+                boolean contains = false;
+                for(Magnet mag : activeMagnets){
+                    if(mag.getTag() == tag){
+                        activeMagnets.remove(mag);
+                        contains = true;
+                        break;
                     }
                 }
-                else{
+                if(!contains){
                     Magnet mag = null;
                     switch(tag){
                         case 1:
@@ -154,8 +159,8 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
                             break;
                     }
                     activeMagnets.add(mag);
-                    magnetTags.add(tag);
                 }
+                animateThumbnails();
                 updateView();
                 break;
         }

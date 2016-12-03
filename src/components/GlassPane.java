@@ -65,12 +65,9 @@ public class GlassPane extends JComponent implements IMessageListener{
 
             }
         }
-        System.out.println(builder.toString());
         String matchedPattern = null;
         for(String pattern: templates.gestures.keySet()){
             if(Pattern.matches(pattern, builder.toString())){
-                System.out.println("Found a match w this: "+pattern);
-                System.out.println("It is this action: "+templates.gestures.get(pattern));
                 matchedPattern = templates.gestures.get(pattern);
                 break;
             }
