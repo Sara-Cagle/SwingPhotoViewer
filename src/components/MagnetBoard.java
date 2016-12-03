@@ -98,6 +98,10 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
         Bus.getInstance().sendMessage(new ViewModeMessage(ViewMode.Photo));*/
     }
 
+    public void animateThumbnails(){
+
+    }
+
     public void receiveMessage(Message m) {
         switch (m.type()) {
             case "image_message":
@@ -121,7 +125,7 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
                 MagnetMessage magnetMessage = (MagnetMessage) m;
                 int tag = magnetMessage.tag;
                 if(magnetTags.contains(tag)){
-                    //magnetTags.remove(tag); //need to figure out if we can keep one list of magnets
+                    magnetTags.remove(Integer.valueOf(tag));
                     for(Magnet mag : activeMagnets){
                         if(mag.getTag() == tag){
                             activeMagnets.remove(mag);
@@ -130,10 +134,31 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
                     }
                 }
                 else{
-                    Magnet mag = new Magnet(tag);
+                    Magnet mag = null;
+                    switch(tag){
+                        case 1:
+                            mag = new Magnet(tag, Color.red);
+                            mag.setPoint(50, 50);
+                            System.out.println("I am drawing red");
+                            break;
+                        case 2:
+                            mag = new Magnet(tag, Color.blue);
+                            mag.setPoint(50, 50);
+                            System.out.println("I am drawing blue");
+                            break;
+                        case 3:
+                            mag = new Magnet(tag, Color.green);
+                            mag.setPoint(50, 50);
+                            System.out.println("I am drawing green");
+                            break;
+                        case 4:
+                            mag = new Magnet(tag, Color.yellow);
+                            mag.setPoint(50, 50);
+                            System.out.println("I am drawing yellow");
+                            break;
+                    }
                     activeMagnets.add(mag);
                     magnetTags.add(tag);
-                    mag.setPoint(50,50);
                 }
                 updateView();
 

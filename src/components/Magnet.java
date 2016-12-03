@@ -15,13 +15,15 @@ public class Magnet extends JComponent {
     private Point location;
     private final int DIAMETER = 20;
     private MagnetMouseAdapter mouseAdapter;
+    private Color color;
 
 
-    public Magnet(int tag){
+    public Magnet(int tag, Color color){
         this.tag = tag;
         location = new Point();
-        this.setSize(new Dimension(100,100));
-        this.setPreferredSize(new Dimension(100,100));
+        this.color = color;
+        this.setSize(new Dimension(DIAMETER,DIAMETER));
+        this.setPreferredSize(new Dimension(DIAMETER,DIAMETER));
         mouseAdapter = new MagnetMouseAdapter();
         addMouseListener(mouseAdapter);
         addMouseMotionListener(mouseAdapter);
@@ -61,7 +63,7 @@ public class Magnet extends JComponent {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        g2.setColor(Color.red);
+        g2.setColor(color);
         g2.fillOval(0, 0, DIAMETER, DIAMETER); //draws an oval inside a rectangle, w/ top left corner of 0,0
     }
 
@@ -84,10 +86,14 @@ public class Magnet extends JComponent {
 
         //has some issues for if you pull your mouse off of the magnet
         public void mouseDragged(MouseEvent e){
-            Magnet.this.setLocation(e.getX() - anchorPoint.x + Magnet.this.getLocation().x, e.getY() - anchorPoint.y + Magnet.this.getLocation().y);
+            int x = e.getX() - anchorPoint.x + Magnet.this.getLocation().x;
+            int y = e.getY() - anchorPoint.y + Magnet.this.getLocation().y;
+            Magnet.this.setPoint(x,y);
+            Magnet.this.setLocation(x,y);
         }
 
         public void mouseReleased(MouseEvent e){
+            anchorPoint = null;
             System.out.println("Release " + e.getPoint());
         }
 
