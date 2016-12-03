@@ -49,9 +49,6 @@ public class MagnetPanel extends JPanel implements IMessageListener{
         holderPanel.add(off);
         holderPanel.add(on);
         this.add(holderPanel, BorderLayout.CENTER);
-
-        /*this.add(off, BorderLayout.LINE_START);
-        this.add(on, BorderLayout.LINE_END);*/
     }
 
     public void receiveMessage(Message m){

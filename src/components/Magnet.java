@@ -32,7 +32,6 @@ public class Magnet extends JComponent {
     public void setPoint(int x, int y){
         location.x = x;
         location.y = y;
-        System.out.println("Reset location to: "+location.x+" , "+location.y);
     }
 
     public Point getPoint(){
@@ -80,7 +79,6 @@ public class Magnet extends JComponent {
         }
 
         public void mousePressed(MouseEvent e){
-            System.out.println("Press" + e.getPoint());
             anchorPoint = e.getPoint();
         }
 
@@ -94,7 +92,6 @@ public class Magnet extends JComponent {
 
         public void mouseReleased(MouseEvent e){
             anchorPoint = null;
-            System.out.println("Release " + e.getPoint());
         }
 
     }

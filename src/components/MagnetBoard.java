@@ -139,30 +139,24 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
                         case 1:
                             mag = new Magnet(tag, Color.red);
                             mag.setPoint(50, 50);
-                            System.out.println("I am drawing red");
                             break;
                         case 2:
                             mag = new Magnet(tag, Color.blue);
                             mag.setPoint(50, 50);
-                            System.out.println("I am drawing blue");
                             break;
                         case 3:
                             mag = new Magnet(tag, Color.green);
                             mag.setPoint(50, 50);
-                            System.out.println("I am drawing green");
                             break;
                         case 4:
                             mag = new Magnet(tag, Color.yellow);
                             mag.setPoint(50, 50);
-                            System.out.println("I am drawing yellow");
                             break;
                     }
                     activeMagnets.add(mag);
                     magnetTags.add(tag);
                 }
                 updateView();
-
-
                 break;
         }
     }
