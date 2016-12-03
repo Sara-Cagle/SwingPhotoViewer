@@ -22,6 +22,7 @@ import java.util.List;
  */
 public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailListener {
     private List<Magnet> activeMagnets;
+    private List<Integer> magnetTags;
     private List<Photo> photos;
     private int thumbnailSize;
 
@@ -29,11 +30,9 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
         this.setLayout(new BorderLayout());
         photos = new ArrayList<>();
         activeMagnets = new ArrayList<>();
+        magnetTags = new ArrayList<>();
         this.thumbnailSize = 100;
         Bus.getInstance().registerListener(this);
-        Magnet m = new Magnet("Winter");
-        m.setPoint(50,50);
-        activeMagnets.add(m);
     }
 
     public void updateView(){
@@ -117,6 +116,28 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
                 ThumbnailSizeMessage thumbnailSizeMessage = (ThumbnailSizeMessage) m;
                 thumbnailSize = thumbnailSizeMessage.size;
                 updateView();
+                break;
+            case "magnet_message":
+                MagnetMessage magnetMessage = (MagnetMessage) m;
+                int tag = magnetMessage.tag;
+                if(magnetTags.contains(tag)){
+                    //magnetTags.remove(tag); //need to figure out if we can keep one list of magnets
+                    for(Magnet mag : activeMagnets){
+                        if(mag.getTag() == tag){
+                            activeMagnets.remove(mag);
+                            break;
+                        }
+                    }
+                }
+                else{
+                    Magnet mag = new Magnet(tag);
+                    activeMagnets.add(mag);
+                    magnetTags.add(tag);
+                    mag.setPoint(50,50);
+                }
+                updateView();
+
+
                 break;
         }
     }

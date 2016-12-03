@@ -11,13 +11,13 @@ import java.util.ArrayList;
  * Created by saracagle on 11/27/16.
  */
 public class Magnet extends JComponent {
-    private String tag;
+    private int tag;
     private Point location;
     private final int DIAMETER = 20;
     private MagnetMouseAdapter mouseAdapter;
 
 
-    public Magnet(String tag){
+    public Magnet(int tag){
         this.tag = tag;
         location = new Point();
         this.setSize(new Dimension(100,100));
@@ -42,11 +42,11 @@ public class Magnet extends JComponent {
         location.y += y;
     }
 
-    public String getTag(){
+    public int getTag(){
         return tag;
     }
 
-    public void setTag(String s){
+    public void setTag(int s){
         this.tag = s;
     }
 
