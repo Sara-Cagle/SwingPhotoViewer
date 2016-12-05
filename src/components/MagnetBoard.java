@@ -3,26 +3,23 @@ package components;
 import bus.Bus;
 import bus.IMessageListener;
 import bus.messages.*;
-import constants.AnnotationMode;
-import constants.ViewMode;
-import panels.MagnetPanel;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Created by saracagle on 11/27/16.
+ * MagnetBoard
+ *
+ * The board that sits in place of LightTable.
+ * Can apply magnets and maneuver photos.
+ *
+ * @Author Sara Cagle
+ * @Date 11/27/2016
  */
 public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailListener, IMagnetListener {
     private List<Magnet> activeMagnets;
@@ -42,14 +39,14 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
         currentPhoto = null;
         photoToPoint = new ConcurrentHashMap<>();
         animationDelta = new ConcurrentHashMap<>();
-        timer = new Timer(25, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                doAnimate();
-            }
-        });
+        timer = new Timer(25, e -> doAnimate());
     }
 
+    /**
+     * updateView
+     *
+     * Redraws all of the photos and magnets on the screen whenever they change.
+     */
     public void updateView(){
         this.removeAll();
         JPanel thumbnailPanel = new JPanel();
@@ -68,11 +65,16 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
             size = thumbnail.getPreferredSize();
             thumbnailPanel.add(thumbnail);
             if(photoToPoint.containsKey(photo)){
-                thumbnail.setBounds(photoToPoint.get(photo).x, photoToPoint.get(photo).y, size.width, size.height);
+                System.out.println("found a photo but its already in the photoToPoint");
+                locationX = photoToPoint.get(photo).x;
+                locationY = photoToPoint.get(photo).y;
             }
             else {
-                thumbnail.setBounds(locationX, locationY, size.width, size.height);
+                System.out.println("found a photo putting it in normal");
+                System.out.println("Location: "+locationX+" , "+locationY);
+                System.out.println("Rowcounter before the stuff: "+rowCounter);
                 rowCounter++;
+
                 if (rowCounter > 3) {
                     rowCounter = 1;
                     locationX = 0;
@@ -80,8 +82,11 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
                 } else {
                     locationX += thumbnailSize + 10;
                 }
+                rowCounter++;
+                System.out.println("Rowcounter after the stuff: "+rowCounter);
                 photoToPoint.put(photo, new Point(locationX, locationY));
             }
+            thumbnail.setBounds(locationX, locationY, size.width, size.height);
         }
         thumbnailPanel.setPreferredSize(new Dimension((thumbnailSize+10)*3, (thumbnailSize+10)*photos.size()/3));
         JScrollPane parentScrollPane = new JScrollPane(thumbnailPanel);
@@ -118,6 +123,13 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
         Bus.getInstance().sendMessage(new ViewModeMessage(ViewMode.Photo));*/
     }
 
+    /**
+     * animateThumbnails
+     *
+     * For each photo, collect the magnets that it will interact with.
+     * Compile the new locations these photos should move to in relation to the magnets.
+     * Start the animation, call doAnimate.
+     */
     public void animateThumbnails(){
         for(Photo photo: photos){
             Point finalLocation = photoToPoint.get(photo); //upper left corner
@@ -139,20 +151,30 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
 
                 finalLocation = new Point(x/magnetAttractionPoints.size(), y/magnetAttractionPoints.size());
             }
-            //photoToPoint.put(photo, finalLocation);
             if(finalLocation != photoToPoint.get(photo)){ //if the photo isn't at the new location
-                //double deltaX = finalLocation.getX() - photoToPoint.get(photo).getX();
-                //double deltaY = finalLocation.getY() - photoToPoint.get(photo).getY();
                 animationDelta.put(photo, finalLocation);
             }
         }
         timer.start();
     }
 
+    /**
+     * onMagnetLocationUpdated
+     *
+     * Allows us to communicate with the magnet as it moves.
+     * Animates the thumbnails as we move magnets.
+     */
     public void onMagnetLocationUpdated(){
         animateThumbnails();
     }
 
+    /**
+     * doAnimate
+     *
+     * Moves the photos toward newly found final location posts.
+     * Increments x and y to shift the photo to its new place.
+     * Shifting stops when the top left hand corners match
+     */
     public void doAnimate(){
         List<Photo> toRemove = new ArrayList<>();
         if(animationDelta.isEmpty()){
@@ -164,19 +186,15 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
             Point finalPoint = animationDelta.get(p);
             if(!currPoint.equals(finalPoint)){
                 if(currPoint.x < finalPoint.x){
-                    //increment x
                     currPoint.x++;
                 }
                 else if(currPoint.x > finalPoint.x){
-                    //decrement x
                     currPoint.x--;
                 }
                 if(currPoint.y < finalPoint.y){
-                    //increment y
                     currPoint.y++;
                 }
                 else if(currPoint.y > finalPoint.y){
-                    //decrement y
                     currPoint.y--;
                 }
             }
@@ -191,8 +209,13 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
     }
 
 
-
-
+    /**
+     * receiveMessage
+     *
+     * Listens for messages coming in regarding thumbnails and magnets.
+     *
+     * @param m the message in question
+     */
     public void receiveMessage(Message m) {
         switch (m.type()) {
             case "thumbnail_size_message":
