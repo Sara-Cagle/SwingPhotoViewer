@@ -76,9 +76,7 @@ public class Magnet extends JComponent {
     private class MagnetMouseAdapter extends MouseAdapter {
         private Point anchorPoint;
 
-        public void mouseClicked(MouseEvent e) {
-
-        }
+        public void mouseClicked(MouseEvent e) {}
 
         public void mousePressed(MouseEvent e){
             anchorPoint = e.getPoint();

@@ -47,9 +47,9 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
         Dimension size;
 
         thumbnailPanel.setLayout(null);
-        for(Magnet moo: activeMagnets){
-            moo.setBounds(moo.getPoint().x, moo.getPoint().y, 100, 100);
-            thumbnailPanel.add(moo);
+        for(Magnet mag: activeMagnets){
+            mag.setBounds(mag.getPoint().x, mag.getPoint().y, 20, 20);
+            thumbnailPanel.add(mag);
         }
         for (Photo photo : photos) {
             Thumbnail thumbnail = new Thumbnail(photo, photo == currentPhoto, this, thumbnailSize);
