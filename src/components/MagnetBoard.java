@@ -26,9 +26,9 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
     private int thumbnailSize;
     private Photo currentPhoto;
 
-    public MagnetBoard(){
+    public MagnetBoard(List<Photo> photos){
         this.setLayout(new BorderLayout());
-        photos = new ArrayList<>();
+        this.photos = photos;
         activeMagnets = new ArrayList<>();
         this.thumbnailSize = 100;
         Bus.getInstance().registerListener(this);
@@ -115,18 +115,6 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
 
     public void receiveMessage(Message m) {
         switch (m.type()) {
-            case "image_message":
-                ImageMessage imageMessage = (ImageMessage) m;
-                try {
-                    BufferedImage image = ImageIO.read(imageMessage.file);
-                    Photo photo = new Photo(image);
-                    this.photos.add(photo);
-                    updateView();
-                }
-                catch (IOException e) {
-                    //handle it
-                }
-                break;
             case "thumbnail_size_message":
                 ThumbnailSizeMessage thumbnailSizeMessage = (ThumbnailSizeMessage) m;
                 thumbnailSize = thumbnailSizeMessage.size;
