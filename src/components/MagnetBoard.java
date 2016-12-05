@@ -22,7 +22,6 @@ import java.util.List;
  */
 public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailListener {
     private List<Magnet> activeMagnets;
-    private List<Integer> magnetTags;
     private List<Photo> photos;
     private int thumbnailSize;
 
@@ -101,7 +100,7 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
         System.out.println("I'm animating something");
         for(Photo photo: photos){
             for(Magnet mag: activeMagnets){
-                if(photo.getTags().contains(mag.getTag())){
+                if(photo.hasTag(mag.getTag())){
                     System.out.println("Found a match in a photo for tag "+mag.getTag());
                 }
             }
