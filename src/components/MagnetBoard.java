@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by saracagle on 11/27/16.
@@ -28,9 +29,9 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
     private List<Photo> photos;
     private int thumbnailSize;
     private Photo currentPhoto;
-    private HashMap<Photo, Point> photoToPoint;
+    private ConcurrentHashMap<Photo, Point> photoToPoint;
     private Timer timer;
-    private HashMap<Photo, Point> animationDelta;
+    private ConcurrentHashMap<Photo, Point> animationDelta;
 
     public MagnetBoard(List<Photo> photos){
         this.setLayout(new BorderLayout());
@@ -39,8 +40,8 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
         this.thumbnailSize = 100;
         Bus.getInstance().registerListener(this);
         currentPhoto = null;
-        photoToPoint = new HashMap<>();
-        animationDelta = new HashMap<>();
+        photoToPoint = new ConcurrentHashMap<>();
+        animationDelta = new ConcurrentHashMap<>();
         timer = new Timer(25, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -153,6 +154,7 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
     }
 
     public void doAnimate(){
+        List<Photo> toRemove = new ArrayList<>();
         if(animationDelta.isEmpty()){
             timer.stop();
             return;
@@ -179,8 +181,11 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
                 }
             }
             else{
-                animationDelta.remove(p);
+                toRemove.add(p);
             }
+        }
+        for(Photo p: toRemove){
+            animationDelta.remove(p);
         }
         updateView();
     }
