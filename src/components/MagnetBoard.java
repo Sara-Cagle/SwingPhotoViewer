@@ -15,16 +15,18 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
  * Created by saracagle on 11/27/16.
  */
-public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailListener {
+public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailListener, IMagnetListener {
     private List<Magnet> activeMagnets;
     private List<Photo> photos;
     private int thumbnailSize;
     private Photo currentPhoto;
+    private HashMap<Photo, Point> photoToPoint;
 
     public MagnetBoard(List<Photo> photos){
         this.setLayout(new BorderLayout());
@@ -33,6 +35,7 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
         this.thumbnailSize = 100;
         Bus.getInstance().registerListener(this);
         currentPhoto = null;
+        photoToPoint = new HashMap<>();
     }
 
     public void updateView(){
@@ -49,18 +52,23 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
             thumbnailPanel.add(moo);
         }
         for (Photo photo : photos) {
-            Thumbnail thumbnail = new Thumbnail(photo, photo==currentPhoto, this, thumbnailSize);
+            Thumbnail thumbnail = new Thumbnail(photo, photo == currentPhoto, this, thumbnailSize);
             size = thumbnail.getPreferredSize();
             thumbnailPanel.add(thumbnail);
-            thumbnail.setBounds(locationX, locationY, size.width, size.height);
-            rowCounter++;
-            if(rowCounter > 3){
-                rowCounter = 1;
-                locationX = 0;
-                locationY+= thumbnailSize+10;
+            if(photoToPoint.containsKey(photo)){
+                thumbnail.setBounds(photoToPoint.get(photo).x, photoToPoint.get(photo).y, size.width, size.height);
             }
-            else{
-                locationX += thumbnailSize+10;
+            else {
+                thumbnail.setBounds(locationX, locationY, size.width, size.height);
+                rowCounter++;
+                if (rowCounter > 3) {
+                    rowCounter = 1;
+                    locationX = 0;
+                    locationY += thumbnailSize + 10;
+                } else {
+                    locationX += thumbnailSize + 10;
+                }
+                photoToPoint.put(photo, new Point(locationX, locationY));
             }
         }
         thumbnailPanel.setPreferredSize(new Dimension((thumbnailSize+10)*3, (thumbnailSize+10)*photos.size()/3));
@@ -99,19 +107,44 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
     }
 
     public void animateThumbnails(){
-        System.out.println("I'm animating something");
         for(Photo photo: photos){
+            Point finalLocation = photoToPoint.get(photo); //upper left corner
+            ArrayList<Point> magnetAttractionPoints = new ArrayList<>();
             for(Magnet mag: activeMagnets){
                 if (photo.hasTag(mag.getTag())){
-                    System.out.println("Found a match in a photo for tag "+mag.getTag());
+                    Point magPoint = mag.getPoint(); //upper left corner
+                    magnetAttractionPoints.add(magPoint);
                     currentPhoto = photo;
                     //light up photo draw rect around it
-                    //move photo toward magnet
+                    //move photo to magnet location
+                    //get magnet location
+                    //update photo location
                     //start slow, speed up, slow down again
                 }
             }
+            if(!magnetAttractionPoints.isEmpty()){
+                int x = 0;
+                int y = 0;
+                for(Point p: magnetAttractionPoints){
+                    x+=p.x;
+                    y+=p.y;
+                }
+                finalLocation = new Point(x/magnetAttractionPoints.size(), y/magnetAttractionPoints.size());
+            }
+            photoToPoint.put(photo, finalLocation);
+
+            //calculate midpoint of magnetattractionpoints
+            //move photo to there
         }
+        updateView();
     }
+
+    public void onMagnetLocationUpdated(){
+        animateThumbnails();
+    }
+
+
+
 
     public void receiveMessage(Message m) {
         switch (m.type()) {
@@ -135,19 +168,19 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
                     Magnet mag = null;
                     switch(tag){
                         case 1:
-                            mag = new Magnet(tag, Color.red);
+                            mag = new Magnet(tag, Color.red, this);
                             mag.setPoint(50, 50);
                             break;
                         case 2:
-                            mag = new Magnet(tag, Color.blue);
+                            mag = new Magnet(tag, Color.blue, this);
                             mag.setPoint(50, 50);
                             break;
                         case 3:
-                            mag = new Magnet(tag, Color.green);
+                            mag = new Magnet(tag, Color.green, this);
                             mag.setPoint(50, 50);
                             break;
                         case 4:
-                            mag = new Magnet(tag, Color.yellow);
+                            mag = new Magnet(tag, Color.yellow, this);
                             mag.setPoint(50, 50);
                             break;
                     }

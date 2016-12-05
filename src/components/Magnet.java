@@ -16,9 +16,10 @@ public class Magnet extends JComponent {
     private final int DIAMETER = 20;
     private MagnetMouseAdapter mouseAdapter;
     private Color color;
+    private IMagnetListener magnetListener;
 
 
-    public Magnet(int tag, Color color){
+    public Magnet(int tag, Color color, IMagnetListener magnetListener){
         this.tag = tag;
         location = new Point();
         this.color = color;
@@ -27,6 +28,7 @@ public class Magnet extends JComponent {
         mouseAdapter = new MagnetMouseAdapter();
         addMouseListener(mouseAdapter);
         addMouseMotionListener(mouseAdapter);
+        this.magnetListener = magnetListener;
     }
 
     public void setPoint(int x, int y){
@@ -84,14 +86,18 @@ public class Magnet extends JComponent {
 
         //has some issues for if you pull your mouse off of the magnet
         public void mouseDragged(MouseEvent e){
-            int x = e.getX() - anchorPoint.x + Magnet.this.getLocation().x;
-            int y = e.getY() - anchorPoint.y + Magnet.this.getLocation().y;
-            Magnet.this.setPoint(x,y);
-            Magnet.this.setLocation(x,y);
+            if(anchorPoint!= null){
+                int x = e.getX() - anchorPoint.x + Magnet.this.getLocation().x;
+                int y = e.getY() - anchorPoint.y + Magnet.this.getLocation().y;
+                Magnet.this.setPoint(x,y);
+                Magnet.this.setLocation(x,y);
+                Magnet.this.magnetListener.onMagnetLocationUpdated();
+            }
         }
 
         public void mouseReleased(MouseEvent e){
             anchorPoint = null;
+            //Magnet.this.magnetListener.onMagnetLocationUpdated();
         }
 
     }
