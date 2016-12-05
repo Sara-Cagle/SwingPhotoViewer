@@ -10,6 +10,8 @@ import panels.MagnetPanel;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -27,6 +29,8 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
     private int thumbnailSize;
     private Photo currentPhoto;
     private HashMap<Photo, Point> photoToPoint;
+    private Timer timer;
+    private HashMap<Photo, Point> animationDelta;
 
     public MagnetBoard(List<Photo> photos){
         this.setLayout(new BorderLayout());
@@ -36,6 +40,13 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
         Bus.getInstance().registerListener(this);
         currentPhoto = null;
         photoToPoint = new HashMap<>();
+        animationDelta = new HashMap<>();
+        timer = new Timer(25, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                doAnimate();
+            }
+        });
     }
 
     public void updateView(){
@@ -115,11 +126,6 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
                     Point magPoint = mag.getPoint(); //upper left corner
                     magnetAttractionPoints.add(magPoint);
                     currentPhoto = photo;
-                    //light up photo draw rect around it
-                    //move photo to magnet location
-                    //get magnet location
-                    //update photo location
-                    //start slow, speed up, slow down again
                 }
             }
             if(!magnetAttractionPoints.isEmpty()){
@@ -129,18 +135,54 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
                     x+=p.x;
                     y+=p.y;
                 }
+
                 finalLocation = new Point(x/magnetAttractionPoints.size(), y/magnetAttractionPoints.size());
             }
-            photoToPoint.put(photo, finalLocation);
-
-            //calculate midpoint of magnetattractionpoints
-            //move photo to there
+            //photoToPoint.put(photo, finalLocation);
+            if(finalLocation != photoToPoint.get(photo)){ //if the photo isn't at the new location
+                //double deltaX = finalLocation.getX() - photoToPoint.get(photo).getX();
+                //double deltaY = finalLocation.getY() - photoToPoint.get(photo).getY();
+                animationDelta.put(photo, finalLocation);
+            }
         }
-        updateView();
+        timer.start();
     }
 
     public void onMagnetLocationUpdated(){
         animateThumbnails();
+    }
+
+    public void doAnimate(){
+        if(animationDelta.isEmpty()){
+            timer.stop();
+            return;
+        }
+        for(Photo p: animationDelta.keySet()){
+            Point currPoint = photoToPoint.get(p);
+            Point finalPoint = animationDelta.get(p);
+            if(!currPoint.equals(finalPoint)){
+                if(currPoint.x < finalPoint.x){
+                    //increment x
+                    currPoint.x++;
+                }
+                else if(currPoint.x > finalPoint.x){
+                    //decrement x
+                    currPoint.x--;
+                }
+                if(currPoint.y < finalPoint.y){
+                    //increment y
+                    currPoint.y++;
+                }
+                else if(currPoint.y > finalPoint.y){
+                    //decrement y
+                    currPoint.y--;
+                }
+            }
+            else{
+                animationDelta.remove(p);
+            }
+        }
+        updateView();
     }
 
 
