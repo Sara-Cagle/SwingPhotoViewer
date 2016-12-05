@@ -24,6 +24,7 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
     private List<Magnet> activeMagnets;
     private List<Photo> photos;
     private int thumbnailSize;
+    private Photo currentPhoto;
 
     public MagnetBoard(){
         this.setLayout(new BorderLayout());
@@ -31,6 +32,7 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
         activeMagnets = new ArrayList<>();
         this.thumbnailSize = 100;
         Bus.getInstance().registerListener(this);
+        currentPhoto = null;
     }
 
     public void updateView(){
@@ -47,7 +49,7 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
             thumbnailPanel.add(moo);
         }
         for (Photo photo : photos) {
-            Thumbnail thumbnail = new Thumbnail(photo, false, this, thumbnailSize);
+            Thumbnail thumbnail = new Thumbnail(photo, photo==currentPhoto, this, thumbnailSize);
             size = thumbnail.getPreferredSize();
             thumbnailPanel.add(thumbnail);
             thumbnail.setBounds(locationX, locationY, size.width, size.height);
@@ -100,8 +102,12 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
         System.out.println("I'm animating something");
         for(Photo photo: photos){
             for(Magnet mag: activeMagnets){
-                if(photo.hasTag(mag.getTag())){
+                if (photo.hasTag(mag.getTag())){
                     System.out.println("Found a match in a photo for tag "+mag.getTag());
+                    currentPhoto = photo;
+                    //light up photo draw rect around it
+                    //move photo toward magnet
+                    //start slow, speed up, slow down again
                 }
             }
         }
