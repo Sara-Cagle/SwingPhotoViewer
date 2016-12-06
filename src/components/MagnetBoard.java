@@ -40,7 +40,7 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
         //currentPhoto = null;
         photoToPoint = new ConcurrentHashMap<>();
         animationDelta = new ConcurrentHashMap<>();
-        timer = new Timer(25, e -> doAnimate());
+        timer = new Timer(5, e -> doAnimate());
         currentPhotos = new ArrayList<>();
     }
 
@@ -188,16 +188,46 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
             Point currPoint = photoToPoint.get(p);
             Point finalPoint = animationDelta.get(p);
             if(!currPoint.equals(finalPoint)){
+                if(Math.abs(currPoint.x - finalPoint.x) > 10 || Math.abs(currPoint.y - finalPoint.y) > 10){
+                    timer.setDelay(5);
+                }
+                else{
+                    timer.setDelay(15);
+                }
                 if(currPoint.x < finalPoint.x){
+                    /*if(finalPoint.x-currPoint.x < 10){
+                        timer.setDelay(25);
+                    }
+                    else{
+                        timer.setDelay(7);
+                    }*/
                     currPoint.x++;
                 }
                 else if(currPoint.x > finalPoint.x){
+                    /*if(currPoint.x < 10 - finalPoint.x){
+                        timer.setDelay(25);
+                    }
+                    else{
+                        timer.setDelay(7);
+                    }*/
                     currPoint.x--;
                 }
                 if(currPoint.y < finalPoint.y){
+                    /*if(finalPoint.y-currPoint.y < 10){
+                        timer.setDelay(25);
+                    }
+                    else{
+                        timer.setDelay(7);
+                    }*/
                     currPoint.y++;
                 }
                 else if(currPoint.y > finalPoint.y){
+                    /*if(currPoint.x < 10 - finalPoint.x){
+                        timer.setDelay(25);
+                    }
+                    else{
+                        timer.setDelay(7);
+                    }*/
                     currPoint.y--;
                 }
             }
