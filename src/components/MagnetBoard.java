@@ -67,7 +67,7 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
             size = thumbnail.getPreferredSize();
             thumbnailPanel.add(thumbnail);
             if(photoToPoint.containsKey(photo)){
-                System.out.println("found a photo but its already in the photoToPoint");
+                //System.out.println("found a photo but its already in the photoToPoint");
                 locationX = photoToPoint.get(photo).x;
                 locationY = photoToPoint.get(photo).y;
             }
@@ -189,10 +189,10 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
             Point finalPoint = animationDelta.get(p);
             if(!currPoint.equals(finalPoint)){
                 if(Math.abs(currPoint.x - finalPoint.x) > 10 || Math.abs(currPoint.y - finalPoint.y) > 10){
-                    timer.setDelay(5);
+                    timer.setDelay(5); //far away, moves fast
                 }
                 else{
-                    timer.setDelay(15);
+                    timer.setDelay(15); //close, moves slow
                 }
                 if(currPoint.x < finalPoint.x){
                     /*if(finalPoint.x-currPoint.x < 10){
