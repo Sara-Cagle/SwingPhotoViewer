@@ -10,7 +10,13 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 
 /**
- * Created by saracagle on 11/27/16.
+ * MagnetPanel
+ *
+ * MagnetPanel on the left hand side of the screen.
+ * Allows you to toggle magnet mode off and on.
+ *
+ * @Author Sara Cagle
+ * @Date 11/27/2016
  */
 public class MagnetPanel extends JPanel implements IMessageListener{
     private TitledBorder title;
@@ -19,6 +25,11 @@ public class MagnetPanel extends JPanel implements IMessageListener{
     private ButtonGroup magnetButtonGroup;
     private MagnetTagPanel magnetTagPanel;
 
+    /**
+     * MagnetPanel
+     *
+     * MagnetPanel constructor, creates the on/off buttons and adds them with listeners to the panel.
+     */
     public MagnetPanel() {
         super();
         this.setMaximumSize(new Dimension(800, 130));
@@ -51,6 +62,13 @@ public class MagnetPanel extends JPanel implements IMessageListener{
         this.add(holderPanel, BorderLayout.CENTER);
     }
 
+    /**
+     * receiveMessage
+     *
+     * Listens for messages regarding magnet mode off/on.
+     *
+     * @param m the message in question
+     */
     public void receiveMessage(Message m){
         switch(m.type()) {
             case "magnet_off_message":

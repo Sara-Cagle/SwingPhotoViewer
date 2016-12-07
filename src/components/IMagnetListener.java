@@ -1,7 +1,12 @@
 package components;
 
 /**
- * Created by saracagle on 12/4/16.
+ * IMagnetListener
+ *
+ * Interface for objects listening for magnets.
+ *
+ * @Author Sara Cagle
+ * @Date 12/04/2016
  */
 public interface IMagnetListener {
 

@@ -30,6 +30,14 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
     private final int DIAMETER = 50;
     private final int ROUND = 20;
 
+    /**
+     * MagnetBoard
+     *
+     * MagnetBoard constructor, instantiates all of the hashmaps of photos to points.
+     * Creates the timer, starting with the "fast" speed.
+     *
+     * @param photos
+     */
     public MagnetBoard(List<Photo> photos){
         this.setLayout(new BorderLayout());
         this.photos = photos;
@@ -52,7 +60,6 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
         JPanel thumbnailPanel = new JPanel();
         int locationX = 0;
         int locationY = 0;
-        //int rowCounter = 1;
         Dimension size;
 
         thumbnailPanel.setLayout(null);
@@ -65,27 +72,10 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
             size = thumbnail.getPreferredSize();
             thumbnailPanel.add(thumbnail);
             if(photoToPoint.containsKey(photo)){
-                //System.out.println("found a photo but its already in the photoToPoint");
                 locationX = photoToPoint.get(photo).x;
                 locationY = photoToPoint.get(photo).y;
             }
-            /*else {
-                System.out.println("found a photo putting it in normal");
-                System.out.println("Location: "+locationX+" , "+locationY);
-                /*System.out.println("Rowcounter before the stuff: "+rowCounter);
-                rowCounter++;*/
-
-                /*if (rowCounter > 3) {
-                    rowCounter = 1;
-                    locationX = 0;
-                    locationY += thumbnailSize + 10;
-                } else {
-                    locationX += thumbnailSize + 10;
-                }
-                rowCounter++;*/
-                /*System.out.println("Rowcounter after the stuff: "+rowCounter);*/
             photoToPoint.put(photo, new Point(locationX, locationY));
-            //}
             thumbnail.setBounds(locationX, locationY, size.width, size.height);
         }
         thumbnailPanel.setPreferredSize(new Dimension((thumbnailSize+10)*3, (thumbnailSize+10)*photos.size()/3));
@@ -140,7 +130,6 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
                     x+=p.x;
                     y+=p.y;
                 }
-
                 finalLocation = new Point(x/magnetAttractionPoints.size(), y/magnetAttractionPoints.size());
             }
             if(finalLocation != photoToPoint.get(photo)){ //if the photo isn't at the new location
@@ -181,7 +170,6 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
             Point finalPoint = animationDelta.get(p);
             Point startPoint = startingPoints.get(p);
             if(!currPoint.equals(finalPoint)){
-
                 if((Math.abs(currPoint.x - finalPoint.x) > 30 || Math.abs(currPoint.y - finalPoint.y) > 30) && //far from final point
                         (Math.abs(startPoint.x - currPoint.x) > 15 || Math.abs(startPoint.y - currPoint.y) > 15)){ //far from start
                     timer.setDelay(5); //far away, moves fast

@@ -8,7 +8,12 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 
 /**
- * Created by saracagle on 12/2/16.
+ * MagnetTagPanel
+ *
+ * Panel for when magnet mode is on, allows adding/removing the magnets.
+ *
+ * @Author Sara Cagle
+ * @Date 12/2/2016
  */
 public class MagnetTagPanel extends JPanel {
     private TitledBorder title;
@@ -17,6 +22,11 @@ public class MagnetTagPanel extends JPanel {
     private JCheckBox tag3;
     private JCheckBox tag4;
 
+    /**
+     * MagnetTagPanel
+     *
+     * MagnetTagPanel constructor, creates checkboxes for each magnet.
+     */
     public MagnetTagPanel(){
         super();
         this.setLayout(new GridLayout(0,2));

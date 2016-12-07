@@ -4,23 +4,35 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 
 /**
- * Created by saracagle on 11/27/16.
+ * Magnet
+ *
+ * Magnet object, an oval with the tag name in it.
+ *
+ * @Author Sara Cagle
+ * @Date 11/27/16
  */
 public class Magnet extends JComponent {
     private int tag;
     private Point location;
-    //private final int DIAMETER = 50;
     private MagnetMouseAdapter mouseAdapter;
     private Color color;
     private IMagnetListener magnetListener;
     private int diameter;
     private int round;
 
-
+    /**
+     * Magnet constructor
+     *
+     * Magnet constructor, sets the shape of the magnet, color, and what tag it's for.
+     *
+     * @param tag the integer value of the tag
+     * @param color the color to make the magnet
+     * @param magnetListener ensures passing that the magnet is being clicked
+     * @param diameter the diameter of the magnet
+     * @param round the curvature of the magnet
+     */
     public Magnet(int tag, Color color, IMagnetListener magnetListener, int diameter, int round){
         this.tag = tag;
         location = new Point();
@@ -35,20 +47,39 @@ public class Magnet extends JComponent {
         this.round = round;
     }
 
+    /**
+     * setPoint
+     *
+     * Sets the point of the magnet.
+     *
+     * @param x the new x
+     * @param y the new y
+     */
     public void setPoint(int x, int y){
         location.x = x;
         location.y = y;
     }
 
+    /**
+     * getPoint
+     *
+     * Gets the point the magnet is located at.
+     *
+     * @return location, the top left corner of magnet's bounding box
+     */
     public Point getPoint(){
         return location;
     }
 
-    public void applyDelta(int x, int y){
-        location.x += x;
-        location.y += y;
-    }
 
+    /**
+     * getTagString
+     *
+     * Using the tag's integer id, determines the actual tag label.
+     * Constrained by only 4 options.
+     *
+     * @return the label
+     */
     public String getTagString(){
         switch(tag){
             case 1:
@@ -63,19 +94,36 @@ public class Magnet extends JComponent {
         return "error";
     }
 
+    /**
+     * getTag
+     *
+     * Gets the magnet tag's integer id.
+     *
+     * @return tag, the magnet tag's id
+     */
     public int getTag(){
         return tag;
     }
 
+    /**
+     * setTag
+     *
+     * Sets the magnet's tag integer id.
+     *
+     * @param s the magnet's tag id
+     */
     public void setTag(int s){
         this.tag = s;
     }
 
-
-    public boolean containsPoint(Point p){
-        return (p.x <= location.x+diameter && p.x >= location.x) && (p.y <=location.y+diameter && p.y>= location.y);
-    }
-
+    /**
+     * paintComponent
+     *
+     * Paints the magnet and its label on the screen.
+     * Uses colors that are passed in, and passed in diameter and curvature.
+     *
+     * @param g the graphics object
+     */
     public void paintComponent(Graphics g){
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
@@ -88,7 +136,6 @@ public class Magnet extends JComponent {
         g2.setColor(Color.black);
         g.drawString(getTagString(), diameter/2-10, (diameter)/2+4);
     }
-
 
     /**
      * Internal class of MouseAdapter created for the MagnetBoard.
@@ -103,7 +150,10 @@ public class Magnet extends JComponent {
             anchorPoint = e.getPoint();
         }
 
-        //has some issues for if you pull your mouse off of the magnet
+        /**
+         * Updates the location of the magnet when it's being dragged.
+         * @param e the mouse event
+         */
         public void mouseDragged(MouseEvent e){
             if(anchorPoint!= null){
                 int x = e.getX() - anchorPoint.x + Magnet.this.getLocation().x;
@@ -116,7 +166,6 @@ public class Magnet extends JComponent {
 
         public void mouseReleased(MouseEvent e){
             anchorPoint = null;
-            //Magnet.this.magnetListener.onMagnetLocationUpdated();
         }
 
     }
