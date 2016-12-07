@@ -22,7 +22,7 @@ import java.util.ArrayList;
  * @Date 10/23/2016
  */
 public class LightTable extends JPanel implements IMessageListener, IThumbnailListener{
-    private ArrayList<Photo> photos;
+    private java.util.List<Photo> photos;
     private ViewMode mode;
     private Photo currentPhoto;
     private int thumbnailSize;
@@ -34,9 +34,9 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
      * Sits in the ContentPanel, displays the photos based on the current view mode.
      * Has a current photo.
      */
-    public LightTable(){
+    public LightTable(java.util.List<Photo> photos){
         this.setLayout(new BorderLayout());
-        this.photos = new ArrayList<>();
+        this.photos = photos;
         this.currentPhoto = null;
         this.thumbnailSize = 100;
         Bus.getInstance().registerListener(this);
@@ -65,6 +65,10 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
                 break;
         }
         validate();
+    }
+
+    public void updateCurrentPhoto(Photo p) {
+        currentPhoto = p;
     }
 
     /**
@@ -161,21 +165,6 @@ public class LightTable extends JPanel implements IMessageListener, IThumbnailLi
      */
     public void receiveMessage(Message m) {
         switch(m.type()) {
-            case "image_message":
-                ImageMessage imageMessage = (ImageMessage) m;
-                try {
-                    BufferedImage image = ImageIO.read(imageMessage.file);
-                    Photo photo = new Photo(image);
-                    currentPhoto = photo;
-                    this.photos.add(photo);
-                    Bus.getInstance().sendMessage(new AdjustAnnotationColorsMessage());
-                    Bus.getInstance().sendMessage(new StatusMessage("Ready"));
-                    updateView();
-                }
-                catch (IOException e) {
-                    //handle it
-                }
-                break;
             case "view_mode_message":
                 ViewModeMessage modeMessage = (ViewModeMessage) m;
                 mode = modeMessage.mode;

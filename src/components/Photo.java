@@ -1,10 +1,8 @@
 package components;
 
-import javax.xml.soap.Text;
+
 import java.awt.image.BufferedImage;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Photo
