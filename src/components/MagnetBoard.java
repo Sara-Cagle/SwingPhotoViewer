@@ -32,6 +32,7 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
     private ArrayList<Photo> currentPhotos;
     private ConcurrentHashMap<Photo, Point> startingPoints;
     private final int DIAMETER = 50;
+    private final int ROUND = 20;
 
     public MagnetBoard(List<Photo> photos){
         this.setLayout(new BorderLayout());
@@ -61,7 +62,7 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
 
         thumbnailPanel.setLayout(null);
         for(Magnet mag: activeMagnets){
-            mag.setBounds(mag.getPoint().x, mag.getPoint().y, DIAMETER, DIAMETER);
+            mag.setBounds(mag.getPoint().x, mag.getPoint().y, DIAMETER+ROUND, DIAMETER);
             thumbnailPanel.add(mag);
         }
         for (Photo photo : photos) {
@@ -260,19 +261,19 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
                     Magnet mag = null;
                     switch(tag){
                         case 1:
-                            mag = new Magnet(tag, Color.red, this, DIAMETER);
+                            mag = new Magnet(tag, Color.red, this, DIAMETER, ROUND);
                             mag.setPoint(50, 50);
                             break;
                         case 2:
-                            mag = new Magnet(tag, Color.blue, this, DIAMETER);
+                            mag = new Magnet(tag, Color.blue, this, DIAMETER, ROUND);
                             mag.setPoint(150, 50);
                             break;
                         case 3:
-                            mag = new Magnet(tag, Color.green, this, DIAMETER);
+                            mag = new Magnet(tag, Color.green, this, DIAMETER, ROUND);
                             mag.setPoint(50, 150);
                             break;
                         case 4:
-                            mag = new Magnet(tag, Color.yellow, this,DIAMETER);
+                            mag = new Magnet(tag, Color.yellow, this,DIAMETER, ROUND);
                             mag.setPoint(150, 150);
                             break;
                     }

@@ -18,9 +18,10 @@ public class Magnet extends JComponent {
     private Color color;
     private IMagnetListener magnetListener;
     private int diameter;
+    private int round;
 
 
-    public Magnet(int tag, Color color, IMagnetListener magnetListener, int diameter){
+    public Magnet(int tag, Color color, IMagnetListener magnetListener, int diameter, int round){
         this.tag = tag;
         location = new Point();
         this.color = color;
@@ -31,6 +32,7 @@ public class Magnet extends JComponent {
         addMouseMotionListener(mouseAdapter);
         this.magnetListener = magnetListener;
         this.diameter = diameter;
+        this.round = round;
     }
 
     public void setPoint(int x, int y){
@@ -45,6 +47,20 @@ public class Magnet extends JComponent {
     public void applyDelta(int x, int y){
         location.x += x;
         location.y += y;
+    }
+
+    public String getTagString(){
+        switch(tag){
+            case 1:
+                return "Spring";
+            case 2:
+                return "Summer";
+            case 3:
+                return "Fall";
+            case 4:
+                return "Winter";
+        }
+        return "error";
     }
 
     public int getTag(){
@@ -63,11 +79,14 @@ public class Magnet extends JComponent {
     public void paintComponent(Graphics g){
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
+
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         g2.setColor(color);
-        g2.fillOval(0, 0, diameter, diameter); //draws an oval inside a rectangle, w/ top left corner of 0,0
+        g2.fillOval(0, 0, diameter+round, diameter); //draws an oval inside a rectangle, w/ top left corner of 0,0
+        g2.setColor(Color.black);
+        g.drawString(getTagString(), 0, 20);
     }
 
 
