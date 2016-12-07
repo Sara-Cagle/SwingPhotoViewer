@@ -199,8 +199,8 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
             }*/
             if(!currPoint.equals(finalPoint)){
 
-                if((Math.abs(currPoint.x - finalPoint.x) > 10 || Math.abs(currPoint.y - finalPoint.y) > 10) || //far from magnet
-                        (Math.abs(startPoint.x - currPoint.x) > 10 || Math.abs(startPoint.y - currPoint.y) > 10)){ //far from start
+                if((Math.abs(currPoint.x - finalPoint.x) > 30 || Math.abs(currPoint.y - finalPoint.y) > 30) || //far from magnet
+                        (Math.abs(startPoint.x - currPoint.x) > 30 || Math.abs(startPoint.y - currPoint.y) > 30)){ //far from start
                     timer.setDelay(5); //far away, moves fast
                 }
                 else{
