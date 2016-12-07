@@ -86,7 +86,7 @@ public class Magnet extends JComponent {
         g2.setColor(color);
         g2.fillOval(0, 0, diameter+round, diameter); //draws an oval inside a rectangle, w/ top left corner of 0,0
         g2.setColor(Color.black);
-        g.drawString(getTagString(), 0, 20);
+        g.drawString(getTagString(), diameter/2-10, (diameter)/2+4);
     }
 
 

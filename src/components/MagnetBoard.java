@@ -194,9 +194,9 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
             Point currPoint = photoToPoint.get(p);
             Point finalPoint = animationDelta.get(p);
             Point startPoint = currPoint;
-            if(startingPoints.contains(p)){
+            /*if(startingPoints.contains(p)){
                 startPoint = startingPoints.get(p);
-            }
+            }*/
             if(!currPoint.equals(finalPoint)){
 
                 if((Math.abs(currPoint.x - finalPoint.x) > 10 || Math.abs(currPoint.y - finalPoint.y) > 10) || //far from magnet
@@ -261,19 +261,19 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
                     Magnet mag = null;
                     switch(tag){
                         case 1:
-                            mag = new Magnet(tag, Color.red, this, DIAMETER, ROUND);
+                            mag = new Magnet(tag, new Color(142, 255, 189), this, DIAMETER, ROUND);
                             mag.setPoint(50, 50);
                             break;
                         case 2:
-                            mag = new Magnet(tag, Color.blue, this, DIAMETER, ROUND);
+                            mag = new Magnet(tag, new Color(255, 251, 48), this, DIAMETER, ROUND);
                             mag.setPoint(150, 50);
                             break;
                         case 3:
-                            mag = new Magnet(tag, Color.green, this, DIAMETER, ROUND);
+                            mag = new Magnet(tag, new Color(239, 99, 47), this, DIAMETER, ROUND);
                             mag.setPoint(50, 150);
                             break;
                         case 4:
-                            mag = new Magnet(tag, Color.yellow, this,DIAMETER, ROUND);
+                            mag = new Magnet(tag, new Color(119, 225, 255), this,DIAMETER, ROUND);
                             mag.setPoint(150, 150);
                             break;
                     }
