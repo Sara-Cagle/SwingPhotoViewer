@@ -57,7 +57,7 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
         JPanel thumbnailPanel = new JPanel();
         int locationX = 0;
         int locationY = 0;
-        int rowCounter = 1;
+        //int rowCounter = 1;
         Dimension size;
 
         thumbnailPanel.setLayout(null);
@@ -74,23 +74,23 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
                 locationX = photoToPoint.get(photo).x;
                 locationY = photoToPoint.get(photo).y;
             }
-            else {
+            /*else {
                 System.out.println("found a photo putting it in normal");
                 System.out.println("Location: "+locationX+" , "+locationY);
-                System.out.println("Rowcounter before the stuff: "+rowCounter);
-                rowCounter++;
+                /*System.out.println("Rowcounter before the stuff: "+rowCounter);
+                rowCounter++;*/
 
-                if (rowCounter > 3) {
+                /*if (rowCounter > 3) {
                     rowCounter = 1;
                     locationX = 0;
                     locationY += thumbnailSize + 10;
                 } else {
                     locationX += thumbnailSize + 10;
                 }
-                rowCounter++;
-                System.out.println("Rowcounter after the stuff: "+rowCounter);
-                photoToPoint.put(photo, new Point(locationX, locationY));
-            }
+                rowCounter++;*/
+                /*System.out.println("Rowcounter after the stuff: "+rowCounter);*/
+            photoToPoint.put(photo, new Point(locationX, locationY));
+            //}
             thumbnail.setBounds(locationX, locationY, size.width, size.height);
         }
         thumbnailPanel.setPreferredSize(new Dimension((thumbnailSize+10)*3, (thumbnailSize+10)*photos.size()/3));
@@ -105,28 +105,20 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
     /**
      * onThumbnailClick
      *
-     * This method is called when the thumbnail is single clicked.
-     * Will highlight the thumbnail in question.
+     * Required for IThumbnailListener, but not being used in this class.
      *
      * @param thumbnail the thumbnail in question
      */
-    public void onThumbnailClick(Thumbnail thumbnail) {
-        /*currentPhoto = thumbnail.getPhoto();
-        updateView();*/
-    }
+    public void onThumbnailClick(Thumbnail thumbnail) {}
 
     /**
      * onThumbnailDoubleClick
      *
-     * This method is called when the thumbnail is double clicked.
-     * Should swap the view to photo mode.
+     * Required for IThumbnailListener, but not being used in this class.
      *
      * @param thumbnail the thumbnail in question
      */
-    public void onThumbnailDoubleClick(Thumbnail thumbnail) {
-        /*currentPhoto = thumbnail.getPhoto();
-        Bus.getInstance().sendMessage(new ViewModeMessage(ViewMode.Photo));*/
-    }
+    public void onThumbnailDoubleClick(Thumbnail thumbnail) {}
 
     /**
      * animateThumbnails
