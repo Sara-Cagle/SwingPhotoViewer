@@ -23,11 +23,9 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
     private List<Magnet> activeMagnets;
     private List<Photo> photos;
     private int thumbnailSize;
-   //private Photo currentPhoto;
     private ConcurrentHashMap<Photo, Point> photoToPoint;
     private Timer timer;
     private ConcurrentHashMap<Photo, Point> animationDelta;
-    private ArrayList<Photo> currentPhotos;
     private ConcurrentHashMap<Photo, Point> startingPoints;
     private final int DIAMETER = 50;
     private final int ROUND = 20;
@@ -35,13 +33,13 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
     public MagnetBoard(List<Photo> photos){
         this.setLayout(new BorderLayout());
         this.photos = photos;
+        startingPoints = new ConcurrentHashMap<>();
         activeMagnets = new ArrayList<>();
         this.thumbnailSize = 100;
         Bus.getInstance().registerListener(this);
         photoToPoint = new ConcurrentHashMap<>();
         animationDelta = new ConcurrentHashMap<>();
         timer = new Timer(5, e -> doAnimate());
-        currentPhotos = new ArrayList<>();
     }
 
     /**
@@ -147,10 +145,9 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
             }
             if(finalLocation != photoToPoint.get(photo)){ //if the photo isn't at the new location
                 animationDelta.put(photo, finalLocation);
-                currentPhotos.add(photo);
-//                if(!startingPoints.containsKey(photo)){
-//                    startingPoints.put(photo, photoToPoint.get(photo));
-//                }
+                if(!startingPoints.containsKey(photo)){
+                    startingPoints.put(photo, photoToPoint.get(photo));
+                }
             }
         }
         timer.start();
@@ -182,18 +179,15 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
         for(Photo p: animationDelta.keySet()){
             Point currPoint = photoToPoint.get(p);
             Point finalPoint = animationDelta.get(p);
-            Point startPoint = currPoint;
-            /*if(startingPoints.contains(p)){
-                startPoint = startingPoints.get(p);
-            }*/
+            Point startPoint = startingPoints.get(p);
             if(!currPoint.equals(finalPoint)){
 
-                if((Math.abs(currPoint.x - finalPoint.x) > 30 || Math.abs(currPoint.y - finalPoint.y) > 30) || //far from magnet
-                        (Math.abs(startPoint.x - currPoint.x) > 30 || Math.abs(startPoint.y - currPoint.y) > 30)){ //far from start
+                if((Math.abs(currPoint.x - finalPoint.x) > 30 || Math.abs(currPoint.y - finalPoint.y) > 30) && //far from final point
+                        (Math.abs(startPoint.x - currPoint.x) > 15 || Math.abs(startPoint.y - currPoint.y) > 15)){ //far from start
                     timer.setDelay(5); //far away, moves fast
                 }
                 else{
-                    timer.setDelay(15); //close, moves slow
+                    timer.setDelay(15); //close to either end, moves slow
                 }
                 if(currPoint.x < finalPoint.x){
                     currPoint.x++;
@@ -210,8 +204,7 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
             }
             else{
                 toRemove.add(p);
-                currentPhotos.remove(p);
-                //startingPoints.remove(p);
+                startingPoints.remove(p);
             }
         }
         for(Photo p: toRemove){
@@ -251,19 +244,19 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
                     switch(tag){
                         case 1:
                             mag = new Magnet(tag, new Color(142, 255, 189), this, DIAMETER, ROUND);
-                            mag.setPoint(50, 50);
+                            mag.setPoint(150, 250);
                             break;
                         case 2:
                             mag = new Magnet(tag, new Color(255, 251, 48), this, DIAMETER, ROUND);
-                            mag.setPoint(150, 50);
+                            mag.setPoint(250, 250);
                             break;
                         case 3:
                             mag = new Magnet(tag, new Color(239, 99, 47), this, DIAMETER, ROUND);
-                            mag.setPoint(50, 150);
+                            mag.setPoint(150, 350);
                             break;
                         case 4:
                             mag = new Magnet(tag, new Color(119, 225, 255), this,DIAMETER, ROUND);
-                            mag.setPoint(150, 150);
+                            mag.setPoint(250, 350);
                             break;
                     }
                     activeMagnets.add(mag);
