@@ -6,8 +6,6 @@ import bus.messages.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,7 +38,6 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
         activeMagnets = new ArrayList<>();
         this.thumbnailSize = 100;
         Bus.getInstance().registerListener(this);
-        //currentPhoto = null;
         photoToPoint = new ConcurrentHashMap<>();
         animationDelta = new ConcurrentHashMap<>();
         timer = new Timer(5, e -> doAnimate());
@@ -66,7 +63,7 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
             thumbnailPanel.add(mag);
         }
         for (Photo photo : photos) {
-            Thumbnail thumbnail = new Thumbnail(photo, currentPhotos.contains(photo), this, thumbnailSize);
+            Thumbnail thumbnail = new Thumbnail(photo, animationDelta.containsKey(photo), this, thumbnailSize);
             size = thumbnail.getPreferredSize();
             thumbnailPanel.add(thumbnail);
             if(photoToPoint.containsKey(photo)){
