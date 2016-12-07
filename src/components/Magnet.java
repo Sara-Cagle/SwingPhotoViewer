@@ -13,22 +13,24 @@ import java.util.ArrayList;
 public class Magnet extends JComponent {
     private int tag;
     private Point location;
-    private final int DIAMETER = 20;
+    //private final int DIAMETER = 50;
     private MagnetMouseAdapter mouseAdapter;
     private Color color;
     private IMagnetListener magnetListener;
+    private int diameter;
 
 
-    public Magnet(int tag, Color color, IMagnetListener magnetListener){
+    public Magnet(int tag, Color color, IMagnetListener magnetListener, int diameter){
         this.tag = tag;
         location = new Point();
         this.color = color;
-        this.setSize(new Dimension(DIAMETER,DIAMETER));
-        this.setPreferredSize(new Dimension(DIAMETER,DIAMETER));
+        this.setSize(new Dimension(diameter,diameter));
+        this.setPreferredSize(new Dimension(diameter,diameter));
         mouseAdapter = new MagnetMouseAdapter();
         addMouseListener(mouseAdapter);
         addMouseMotionListener(mouseAdapter);
         this.magnetListener = magnetListener;
+        this.diameter = diameter;
     }
 
     public void setPoint(int x, int y){
@@ -55,7 +57,7 @@ public class Magnet extends JComponent {
 
 
     public boolean containsPoint(Point p){
-        return (p.x <= location.x+DIAMETER && p.x >= location.x) && (p.y <=location.y+DIAMETER && p.y>= location.y);
+        return (p.x <= location.x+diameter && p.x >= location.x) && (p.y <=location.y+diameter && p.y>= location.y);
     }
 
     public void paintComponent(Graphics g){
@@ -65,7 +67,7 @@ public class Magnet extends JComponent {
         g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         g2.setColor(color);
-        g2.fillOval(0, 0, DIAMETER, DIAMETER); //draws an oval inside a rectangle, w/ top left corner of 0,0
+        g2.fillOval(0, 0, diameter, diameter); //draws an oval inside a rectangle, w/ top left corner of 0,0
     }
 
 

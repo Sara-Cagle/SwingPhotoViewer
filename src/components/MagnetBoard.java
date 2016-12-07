@@ -30,6 +30,8 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
     private Timer timer;
     private ConcurrentHashMap<Photo, Point> animationDelta;
     private ArrayList<Photo> currentPhotos;
+    private ConcurrentHashMap<Photo, Point> startingPoints;
+    private final int DIAMETER = 50;
 
     public MagnetBoard(List<Photo> photos){
         this.setLayout(new BorderLayout());
@@ -59,7 +61,7 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
 
         thumbnailPanel.setLayout(null);
         for(Magnet mag: activeMagnets){
-            mag.setBounds(mag.getPoint().x, mag.getPoint().y, 20, 20);
+            mag.setBounds(mag.getPoint().x, mag.getPoint().y, DIAMETER, DIAMETER);
             thumbnailPanel.add(mag);
         }
         for (Photo photo : photos) {
@@ -156,6 +158,9 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
             if(finalLocation != photoToPoint.get(photo)){ //if the photo isn't at the new location
                 animationDelta.put(photo, finalLocation);
                 currentPhotos.add(photo);
+//                if(!startingPoints.containsKey(photo)){
+//                    startingPoints.put(photo, photoToPoint.get(photo));
+//                }
             }
         }
         timer.start();
@@ -187,58 +192,40 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
         for(Photo p: animationDelta.keySet()){
             Point currPoint = photoToPoint.get(p);
             Point finalPoint = animationDelta.get(p);
+            Point startPoint = currPoint;
+            if(startingPoints.contains(p)){
+                startPoint = startingPoints.get(p);
+            }
             if(!currPoint.equals(finalPoint)){
-                if(Math.abs(currPoint.x - finalPoint.x) > 10 || Math.abs(currPoint.y - finalPoint.y) > 10){
+
+                if((Math.abs(currPoint.x - finalPoint.x) > 10 || Math.abs(currPoint.y - finalPoint.y) > 10) || //far from magnet
+                        (Math.abs(startPoint.x - currPoint.x) > 10 || Math.abs(startPoint.y - currPoint.y) > 10)){ //far from start
                     timer.setDelay(5); //far away, moves fast
                 }
                 else{
                     timer.setDelay(15); //close, moves slow
                 }
                 if(currPoint.x < finalPoint.x){
-                    /*if(finalPoint.x-currPoint.x < 10){
-                        timer.setDelay(25);
-                    }
-                    else{
-                        timer.setDelay(7);
-                    }*/
                     currPoint.x++;
                 }
                 else if(currPoint.x > finalPoint.x){
-                    /*if(currPoint.x < 10 - finalPoint.x){
-                        timer.setDelay(25);
-                    }
-                    else{
-                        timer.setDelay(7);
-                    }*/
                     currPoint.x--;
                 }
                 if(currPoint.y < finalPoint.y){
-                    /*if(finalPoint.y-currPoint.y < 10){
-                        timer.setDelay(25);
-                    }
-                    else{
-                        timer.setDelay(7);
-                    }*/
                     currPoint.y++;
                 }
                 else if(currPoint.y > finalPoint.y){
-                    /*if(currPoint.x < 10 - finalPoint.x){
-                        timer.setDelay(25);
-                    }
-                    else{
-                        timer.setDelay(7);
-                    }*/
                     currPoint.y--;
                 }
             }
             else{
                 toRemove.add(p);
                 currentPhotos.remove(p);
+                //startingPoints.remove(p);
             }
         }
         for(Photo p: toRemove){
             animationDelta.remove(p);
-            currentPhotos.remove(p); //this should be redundent
         }
         updateView();
     }
@@ -273,20 +260,20 @@ public class MagnetBoard extends JPanel implements IMessageListener, IThumbnailL
                     Magnet mag = null;
                     switch(tag){
                         case 1:
-                            mag = new Magnet(tag, Color.red, this);
+                            mag = new Magnet(tag, Color.red, this, DIAMETER);
                             mag.setPoint(50, 50);
                             break;
                         case 2:
-                            mag = new Magnet(tag, Color.blue, this);
-                            mag.setPoint(50, 50);
+                            mag = new Magnet(tag, Color.blue, this, DIAMETER);
+                            mag.setPoint(150, 50);
                             break;
                         case 3:
-                            mag = new Magnet(tag, Color.green, this);
-                            mag.setPoint(50, 50);
+                            mag = new Magnet(tag, Color.green, this, DIAMETER);
+                            mag.setPoint(50, 150);
                             break;
                         case 4:
-                            mag = new Magnet(tag, Color.yellow, this);
-                            mag.setPoint(50, 50);
+                            mag = new Magnet(tag, Color.yellow, this,DIAMETER);
+                            mag.setPoint(150, 150);
                             break;
                     }
                     activeMagnets.add(mag);
